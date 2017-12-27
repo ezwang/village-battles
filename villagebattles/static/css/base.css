@@ -1,0 +1,13 @@
+body {
+    background: url("../images/background.png");
+    font-family: 'Almendra', serif;
+}
+.navbar {
+    background-color: #C62828;
+}
+.navbar a {
+    color: gold;
+}
+.navbar-brand {
+    font-weight: bold;
+}
