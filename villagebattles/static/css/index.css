@@ -1,0 +1,7 @@
+#card-login {
+    max-width: 600px;
+    margin: 30px auto;
+}
+#card-login button {
+    min-width: 100px;
+}

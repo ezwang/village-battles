@@ -11,3 +11,30 @@ body {
 .navbar-brand {
     font-weight: bold;
 }
+.card {
+    background: url("../images/background2.png");
+    border: 5px double gold;
+}
+.btn.btn-primary {
+    cursor: pointer;
+    background: #c62828;
+    background: -moz-linear-gradient(top, #c62828 0%, #660000 100%);
+    background: -webkit-linear-gradient(top, #c62828 0%,#660000 100%);
+    background: linear-gradient(to bottom, #c62828 0%,#660000 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c62828', endColorstr='#660000',GradientType=0 );
+    border: 3px double white;
+}
+.btn.btn-primary:hover {
+    color: #ccc;
+    background: -moz-linear-gradient(top,  0%, #c62828 100%);
+    background: -webkit-linear-gradient(top, #660000 0%, #c62828 100%);
+    background: linear-gradient(to bottom, #660000 0%, #c62828 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#660000', endColorstr='#c62828',GradientType=0 );
+}
+.btn.btn-primary:disabled {
+    cursor: pointer;
+    color: #ccc;
+}
+.form-control {
+    border: 2px double gold;
+}

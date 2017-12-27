@@ -1,4 +1,40 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "css/index.css" %}" />
+{% endblock %}
 
 {% block content %}
+<div id="card-login" class="card">
+    <div class="card-body">
+        <h2 class="card-title">Village Battles</h2>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <b>Welcome to Village Battles!</b>
+                <p>Village Battles is a real time strategy game. Create troops and build up your village!</p>
+                <p>Don't have an account?</p>
+                <div style="text-align:center">
+                    <a href="#" class="btn btn-primary btn-lg">Register</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Login</h4>
+                <form action="{% url "login" %}" method="POST">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
