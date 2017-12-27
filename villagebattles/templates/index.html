@@ -23,6 +23,7 @@
             <div class="col-md-6">
                 <h4>Login</h4>
                 <form action="{% url "login" %}" method="POST">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label>Username</label>
                         <input type="text" name="username" class="form-control" />
