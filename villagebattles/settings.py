@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'villagebattles.apps.auth',
+    'villagebattles.apps.users',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +126,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "villagebattles", "static")
 ]
+
+
+AUTH_USER_MODEL = "users.User"
