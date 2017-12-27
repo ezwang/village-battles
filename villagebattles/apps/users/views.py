@@ -3,11 +3,14 @@ from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from .forms import UserCreationForm
 from ..game.models import World
+from ..game.helpers import get_villages
 
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "dashboard.html")
+        if not get_villages(request).count():
+            return redirect("create_village")
+        return redirect("dashboard")
     else:
         return render(request, "index.html")
 
