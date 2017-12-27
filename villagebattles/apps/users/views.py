@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
 def index(request):
@@ -7,5 +8,9 @@ def index(request):
 
 def login(request):
     if request.method == "POST":
-        pass
+        messages.error(request, "Login failed! Is your username and password correct?")
     return redirect("index")
+
+
+def register(request):
+    return render(request, "register.html")
