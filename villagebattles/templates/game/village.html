@@ -24,6 +24,6 @@ a.snippet:hover {
 
 {% block content %}
 <div id="topbar">
-    <a class="snippet" href="{% url "dashboard" %}">Overview</a> <a class="snippet" href="#">Map</a> <span class="snippet"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</span>
+    <a class="snippet" href="{% url "dashboard" %}">Overview</a> <a class="snippet" href="{% url "map_coords" village.x village.y %}">Map</a> <span class="snippet"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</span>
 </div>
 {% endblock %}

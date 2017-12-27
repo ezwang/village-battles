@@ -23,7 +23,7 @@ def create_village(request):
         messages.success(request, "Your new village has been created!")
         return redirect("dashboard")
 
-    return render(request, "create_village.html")
+    return render(request, "game/create_village.html")
 
 
 @login_required
@@ -35,7 +35,7 @@ def dashboard(request):
         "villages": get_villages(request)
     }
 
-    return render(request, "dashboard.html", context)
+    return render(request, "game/dashboard.html", context)
 
 
 @login_required
@@ -45,4 +45,9 @@ def village(request, village_id):
         "village": village
     }
 
-    return render(request, "village.html", context)
+    return render(request, "game/village.html", context)
+
+
+@login_required
+def map(request, x, y):
+    pass
