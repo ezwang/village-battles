@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from .forms import UserCreationForm
+from ..game.models import World
 
 
 def index(request):
@@ -18,6 +19,7 @@ def login(request):
         user = authenticate(username=username, password=password)
         if user:
             auth_login(request, user)
+            request.session["world"] = World.objects.all().first().id
         else:
             messages.error(request, "Login failed! Is your username and password correct?")
     return redirect("index")
@@ -29,6 +31,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
+            request.session["world"] = World.objects.all().first().id
             messages.success(request, "Your user account has been created! Check your email to continue.")
             return redirect("index")
         else:
