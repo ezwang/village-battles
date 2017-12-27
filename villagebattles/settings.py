@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'idbqt9+fd(f@1^r5vivym1g&=!ho&fi&)+jmwa6fr)%erj_y2%'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'idbqt9+fd(f@1^r5vivym1g&=!ho&fi&)+jmwa6fr)%erj_y2%')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,6 +80,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+DATABASES['default'].update(dj_database_url.config(conn_max_age=600))
 
 
 # Password validation
