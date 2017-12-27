@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "css/index.css" %}" />
+{% endblock %}
+
+{% block content %}
+<div id="card-register" class="card">
+    <div class="card-body">
+        <h2 class="card-title">Register for Village Battles</h2>
+        <hr />
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
