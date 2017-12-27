@@ -28,4 +28,16 @@ def create_village(request):
 
 @login_required
 def dashboard(request):
+    if get_villages(request).count() == 0:
+        return redirect("create_village")
     return render(request, "dashboard.html")
+
+
+@login_required
+def village(request, village_id):
+    village = get_object_or_404(Village, id=village_id, owner=request.user)
+    context = {
+        "village": village
+    }
+
+    return render(request, "village.html", context)

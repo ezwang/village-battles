@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block css %}
+    {{ block.super }}
+<style>
+#topbar {
+    padding: 5px;
+}
+.snippet {
+    color: black;
+    display: inline-block;
+    background-color: #F4A460;
+    border: 1px solid brown;
+    border-radius: 3px;
+    padding: 2px 7px;
+    margin: 5px 3px;
+}
+a.snippet:hover {
+    color: #666;
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="topbar">
+    <a class="snippet" href="{% url "dashboard" %}">Overview</a> <a class="snippet" href="#">Map</a> <span class="snippet"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</span>
+</div>
+{% endblock %}

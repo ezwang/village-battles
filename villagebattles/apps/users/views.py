@@ -8,8 +8,11 @@ from ..game.helpers import get_villages
 
 def index(request):
     if request.user.is_authenticated:
-        if not get_villages(request).count():
+        num_villages = get_villages(request).count()
+        if num_villages == 0:
             return redirect("create_village")
+        if num_villages == 1:
+            return redirect("village", village_id=get_villages(request).first().id)
         return redirect("dashboard")
     else:
         return render(request, "index.html")
