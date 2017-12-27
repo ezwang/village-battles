@@ -1,9 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+
+from .helpers import get_new_village_coords
+from .models import Village, World
 
 
 @login_required
 def create_village(request):
+    world = get_object_or_404(World, id=request.session["world"])
+    if request.method == "POST":
+        x, y = get_new_village_coords(world)
+        Village.objects.create(
+            x=x,
+            y=y,
+            name="{}'s Village".format(request.user.username),
+            owner=request.user,
+            world=world
+        )
+        messages.success(request, "Your new village has been created!")
+        return redirect("dashboard")
+
     return render(request, "create_village.html")
 
 

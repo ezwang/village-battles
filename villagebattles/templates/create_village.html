@@ -16,7 +16,7 @@
     <div class="card-body">
         <h3>Join {{ world }}</h3>
         <p>You are not currently active in this world. Would you like to join <b>{{ world }}</b>?</p>
-        <form action="POST">
+        <form method="POST">
             {% csrf_token %}
             <div class="form-group">
                 <label><input type="radio" name="spawn" value="random" checked /> Spawn Randomly</label>
