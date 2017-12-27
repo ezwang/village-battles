@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "css/game.css" %}" />
+{% endblock %}
+
+{% block extra %}
+<div id="footer">{{ world }} - Village Battles</div>
+{% endblock %}

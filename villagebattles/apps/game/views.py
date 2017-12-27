@@ -30,7 +30,12 @@ def create_village(request):
 def dashboard(request):
     if get_villages(request).count() == 0:
         return redirect("create_village")
-    return render(request, "dashboard.html")
+
+    context = {
+        "villages": get_villages(request)
+    }
+
+    return render(request, "dashboard.html", context)
 
 
 @login_required

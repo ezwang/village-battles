@@ -1,4 +1,22 @@
-{% extends "base.html" %}
+{% extends "game.html" %}
+
+{% block css %}
+    {{ block.super }}
+<style>
+.card {
+    max-width: 300px;
+    margin: 15px;
+}
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3>Your Villages</h3>
+        {% for village in villages %}
+        <a href="{% url "village" village.id %}"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</a>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
