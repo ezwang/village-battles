@@ -11,7 +11,8 @@ def get_villages(request, user=None):
 
 def get_new_village_coords(world):
     n = Village.objects.filter(world=world).count() + 1
-    return square_spiral(n*2)
+    x, y = square_spiral(n*2)
+    return (x + 500, y + 500)
 
 
 def square_spiral(n):
