@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'villagebattles.apps.users',
+    'villagebattles.apps.game',
 ]
 
 MIDDLEWARE = [
