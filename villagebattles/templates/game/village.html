@@ -19,11 +19,40 @@ a.snippet:hover {
     color: #666;
     text-decoration: none;
 }
+.row {
+    margin: 0 5px;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div id="topbar">
     <a class="snippet" href="{% url "dashboard" %}">Overview</a> <a class="snippet" href="{% url "map" %}#{{ village.x }}-{{ village.y }}">Map</a> <span class="snippet"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</span>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h4>Buildings</h4>
+                <table class="table">
+                    <thead>
+                        <tr><th>Building</th><th>Level</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for build in buildings %}
+                        <tr><td>{{ build.get_type_display }}</td><td>{{ build.level }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h4>Troops</h4>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

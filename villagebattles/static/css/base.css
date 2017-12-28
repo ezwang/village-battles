@@ -38,3 +38,6 @@ body {
 .form-control {
     border: 2px double gold;
 }
+.table thead th {
+    border-color: brown;
+}

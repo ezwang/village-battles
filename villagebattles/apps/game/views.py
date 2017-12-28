@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .helpers import get_new_village_coords, get_villages
-from .models import Village, World
+from .models import Village, World, Building
 
 
 @login_required
@@ -20,6 +20,11 @@ def create_village(request):
             name="{}'s Village".format(request.user.username),
             owner=request.user,
             world=world
+        )
+        Building.objects.create(
+            village=vil,
+            type="HQ",
+            level=1
         )
         messages.success(request, "Your new village has been created!")
         return redirect("village", village_id=vil.id)
@@ -43,7 +48,8 @@ def dashboard(request):
 def village(request, village_id):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
     context = {
-        "village": village
+        "village": village,
+        "buildings": Building.objects.filter(village=village).order_by("type")
     }
 
     return render(request, "game/village.html", context)
