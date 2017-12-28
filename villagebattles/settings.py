@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'villagebattles.apps.context_processors.world_info',
+                'villagebattles.apps.context_processors.process_events',
             ],
         },
     },

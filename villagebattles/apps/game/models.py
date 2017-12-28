@@ -35,7 +35,7 @@ class Village(models.Model):
 
     @property
     def population(self):
-        return sum([x.population for x in self.building_set.all()])
+        return sum([x.population for x in self.buildings.all()])
 
     @property
     def max_population(self):
@@ -95,7 +95,7 @@ class Village(models.Model):
 
     def _building_level(self, type):
         try:
-            return self.building_set.get(type=type).level
+            return self.buildings.get(type=type).level
         except Building.DoesNotExist:
             return 0
 
@@ -126,7 +126,7 @@ class Building(models.Model):
         ("BR", "Barracks"),
         ("RP", "Rally Point"),
     )
-    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildings")
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
     level = models.IntegerField(default=1)
 
@@ -155,6 +155,6 @@ class BuildTask(models.Model):
 
     @property
     def new_level(self):
-        level = self.village.building_set.get(type=self.type).level
+        level = self.village.buildings.get(type=self.type).level
         level += self.village.buildtask_set.filter(start_time__lt=self.start_time, type=self.type).count()
         return level + 1
