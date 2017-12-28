@@ -14,8 +14,8 @@
 {% block content %}
 <div class="card">
     <div class="card-body">
-        <h3>Join {{ world }}</h3>
-        <p>You are not currently active in this world. Would you like to join <b>{{ world }}</b>?</p>
+        <h3>Join {{ world.name }}</h3>
+        <p>You are not currently active in this world. Would you like to join <b>{{ world.name }}</b>?</p>
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">

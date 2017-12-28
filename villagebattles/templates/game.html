@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="{% static "css/game.css" %}" />
 {% endblock %}
 
+{% block subheader %}
+<div id="topbar">
+    <a class="snippet" href="{% url "dashboard" %}">Overview</a> {% if current_village %}<a class="snippet" href="{% url "map" %}#{{ current_village.x }}-{{ current_village.y }}">Map</a> <span class="snippet"><a href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>{% endif %}
+</div>
+{% endblock %}
+
 {% block extra %}
-<div id="footer">{{ world }} - Village Battles</div>
+<div id="footer">{{ world.name }} - Village Battles</div>
 {% endblock %}

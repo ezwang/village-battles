@@ -4,3 +4,25 @@
     right: 5px;
     font-size: 0.75em;
 }
+#topbar {
+    padding: 5px;
+}
+.snippet {
+    color: black;
+    display: inline-block;
+    background-color: #F4A460;
+    border: 1px solid brown;
+    border-radius: 3px;
+    padding: 2px 7px;
+    margin: 5px 3px;
+}
+.snippet a {
+    color: black;
+}
+a.snippet:hover, .snippet a:hover {
+    color: #666;
+    text-decoration: none;
+}
+.row {
+    margin: 0 5px;
+}

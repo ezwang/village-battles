@@ -55,6 +55,8 @@ def village(request, village_id):
             "buildings": Building.objects.filter(village=village).order_by("type")
         }
 
+        request.session["village"] = village.id
+
         return render(request, "game/village.html", context)
     else:
         return render(request, "game/village_info.html", {"village": village})
