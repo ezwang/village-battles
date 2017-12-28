@@ -1,18 +1,21 @@
 var size = 50;
+var village_info = {};
 
-function addVillage(x, y, id, name) {
-    $("#world").append($("<div class='village' />").attr("data-id", id).attr("data-name", name).css("left", (x*size) + "px").css("top", (y*size) + "px"));
+function addVillage(x, y, id) {
+    $("#world").append($("<div class='village' />").attr("data-id", id).css("left", (x*size) + "px").css("top", (y*size) + "px"));
 }
 
 function loadVillages() {
     $.get(MAP_ENDPOINT, function(data) {
         data.villages.forEach(function(v) {
-            addVillage(v.x, v.y, v.id, v.name);
+            addVillage(v.x, v.y, v.id);
+            village_info[v.id] = v;
         });
     });
 }
 
 $(document).ready(function() {
+
     if (window.location.hash) {
         var temp = window.location.hash.substring(1).split("-");
         coords[0] = parseInt(temp[0]);
@@ -34,6 +37,10 @@ $(document).ready(function() {
     loadVillages();
 
     $("#world").on("click", ".village", function() {
-        $("#info").text($(this).attr("data-name"));
+        var id = $(this).attr("data-id");
+        var vil = village_info[id];
+        $("#info").html("<a href='village/" + id + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a> owned by <a href='user/" + vil.owner.id + "'>" + $("<div />").text(vil.owner.name).html() + "</a>");
+        $("#world .village").removeClass("selected");
+        $(this).addClass("selected");
     });
 });

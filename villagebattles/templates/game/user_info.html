@@ -1,0 +1,31 @@
+{% extends "game.html" %}
+
+{% block css %}
+    {{ block.super }}
+<style>
+.card {
+    max-width: 300px;
+    margin: 15px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3>{{ user.username }}</h3>
+        <hr />
+        <h5>Villages</h5>
+        <table class="table">
+            <thead>
+                <tr><th>Village</th></tr>
+            </thead>
+            <tbody>
+        {% for vil in villages %}
+        <tr><td><a href="{% url "village" vil.id %}">{{ vil.name }}</a></td></tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -5,6 +5,7 @@ from django.http import JsonResponse
 
 from .helpers import get_new_village_coords, get_villages
 from .models import Village, World, Building
+from ..users.models import User
 
 
 @login_required
@@ -47,13 +48,16 @@ def dashboard(request):
 
 @login_required
 def village(request, village_id):
-    village = get_object_or_404(Village, id=village_id, owner=request.user)
-    context = {
-        "village": village,
-        "buildings": Building.objects.filter(village=village).order_by("type")
-    }
+    village = get_object_or_404(Village, id=village_id)
+    if request.user == village.owner:
+        context = {
+            "village": village,
+            "buildings": Building.objects.filter(village=village).order_by("type")
+        }
 
-    return render(request, "game/village.html", context)
+        return render(request, "game/village.html", context)
+    else:
+        return render(request, "game/village_info.html", {"village": village})
 
 
 @login_required
@@ -77,7 +81,21 @@ def map_load(request):
             "id": vil.id,
             "x": vil.x,
             "y": vil.y,
-            "name": vil.name
+            "name": vil.name,
+            "owner": {
+                "id": vil.owner.id,
+                "name": vil.owner.username
+            }
         })
 
     return JsonResponse({"villages": output})
+
+
+@login_required
+def user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    context = {
+        "user": user,
+        "villages": get_villages(request)
+    }
+    return render(request, "game/user_info.html", context)
