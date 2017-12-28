@@ -6,6 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from ..users.models import User
+from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population
 
 
 class World(models.Model):
@@ -30,7 +31,7 @@ class Village(models.Model):
 
     @property
     def max_capacity(self):
-        return int(1000 * 1.2**(self.building_set.get(type="WH").level - 1))
+        return get_max_capacity(self._building_level("WH"))
 
     @property
     def population(self):
@@ -38,7 +39,7 @@ class Village(models.Model):
 
     @property
     def max_population(self):
-        return int(200 * 1.2**(self.building_set.get(type="FM").level - 1))
+        return get_max_population(self._building_level("FM"))
 
     def _do_resource_update(self):
         if hasattr(self, "_done_resource_update"):
@@ -71,17 +72,23 @@ class Village(models.Model):
     @property
     def wood_rate(self):
         """ How much wood should be produced every hour. """
-        return int(30 * 1.2**(self.building_set.get(type="WM").level - 1))
+        return get_wood_rate(self._building_level("WM"))
 
     @property
     def clay_rate(self):
         """ How much clay should be produced every hour. """
-        return int(30 * 1.2**(self.building_set.get(type="CM").level - 1))
+        return get_clay_rate(self._building_level("CM"))
 
     @property
     def iron_rate(self):
         """ How much iron should be produced every hour. """
-        return int(30 * 1.2**(self.building_set.get(type="IM").level - 1))
+        return get_iron_rate(self._building_level("IM"))
+
+    def _building_level(self, type):
+        try:
+            return self.building_set.get(type=type).level
+        except Building.DoesNotExist:
+            return 0
 
     @wood.setter
     def wood(self, x):
@@ -116,13 +123,11 @@ class Building(models.Model):
 
     @property
     def max_level(self):
-        if self.type == "RP":
-            return 1
-        return 10
+        return get_max_building_level(self.type)
 
     @property
     def population(self):
-        return 1
+        return get_building_population(self.type, self.level)
 
     @property
     def url(self):
