@@ -15,12 +15,14 @@
     <div class="card-body">
         <div class="clearfix">
             <h3 class="float-left">Reports</h3>
+            {% if not report %}
             <div class="float-right">
                 <form method="POST">
                     {% csrf_token %}
                     <button class="btn btn-primary btn-sm" type="submit">Mark All as Read</button>
                 </form>
             </div>
+            {% endif %}
         </div>
         <hr />
         {% if report %}
