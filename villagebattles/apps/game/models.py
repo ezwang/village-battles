@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from ..users.models import User
-from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population
+from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population, get_troop_population
 
 
 class World(models.Model):
@@ -35,7 +35,9 @@ class Village(models.Model):
 
     @property
     def population(self):
-        return sum([x.population for x in self.buildings.all()])
+        building_pop = sum([x.population for x in self.buildings.all()])
+        troop_pop = sum([x.population for x in self.troops.all()])
+        return building_pop + troop_pop
 
     @property
     def max_population(self):
@@ -162,3 +164,17 @@ class BuildTask(models.Model):
         level = self.village.buildings.get(type=self.type).level
         level += self.village.buildqueue.filter(start_time__lt=self.start_time, type=self.type).count()
         return level + 1
+
+
+class Troop(models.Model):
+    CHOICES = (
+        ("SP", "Spearman"),
+        ("AX", "Axeman"),
+    )
+    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops")
+    type = models.CharField(max_length=2, choices=CHOICES, default="SP")
+    amount = models.IntegerField()
+
+    @property
+    def population(self):
+        return self.amount * get_troop_population(self.type)

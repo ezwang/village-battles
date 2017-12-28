@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .helpers import get_new_village_coords, get_villages
-from .models import Village, World, Building, BuildTask
+from .models import Village, World, Building, BuildTask, Troop
 from ..users.models import User
 from .constants import get_building_cost, get_building_population
 from .tasks import process
@@ -176,6 +176,7 @@ def hq(request, village_id):
     context = {
         "village": village,
         "buildings": Building.objects.filter(village=village).order_by("type"),
+        "troops": Troop.objects.filter(village=village).order_by("type"),
         "not_built": not_built,
         "queue": BuildTask.objects.filter(village=village)
     }

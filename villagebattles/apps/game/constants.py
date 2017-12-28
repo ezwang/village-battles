@@ -41,3 +41,7 @@ def get_building_population_difference(building, level):
 def get_building_upgrade_time(building, level):
     """ Returns the building upgrade time in seconds. """
     return 3600
+
+
+def get_troop_population(troop):
+    return 1
