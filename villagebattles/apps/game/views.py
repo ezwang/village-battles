@@ -149,7 +149,7 @@ def hq(request, village_id):
                 cost = get_building_cost(type, 0)
                 pop = get_building_population(type, 0)
                 if village.population + pop <= village.max_population:
-                    if village.buildings.filter(type=type).count() > 0:
+                    if village.buildings.filter(type=type).exists() or village.buildqueue.filter(type=type).exists():
                         messages.error(request, "You already have this building!")
                     else:
                         if village.pay(*cost):
