@@ -21,11 +21,12 @@ def create_village(request):
             owner=request.user,
             world=world
         )
-        Building.objects.create(
-            village=vil,
-            type="HQ",
-            level=1
-        )
+        for t in ["HQ", "WM", "IM", "CM"]:
+            Building.objects.create(
+                village=vil,
+                type=t,
+                level=1
+            )
         messages.success(request, "Your new village has been created!")
         return redirect("village", village_id=vil.id)
 
