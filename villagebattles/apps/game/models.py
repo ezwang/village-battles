@@ -182,7 +182,7 @@ class BuildTask(models.Model):
             build.save()
         else:
             Building.objects.create(
-                village=village,
+                village=self.village,
                 type=self.type,
                 level=1
             )
