@@ -22,7 +22,7 @@ def create_village(request):
             owner=request.user,
             world=world
         )
-        for t in ["HQ", "WM", "IM", "CM"]:
+        for t in ["HQ", "WM", "IM", "CM", "WH"]:
             Building.objects.create(
                 village=vil,
                 type=t,
