@@ -168,6 +168,19 @@ class BuildTask(models.Model):
         level += self.village.buildqueue.filter(start_time__lt=self.start_time, type=self.type).count()
         return level + 1
 
+    def process(self):
+        build = self.village.buildings.filter(type=done.type)
+        if build.exists():
+            build = build.first()
+            build.level += 1
+            build.save()
+        else:
+            Building.objects.create(
+                village=village,
+                type=done.type,
+                level=1
+            )
+
 
 class Troop(models.Model):
     CHOICES = (
@@ -181,3 +194,26 @@ class Troop(models.Model):
     @property
     def population(self):
         return self.amount * get_troop_population(self.type)
+
+    class Meta:
+        unique_together = (("village", "type"),)
+
+
+class TroopTask(models.Model):
+    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troopqueue")
+    type = models.CharField(max_length=2, choices=Troop.CHOICES)
+    amount = models.IntegerField()
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(null=True)
+
+    def process(self):
+        try:
+            item = village.troops.get(type=self.type)
+            item.amount += self.amount
+            item.save()
+        except Troop.DoesNotExist:
+            Troop.objects.create(
+                village=self.village,
+                type=self.type,
+                amount=self.amount
+            )

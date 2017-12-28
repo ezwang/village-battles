@@ -13,19 +13,11 @@ def process(villages):
         lock = cache.lock("process:village:{}".format(village.id))
         if lock.acquire(blocking=False):
             try:
-                finished = village.buildqueue.filter(end_time__lte=now).order_by("end_time")
-                for done in finished:
-                    build = village.buildings.filter(type=done.type)
-                    if build.exists():
-                        build = build.first()
-                        build.level += 1
-                        build.save()
-                    else:
-                        Building.objects.create(
-                            village=village,
-                            type=done.type,
-                            level=1
-                        )
+                finished = [(x.end_time, x) for x in village.buildqueue.filter(end_time__lte=now).order_by("end_time")]
+                finished += [(x.end_time, x) for x in village.troopqueue.filter(end_time__lte=now).order_by("end_time")]
+                finished.sort()
+                for time, done in finished:
+                    done.process()
                     done.delete()
                 existing = village.buildqueue.filter(end_time__isnull=False).count()
                 for task in village.buildqueue.filter(end_time__isnull=True).order_by("start_time")[:2-existing]:
