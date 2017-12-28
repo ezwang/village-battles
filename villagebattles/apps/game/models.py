@@ -30,7 +30,7 @@ class Village(models.Model):
 
     @property
     def max_capacity(self):
-        return 1000
+        return int(1000 * 1.2**(self.building_set.get(type="WH").level - 1))
 
     def _do_resource_update(self):
         if hasattr(self, "_done_resource_update"):
@@ -63,17 +63,17 @@ class Village(models.Model):
     @property
     def wood_rate(self):
         """ How much wood should be produced every hour. """
-        return 1
+        return 30 * 1.2**(self.building_set.get(type="WM").level - 1)
 
     @property
     def clay_rate(self):
         """ How much clay should be produced every hour. """
-        return 1
+        return 30 * 1.2**(self.building_set.get(type="CM").level - 1)
 
     @property
     def iron_rate(self):
         """ How much iron should be produced every hour. """
-        return 1
+        return 30 * 1.2**(self.building_set.get(type="IM").level - 1)
 
     @wood.setter
     def wood(self, x):
