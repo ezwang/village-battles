@@ -3,6 +3,9 @@ var village_info = {};
 
 function addVillage(x, y, id) {
     var vil = $("<div class='village' />").attr("data-id", id).css("left", (x*size) + "px").css("top", (y*size) + "px");
+    if (userid == id) {
+        vil.addClass("owned");
+    }
     $("#world").append(vil);
     return vil;
 }

@@ -12,6 +12,7 @@
 <script src="{% static "js/map.js" %}"></script>
 <script>
     var MAP_ENDPOINT = "{% url "map_load" %}";
+    var userid = {{ request.user.id }};
     var coords = [{{ x }}, {{ y }}];
 </script>
 {% endblock %}
