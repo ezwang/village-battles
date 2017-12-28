@@ -1,10 +1,6 @@
 {% extends "game.html" %}
 {% load game_extras %}
 
-{% block css %}
-    {{ block.super }}
-{% endblock %}
-
 {% block content %}
 <div class="row">
     <div class="col-md-8">
@@ -54,7 +50,7 @@
                 {% for item in queue %}
                 <div>{{ item.get_type_display }} to level {{ item.new_level }} <span class="float-right countdown" datetime="{{ item.end_time|date:"c" }}">{{ item.end_time|default_if_none:"" }}</span></div>
                 {% empty %}
-                <p>The build queue is currently empty.</p>
+                <span>The build queue is currently empty.</span>
                 {% endfor %}
             </div>
         </div>

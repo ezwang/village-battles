@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="{% static "css/game.css" %}" />
 {% endblock %}
 
+{% block js %}
+    {{ block.super }}
+    <script src="{% static "js/game.js" %}"></script>
+{% endblock %}
+
 {% block subheader %}
 <div id="topbar">
     <a class="snippet" href="{% url "dashboard" %}">Overview</a>

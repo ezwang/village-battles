@@ -162,7 +162,7 @@ def hq(request, village_id):
             else:
                 messages.error(request, "Invalid building type passed to server!")
             pass
-        process()
+        process([village])
         return redirect("hq", village_id=village.id)
 
     built = set(Building.objects.filter(village=village).values_list("type", flat=True))
