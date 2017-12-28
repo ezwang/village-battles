@@ -23,7 +23,7 @@ def process(villages):
                 )
             done.delete()
         existing = village.buildqueue.filter(end_time__isnull=False).count()
-        for task in village.buildqueue.order_by("start_time")[:2-existing]:
+        for task in village.buildqueue.filter(end_time__isnull=True).order_by("start_time")[:2-existing]:
             build_time = timedelta(seconds=get_building_upgrade_time(task.type, task.new_level - 1))
             task.end_time = now + build_time
             task.save()

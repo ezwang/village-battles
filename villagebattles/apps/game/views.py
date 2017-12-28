@@ -7,6 +7,7 @@ from .helpers import get_new_village_coords, get_villages
 from .models import Village, World, Building, BuildTask
 from ..users.models import User
 from .constants import get_building_cost, get_building_population
+from .tasks import process
 
 
 @login_required
@@ -161,6 +162,7 @@ def hq(request, village_id):
             else:
                 messages.error(request, "Invalid building type passed to server!")
             pass
+        process()
         return redirect("hq", village_id=village.id)
 
     built = set(Building.objects.filter(village=village).values_list("type", flat=True))
