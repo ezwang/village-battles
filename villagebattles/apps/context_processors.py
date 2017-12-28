@@ -13,5 +13,6 @@ def world_info(request):
 
 
 def process_events(request):
-    process(get_villages(request).prefetch_related("buildings", "buildqueue"))
+    if request.user.is_authenticated and "world" in request.session:
+        process(get_villages(request).prefetch_related("buildings", "buildqueue"))
     return {}
