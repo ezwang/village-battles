@@ -4,9 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .helpers import get_new_village_coords, get_villages
-from .models import Village, World, Building, BuildTask, Troop
+from .models import Village, World, Building, BuildTask, Troop, TroopTask
 from ..users.models import User
-from .constants import get_building_cost, get_building_population
+from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population
 from .tasks import process
 
 
@@ -188,9 +188,42 @@ def hq(request, village_id):
 def barracks(request, village_id):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
+    if request.method == "POST":
+        order = []
+        for choice, _ in Troop.CHOICES:
+            amt = int(request.POST.get(choice, 0))
+            order.append((choice, amt))
+        if sum([x[1] for x in order]) == 0:
+            messages.warning(request, "You did not order any troops!")
+        else:
+            total_wood, total_clay, total_iron = 0, 0, 0
+            total_pop = 0
+            for troop, amt in order:
+                wood, clay, iron = get_troop_cost(troop)
+                pop = get_troop_population(troop)
+                total_wood += wood * amt
+                total_clay += clay * amt
+                total_iron += iron * amt
+                total_pop += pop * amt
+            if village.pay(total_wood, total_clay, total_iron):
+                for troop, amt in order:
+                    if amt == 0:
+                        continue
+                    TroopTask.objects.create(
+                        village=village,
+                        type=troop,
+                        amount=amt
+                    )
+                    messages.success(request, "Your troops have been queued!")
+            else:
+                messages.error(request, "You do not have enough resources to create this number of troops!")
+            process([village])
+        return redirect("barracks", village_id=village.id)
+
     context = {
         "village": village,
         "troop_options": Troop.CHOICES,
+        "troop_queue": village.troopqueue.order_by("start_time"),
         "troops": Troop.objects.filter(village=village).order_by("type"),
     }
 

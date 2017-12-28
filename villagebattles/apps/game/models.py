@@ -187,7 +187,7 @@ class BuildTask(models.Model):
                 level=1
             )
         if self.type in ["WM", "CM", "IM", "WH"]:
-            village._do_resource_update(end_time)
+            self.village._do_resource_update(self.end_time)
 
 
 class Troop(models.Model):

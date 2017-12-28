@@ -12,6 +12,7 @@
             <div class="card-body">
                 <h4>Recruitment - Barracks</h4>
                 <form method="POST">
+                    {% csrf_token %}
                     <table class="table">
                         <thead>
                             <tr><th>Troop</th><th>Cost</th><th>Time</th><th>Amount</th></tr>
@@ -31,7 +32,11 @@
         <div class="card">
             <div class="card-body">
                 <h4>Recruitment Queue</h4>
+                {% for troop in troop_queue %}
+                <div>{{ troop.get_type_display }} ({{ troop.amount }})</div>
+                {% empty %}
                 <span>There are no soldiers in the queue.</span>
+                {% endfor %}
             </div>
         </div>
         <div class="card">
