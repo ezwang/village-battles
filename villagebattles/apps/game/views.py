@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 
 from .helpers import get_new_village_coords, get_villages, calculate_travel_time
-from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack
+from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
 from ..users.models import User
 from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, get_troop_travel
 from .tasks import process
@@ -281,7 +281,12 @@ def rally(request, village_id):
         attackers = []
         flag = False
         for troop, name in Troop.CHOICES:
-            amt = int(request.POST.get(troop, 0))
+            try:
+                amt = int(request.POST.get(troop, 0))
+            except ValueError:
+                messages.error(request, "Invalid troop amount for {}!".format(name))
+                amt = 0
+                flag = True
             if amt > 0:
                 try:
                     if village.troops.get(type=troop).amount < amt:
@@ -339,3 +344,18 @@ def map_coord(request):
         return JsonResponse({"exists": True, "name": vil.name, "owner": vil.owner.username})
     except Village.DoesNotExist:
         return JsonResponse({"exists": False})
+
+
+@login_required
+def report(request, report_id=None):
+    if report_id is not None:
+        report = get_object_or_404(Report, id=report_id, owner=request.user)
+        context = {
+            "report": report
+        }
+    else:
+        context = {
+            "reports": request.user.reports.order_by("-created").values("title", "created", "id")
+        }
+
+    return render(request, "game/report.html", context)

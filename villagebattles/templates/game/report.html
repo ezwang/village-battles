@@ -1,0 +1,34 @@
+{% extends "game.html" %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.1/jquery.timeago.min.js" integrity="sha256-JAdlnMiYFZRwqQqgiYwLjSkV94QtVzcbvasQMm05THk=" crossorigin="anonymous"></script>
+    <script>
+    $(document).ready(function() {
+        $(".timeago").timeago();
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="card center-card">
+    <div class="card-body">
+        <h3>Reports</h3>
+        {% if report %}
+        <h5>{{ report.title }}</h5>
+        <pre>{{ report.body }}</pre>
+        {% else %}
+        <table class="table">
+            <thead>
+                <tr><th>Report</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+                {% for rep in reports %}
+                <tr><td><a href="{% url "report_detailed" rep.id %}">{{ rep.title }}</a></td><td><time class="timeago" datetime="{{ rep.created|date:"c" }}">{{ rep.created }}</time></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

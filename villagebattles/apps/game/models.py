@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from ..users.models import User
+from .battle import process_attack
 from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population, get_troop_population
 
 
@@ -279,7 +280,7 @@ class Attack(models.Model):
             self.destination._do_resource_update(self.end_time)
 
         if not self.returning:
-            # TODO: do attack
+            process_attack(self)
             self.returning = True
             self.end_time = self.end_time + timedelta(seconds=calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()]))
             self.save()
@@ -299,7 +300,7 @@ class Attack(models.Model):
 
 class Report(models.Model):
     title = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
     world = models.ForeignKey(World, on_delete=models.CASCADE)
     created = models.DateTimeField(default=timezone.now)
     body = models.TextField()

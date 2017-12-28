@@ -10,6 +10,8 @@ urlpatterns = [
 
     # Info
     path('user/<int:user_id>', views.user, name="user"),
+    path('report', views.report, name="report"),
+    path('report/<int:report_id>', views.report, name="report_detailed"),
 
     # Village
     path('dashboard', views.dashboard, name="dashboard"),
