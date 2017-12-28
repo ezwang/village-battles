@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
 
-from .helpers import get_new_village_coords, get_villages, calculate_travel_time
+from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
 from ..users.models import User
 from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, get_troop_travel
@@ -28,12 +28,7 @@ def create_village(request):
             owner=request.user,
             world=world
         )
-        for t in ["HQ", "WM", "IM", "CM", "WH", "FM", "RP"]:
-            Building.objects.create(
-                village=vil,
-                type=t,
-                level=1
-            )
+        create_default_setup(vil)
         messages.success(request, "Your new village has been created!")
         return redirect("village", village_id=vil.id)
 

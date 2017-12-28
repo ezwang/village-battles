@@ -1,6 +1,6 @@
 from math import sqrt, floor, ceil
 
-from .models import Village
+from .models import Village, Building
 from .constants import get_troop_travel
 
 
@@ -38,3 +38,12 @@ def calculate_travel_time(source, destination, troops):
     dist = sqrt((destination.x - source.x)**2 + (destination.y - source.y)**2)
     slowest_unit = max([get_troop_travel(x) for x in troops])
     return dist * slowest_unit
+
+
+def create_default_setup(vil):
+    for t in ["HQ", "WM", "IM", "CM", "WH", "FM", "RP"]:
+        Building.objects.create(
+            village=vil,
+            type=t,
+            level=1
+        )

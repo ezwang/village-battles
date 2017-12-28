@@ -3,9 +3,11 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import World, Village, Attack
+from .models import World, Village, Attack, TroopTask, Troop
 from ..users.models import User
 from .tasks import process_village
+from .helpers import create_default_setup
+from .constants import get_troop_time
 
 
 class ResourceTests(TestCase):
@@ -20,6 +22,7 @@ class ResourceTests(TestCase):
             world=self.world,
             owner=self.user
         )
+        create_default_setup(self.village)
         self.village2 = Village.objects.create(
             x=501,
             y=501,
@@ -27,6 +30,54 @@ class ResourceTests(TestCase):
             world=self.world,
             owner=self.user2
         )
+        create_default_setup(self.village2)
+
+    def test_troop_creation(self):
+        """ Make sure producing troops works. """
+        now = timezone.now()
+        TYPE = Troop.CHOICES[0][0]
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10,
+            end_time=now - timedelta(days=1)
+        )
+        process_village(self.village, now)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
+
+    def test_multiple_troop_creation(self):
+        """ Test multiple amounts of same troop in different orders. """
+        now = timezone.now()
+        TYPE = Troop.CHOICES[0][0]
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10,
+            end_time=now - timedelta(days=1)
+        )
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10,
+            end_time=now - timedelta(days=2)
+        )
+        process_village(self.village, now)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 20)
+
+    def test_partial_troop_creation(self):
+        """ Make sure producing troops is incremental. """
+        now = timezone.now()
+        TYPE = Troop.CHOICES[0][0]
+        time = get_troop_time(TYPE) * 1.5
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10,
+            start_time=now - timedelta(seconds=time),
+            end_time=now + timedelta(seconds=get_troop_time(TYPE) * 10 - time)
+        )
+        process_village(self.village, now)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 1)
 
     def test_auto_update(self):
         """ Make sure resource values are being updated on each call. """
