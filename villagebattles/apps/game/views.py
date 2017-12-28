@@ -214,7 +214,7 @@ def barracks(request, village_id):
                         type=troop,
                         amount=amt
                     )
-                    messages.success(request, "Your troops have been queued!")
+                messages.success(request, "Your troops have been queued!")
             else:
                 messages.error(request, "You do not have enough resources to create this number of troops!")
             process([village])

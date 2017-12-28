@@ -33,7 +33,7 @@
             <div class="card-body">
                 <h4>Recruitment Queue</h4>
                 {% for troop in troop_queue %}
-                <div>{{ troop.get_type_display }} ({{ troop.amount }})</div>
+                <div>{{ troop.get_type_display }} ({{ troop.amount }}) <span class="float-right countdown" datetime="{{ troop.end_time|date:"c" }}">{{ troop.end_time|default_if_none:"" }}</span></div>
                 {% empty %}
                 <span>There are no soldiers in the queue.</span>
                 {% endfor %}

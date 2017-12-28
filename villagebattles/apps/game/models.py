@@ -217,7 +217,7 @@ class TroopTask(models.Model):
 
     def process(self):
         try:
-            item = village.troops.get(type=self.type)
+            item = self.village.troops.get(type=self.type)
             item.amount += self.amount
             item.save()
         except Troop.DoesNotExist:
