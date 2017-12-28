@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
+from django.utils import timezone
 
 from ..users.models import User
 
@@ -17,6 +19,12 @@ class Village(models.Model):
     name = models.TextField()
     world = models.ForeignKey(World, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+    _wood = models.IntegerField(default=settings.STARTING_RESOURCES)
+    _clay = models.IntegerField(default=settings.STARTING_RESOURCES)
+    _iron = models.IntegerField(default=settings.STARTING_RESOURCES)
+
+    _update = models.DateTimeField(default=timezone.now)
 
     class Meta:
         unique_together = (("x", "y"),)
