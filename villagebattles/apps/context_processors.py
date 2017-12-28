@@ -13,5 +13,5 @@ def world_info(request):
 
 
 def process_events(request):
-    process(get_villages(request).prefetch_related("buildings"))
+    process(get_villages(request).prefetch_related("buildings", "buildqueue"))
     return {}

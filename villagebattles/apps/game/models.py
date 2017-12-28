@@ -148,7 +148,7 @@ class Building(models.Model):
 
 
 class BuildTask(models.Model):
-    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildqueue")
     type = models.CharField(max_length=2, choices=Building.CHOICES)
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(null=True)
@@ -156,5 +156,5 @@ class BuildTask(models.Model):
     @property
     def new_level(self):
         level = self.village.buildings.get(type=self.type).level
-        level += self.village.buildtask_set.filter(start_time__lt=self.start_time, type=self.type).count()
+        level += self.village.buildqueue.filter(start_time__lt=self.start_time, type=self.type).count()
         return level + 1
