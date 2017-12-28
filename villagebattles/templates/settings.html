@@ -11,7 +11,16 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
-                <h3>Settings</h3>
+                <h3>Profile</h3>
+                <p>This text will be displayed to other users when they visit your profile page.</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="profile" />
+                    <div class="form-group">
+                        <textarea class="form-control" name="profile">{{ request.user.profile }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
         </div>
     </div>

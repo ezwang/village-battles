@@ -1,21 +1,34 @@
 {% extends "game.html" %}
 
 {% block content %}
-<div class="small-card card">
-    <div class="card-body">
-        <h3>{{ user.username }}</h3>
-        <hr />
-        <h5>Villages</h5>
-        <table class="table">
-            <thead>
-                <tr><th>Village</th></tr>
-            </thead>
-            <tbody>
-        {% for vil in villages %}
-        <tr><td><a href="{% url "village" vil.id %}">{{ vil.name }}</a></td></tr>
-        {% endfor %}
-        </tbody>
-        </table>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>{{ user.username }}</h3>
+                <hr />
+                <h5>Villages</h5>
+                <table class="table">
+                    <thead>
+                        <tr><th>Village</th></tr>
+                    </thead>
+                    <tbody>
+                {% for vil in villages %}
+                <tr><td><a href="{% url "village" vil.id %}">{{ vil.name }}</a></td></tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    {% if user.profile %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                {{ user.profile }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

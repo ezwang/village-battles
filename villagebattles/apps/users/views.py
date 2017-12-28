@@ -56,8 +56,10 @@ def logout(request):
 
 @login_required
 def settings(request):
+    form = None
     if request.method == "POST":
-        if request.POST.get("action") == "password":
+        action = request.POST.get("action")
+        if action == "password":
             form = ChangePasswordForm(request.user, request.POST)
             if form.is_valid():
                 user = form.save()
@@ -66,6 +68,11 @@ def settings(request):
                 return redirect("settings")
             else:
                 messages.error(request, "Your password as not changed.")
-    else:
+        elif action == "profile":
+            request.user.profile = request.POST.get("profile")
+            request.user.save()
+            messages.success(request, "Your profile has been updated!")
+            return redirect("settings")
+    if form is None:
         form = ChangePasswordForm(request.user)
     return render(request, "settings.html", {"password_form": form})
