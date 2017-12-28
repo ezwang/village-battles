@@ -252,3 +252,17 @@ def rally(request, village_id):
     }
 
     return render(request, "game/rally.html", context)
+
+
+@login_required
+def map_coord(request):
+    world = get_object_or_404(World, id=request.session["world"])
+
+    x = request.GET.get("x")
+    y = request.GET.get("y")
+
+    try:
+        vil = Village.objects.get(x=x, y=y, world=world)
+        return JsonResponse({"exists": True, "name": vil.name, "owner": vil.owner.username})
+    except Village.DoesNotExist:
+        return JsonResponse({"exists": False})

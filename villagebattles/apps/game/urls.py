@@ -6,6 +6,7 @@ urlpatterns = [
     # Map
     path('map', views.map, name="map"),
     path('map/load', views.map_load, name="map_load"),
+    path('map/coord', views.map_coord, name="map_coord"),
 
     # Info
     path('user/<int:user_id>', views.user, name="user"),

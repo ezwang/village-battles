@@ -17,12 +17,25 @@
 {% block js %}
     {{ block.super }}
     <script>
+    var COORD_ENDPOINT = "{% url "map_coord" %}";
+
 $(document).ready(function() {
     if (window.location.hash) {
         var coords = window.location.hash.substring(1).split("-");
         $("#x").val(coords[0]);
         $("#y").val(coords[1]);
     }
+    $("#x, #y").blur(function() {
+        $.get(COORD_ENDPOINT + "?x=" + encodeURIComponent($("#x").val()) + "&y=" + encodeURIComponent($("#y").val()), function(data) {
+            if (!data.exists) {
+                $("#info").css("color", "red").text("Nonexistent Village!");
+            }
+            else {
+                $("#info").css("color", "black").text(" - " + data.name + " (owned by " + data.owner + ")");
+            }
+        });
+    });
+    $("#x").blur();
 });
     </script>
 {% endblock %}
@@ -46,7 +59,7 @@ $(document).ready(function() {
                         </tbody>
                     </table>
                     <div class="clearfix">
-                        <div id="coords" class="float-left">Target Village: (<input type="number" id="x" name="x" />|<input type="number" id="y" name="y" />)</div>
+                        <div id="coords" class="float-left">Target Village: (<input type="number" id="x" name="x" />|<input type="number" id="y" name="y" />) <span id="info"></span></div>
                         <button type="submit" class="btn btn-primary float-right">Attack</button>
                     </div>
                 </form>
