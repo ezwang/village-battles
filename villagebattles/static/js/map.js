@@ -37,6 +37,7 @@ $(document).ready(function() {
         var realY = Math.round((y + ($("#map").height() - size) / 2) / size);
         $("#x").val(realX);
         $("#y").val(realY);
+        history.replaceState(undefined, undefined, "#" + realX + "-" + realY);
     });
 
     $("#world").on("click", ".village", function() {
