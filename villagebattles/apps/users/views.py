@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from .forms import UserCreationForm
 from ..game.models import World
 from ..game.helpers import get_villages
@@ -50,3 +51,8 @@ def register(request):
 def logout(request):
     auth_logout(request)
     return redirect("index")
+
+
+@login_required
+def settings(request):
+    return render(request, "settings.html")

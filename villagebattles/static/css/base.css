@@ -8,6 +8,18 @@ body {
 .navbar a {
     color: gold;
 }
+.navbar a:hover {
+    color: silver;
+}
+.navbar-nav {
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+.nav-item {
+    margin-left: 5px;
+    margin-right: 5px;
+}
 .navbar-brand {
     font-weight: bold;
 }
