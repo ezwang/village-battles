@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block subheader %}
-<div id="topbar">
+<div id="topbar" class="clearfix">
     <a class="snippet" href="{% url "dashboard" %}">Overview</a>
     {% if current_village %}
     <a class="snippet" href="{% url "map" %}#{{ current_village.x }}-{{ current_village.y }}">Map</a>
