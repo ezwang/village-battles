@@ -1,17 +1,7 @@
 {% extends "game.html" %}
 
-{% block css %}
-    {{ block.super }}
-<style>
-.card {
-    max-width: 300px;
-    margin: 15px;
-}
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="card">
+<div class="small-card card">
     <div class="card-body">
         <h3>Your Villages</h3>
         {% for village in villages %}

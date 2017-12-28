@@ -2,17 +2,10 @@
 
 {% block css %}
     {{ block.super }}
-<style>
-.card {
-    max-width: 600px;
-    margin: 0 auto;
-    margin-top: 30px;
-}
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="small-card card">
     <div class="card-body">
         <h3>Join {{ world.name }}</h3>
         <p>You are not currently active in this world. Would you like to join <b>{{ world.name }}</b>?</p>

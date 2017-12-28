@@ -26,3 +26,7 @@ a.snippet:hover, .snippet a:hover {
 .row {
     margin: 0 5px;
 }
+.small-card {
+    max-width: 400px;
+    margin: 15px;
+}

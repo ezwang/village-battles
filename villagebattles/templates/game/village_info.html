@@ -2,16 +2,10 @@
 
 {% block css %}
     {{ block.super }}
-<style>
-.card {
-    max-width: 300px;
-    margin: 15px;
-}
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="small-card card">
     <div class="card-body">
         <h3>{{ village.name }}</h3>
         <div>Owner: <a href="{% url "user" village.owner.id %}">{{ village.owner.username }}</a></div>
