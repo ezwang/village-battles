@@ -17,7 +17,7 @@
                     </thead>
                     <tbody>
                         {% for build in buildings %}
-                        <tr><td>{{ build.get_type_display }}</td><td>{{ build.level }}</td><td>{% building_cost build.type build.level %}</td>
+                        <tr><td>{{ build.get_type_display }}</td><td>{{ build.level }}</td><td>{% if build.level < build.max_level %}{% building_cost build.type build.level %}{% else %}-{% endif %}</td>
                             <td>
                                 {% if build.level < build.max_level %}
                                 <form method="POST">
