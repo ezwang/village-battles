@@ -10,6 +10,7 @@
     width: 50000px;
     height: 50000px;
     background-color: green;
+    background-image: url("../images/grass.png");
     position: relative;
 }
 .village {
