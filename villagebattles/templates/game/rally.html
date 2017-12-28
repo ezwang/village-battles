@@ -26,14 +26,21 @@ $(document).ready(function() {
         $("#y").val(coords[1]);
     }
     $("#x, #y").blur(function() {
-        $.get(COORD_ENDPOINT + "?x=" + encodeURIComponent($("#x").val()) + "&y=" + encodeURIComponent($("#y").val()), function(data) {
-            if (!data.exists) {
-                $("#info").css("color", "red").text("Nonexistent Village!");
-            }
-            else {
-                $("#info").css("color", "black").text(" - " + data.name + " (owned by " + data.owner + ")");
-            }
-        });
+        var x = $("#x").val();
+        var y = $("#y").val();
+        if (x && y) {
+            $.get(COORD_ENDPOINT + "?x=" + encodeURIComponent(x) + "&y=" + encodeURIComponent(y), function(data) {
+                if (!data.exists) {
+                    $("#info").css("color", "red").text("Nonexistent Village!");
+                }
+                else {
+                    $("#info").css("color", "black").text(" - " + data.name + " (owned by " + data.owner + ")");
+                }
+            });
+        }
+        else {
+            $("#info").css("color", "red").text("Invalid Coordinates!");
+        }
     });
     $("#x").blur();
 });
