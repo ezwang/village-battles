@@ -161,7 +161,10 @@ class BuildTask(models.Model):
 
     @property
     def new_level(self):
-        level = self.village.buildings.get(type=self.type).level
+        try:
+            level = self.village.buildings.get(type=self.type).level
+        except Building.DoesNotExist:
+            level = 0
         level += self.village.buildqueue.filter(start_time__lt=self.start_time, type=self.type).count()
         return level + 1
 
