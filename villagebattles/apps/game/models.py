@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from ..users.models import User
 
@@ -32,6 +33,11 @@ class Building(models.Model):
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
     level = models.IntegerField(default=1)
+
+    @property
+    def url(self):
+        if self.type == "HQ":
+            return reverse("hq", kwargs={"village_id": self.village.id})
 
     class Meta:
         unique_together = (("village", "type"),)

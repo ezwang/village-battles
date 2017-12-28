@@ -101,3 +101,29 @@ def user(request, user_id):
         "villages": get_villages(request, user=user).order_by("name")
     }
     return render(request, "game/user_info.html", context)
+
+
+@login_required
+def hq(request, village_id):
+    village = get_object_or_404(Village, id=village_id, owner=request.user)
+
+    if request.method == "POST":
+        if "name" in request.POST:
+            name = request.POST.get("name")
+            if len(name) > 3:
+                village.name = name
+                village.save()
+                messages.success(request, "Village name has been changed!")
+            else:
+                messages.error(request, "Village name is too short!")
+        elif "building" in request.POST:
+            # TODO: build building
+            pass
+        return redirect("hq", village_id=village.id)
+
+    context = {
+        "village": village,
+        "buildings": Building.objects.filter(village=village).order_by("type")
+    }
+
+    return render(request, "game/hq.html", context)

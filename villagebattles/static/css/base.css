@@ -24,7 +24,7 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c62828', endColorstr='#660000',GradientType=0 );
     border: 3px double white;
 }
-.btn.btn-primary:hover {
+.btn.btn-primary:not(:disabled):hover {
     color: #ccc;
     background: -moz-linear-gradient(top,  0%, #c62828 100%);
     background: -webkit-linear-gradient(top, #660000 0%, #c62828 100%);
@@ -32,7 +32,7 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#660000', endColorstr='#c62828',GradientType=0 );
 }
 .btn.btn-primary:disabled {
-    cursor: pointer;
+    cursor: default;
     color: #ccc;
 }
 .form-control {

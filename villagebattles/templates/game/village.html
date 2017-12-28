@@ -16,7 +16,9 @@
                     </thead>
                     <tbody>
                         {% for build in buildings %}
-                        <tr><td>{{ build.get_type_display }}</td><td>{{ build.level }}</td></tr>
+                        {% with build.url as action %}
+                        <tr><td>{% if action %}<a href="{{ action }}">{% endif %}{{ build.get_type_display }}{% if action %}</a>{% endif %}</td><td>{{ build.level }}</td></tr>
+                        {% endwith %}
                         {% endfor %}
                     </tbody>
                 </table>

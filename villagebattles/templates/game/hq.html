@@ -1,0 +1,51 @@
+{% extends "game.html" %}
+
+{% block css %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h4>Headquarters</h4>
+                <table class="table">
+                    <thead>
+                        <tr><th>Building</th><th>Level</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for build in buildings %}
+                        <tr><td>{{ build.get_type_display }}</td><td>{{ build.level }}</td>
+                            <td>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="building" value="{{ build.id }}" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Upgrade</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h4>Rename Village</h4>
+                <p>You can use the form below to rename your village.</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Village Name</label>
+                        <input type="text" class="form-control" name="name" value="{{ village.name }}" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Rename</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
