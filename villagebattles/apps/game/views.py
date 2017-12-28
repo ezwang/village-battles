@@ -350,12 +350,14 @@ def map_coord(request):
 def report(request, report_id=None):
     if report_id is not None:
         report = get_object_or_404(Report, id=report_id, owner=request.user)
+        report.read = True
+        report.save()
         context = {
             "report": report
         }
     else:
         context = {
-            "reports": request.user.reports.order_by("-created").values("title", "created", "id")
+            "reports": request.user.reports.order_by("read", "-created").values("title", "created", "id")
         }
 
     return render(request, "game/report.html", context)

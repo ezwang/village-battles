@@ -313,6 +313,7 @@ class Report(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
     world = models.ForeignKey(World, on_delete=models.CASCADE)
     created = models.DateTimeField(default=timezone.now)
+    read = models.BooleanField(default=False)
     body = models.TextField()
 
     def __str__(self):
