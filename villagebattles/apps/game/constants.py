@@ -32,6 +32,14 @@ def get_building_cost(building, level):
     return (50, 50, 50)
 
 
+def get_troop_cost(troop):
+    return (25, 25, 25)
+
+
+def get_troop_time(troop):
+    return 30
+
+
 def get_building_population_difference(building, level):
     if level == 0:
         return get_building_population(building, 0)

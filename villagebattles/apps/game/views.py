@@ -182,3 +182,16 @@ def hq(request, village_id):
     }
 
     return render(request, "game/hq.html", context)
+
+
+@login_required
+def barracks(request, village_id):
+    village = get_object_or_404(Village, id=village_id, owner=request.user)
+
+    context = {
+        "village": village,
+        "troop_options": Troop.CHOICES,
+        "troops": Troop.objects.filter(village=village).order_by("type"),
+    }
+
+    return render(request, "game/barracks.html", context)

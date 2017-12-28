@@ -148,6 +148,8 @@ class Building(models.Model):
     def url(self):
         if self.type == "HQ":
             return reverse("hq", kwargs={"village_id": self.village.id})
+        elif self.type == "BR":
+            return reverse("barracks", kwargs={"village_id": self.village.id})
 
     class Meta:
         unique_together = (("village", "type"),)
@@ -169,7 +171,7 @@ class BuildTask(models.Model):
         return level + 1
 
     def process(self):
-        build = self.village.buildings.filter(type=done.type)
+        build = self.village.buildings.filter(type=self.type)
         if build.exists():
             build = build.first()
             build.level += 1
@@ -177,7 +179,7 @@ class BuildTask(models.Model):
         else:
             Building.objects.create(
                 village=village,
-                type=done.type,
+                type=self.type,
                 level=1
             )
 
@@ -185,6 +187,7 @@ class BuildTask(models.Model):
 class Troop(models.Model):
     CHOICES = (
         ("SP", "Spearman"),
+        ("SW", "Swordsman"),
         ("AX", "Axeman"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops")
