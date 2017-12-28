@@ -14,6 +14,7 @@
     <span class="snippet"><a href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>
     <div class="float-right">
         <span class="snippet">Wood: {{ current_village.wood }} / {{ current_village.max_capacity }} - Clay: {{ current_village.clay }} / {{ current_village.max_capacity }} - Iron: {{ current_village.iron }} / {{ current_village.max_capacity }}</span>
+        <span class="snippet">Pop: {{ current_village.population }} / {{ current_village.max_population }}</span>
     </div>
     {% endif %}
 </div>

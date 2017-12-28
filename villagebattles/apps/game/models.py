@@ -32,6 +32,14 @@ class Village(models.Model):
     def max_capacity(self):
         return int(1000 * 1.2**(self.building_set.get(type="WH").level - 1))
 
+    @property
+    def population(self):
+        return sum([x.population for x in self.building_set.all()])
+
+    @property
+    def max_population(self):
+        return int(200 * 1.2**(self.building_set.get(type="FM").level - 1))
+
     def _do_resource_update(self):
         if hasattr(self, "_done_resource_update"):
             return
@@ -63,17 +71,17 @@ class Village(models.Model):
     @property
     def wood_rate(self):
         """ How much wood should be produced every hour. """
-        return 30 * 1.2**(self.building_set.get(type="WM").level - 1)
+        return int(30 * 1.2**(self.building_set.get(type="WM").level - 1))
 
     @property
     def clay_rate(self):
         """ How much clay should be produced every hour. """
-        return 30 * 1.2**(self.building_set.get(type="CM").level - 1)
+        return int(30 * 1.2**(self.building_set.get(type="CM").level - 1))
 
     @property
     def iron_rate(self):
         """ How much iron should be produced every hour. """
-        return 30 * 1.2**(self.building_set.get(type="IM").level - 1)
+        return int(30 * 1.2**(self.building_set.get(type="IM").level - 1))
 
     @wood.setter
     def wood(self, x):
@@ -103,6 +111,10 @@ class Building(models.Model):
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
     level = models.IntegerField(default=1)
+
+    @property
+    def population(self):
+        return 1
 
     @property
     def url(self):
