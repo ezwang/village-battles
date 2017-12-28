@@ -76,6 +76,7 @@ class Village(models.Model):
         else:
             if end_time > self._update:
                 now = end_time
+        self.refresh_from_db()
         diff = (now - self._update)
         diff = int(diff.total_seconds()) + (diff.microseconds / Decimal(1000000))
         self.wood = self._wood + (diff / Decimal(3600)) * self.wood_rate
