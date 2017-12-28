@@ -54,7 +54,8 @@ def village(request, village_id):
     if request.user == village.owner:
         context = {
             "village": village,
-            "buildings": Building.objects.filter(village=village).order_by("type")
+            "buildings": village.buildings.order_by("type"),
+            "troops": village.troops.order_by("type"),
         }
 
         request.session["village"] = village.id
@@ -102,6 +103,7 @@ def user(request, user_id):
         "user": user,
         "villages": get_villages(request, user=user).order_by("name")
     }
+
     return render(request, "game/user_info.html", context)
 
 
