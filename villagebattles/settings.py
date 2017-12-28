@@ -88,6 +88,22 @@ DATABASES = {
 DATABASES['default'].update(dj_database_url.config(conn_max_age=600))
 
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "vb"
+    }
+}
+
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -131,6 +147,7 @@ STATICFILES_DIRS = [
 ]
 
 
+LOGIN_URL = "/"
 AUTH_USER_MODEL = "users.User"
 
 
