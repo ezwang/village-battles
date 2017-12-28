@@ -207,7 +207,8 @@ class Troop(models.Model):
         ("SW", "Swordsman"),
         ("AX", "Axeman"),
     )
-    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops")
+    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops", null=True)
+    attack = models.ForeignKey("Attack", on_delete=models.CASCADE, related_name="troops", null=True)
     type = models.CharField(max_length=2, choices=CHOICES, default="SP")
     amount = models.IntegerField()
 
@@ -241,3 +242,9 @@ class TroopTask(models.Model):
                 type=self.type,
                 amount=self.amount
             )
+
+
+class Attack(models.Model):
+    source = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="outgoing")
+    destination = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="incoming")
+    end_time = models.DateTimeField()
