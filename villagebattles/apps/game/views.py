@@ -348,6 +348,11 @@ def map_coord(request):
 
 @login_required
 def report(request, report_id=None):
+    if request.method == "POST":
+        request.user.reports.update(read=True)
+        messages.success(request, "All reports marked as read!")
+        return redirect("report")
+
     if report_id is not None:
         report = get_object_or_404(Report, id=report_id, owner=request.user)
         report.read = True
