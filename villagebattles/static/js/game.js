@@ -31,6 +31,7 @@ $(document).ready(function() {
     var tickers = $(".ticker").children().filter(function() { return $(this).attr("data-rate"); });
     var lastUpdate = new Date();
     var realValues = {};
+    var max = parseInt($(".ticker .wood-cap").text());
     function doTickers() {
         var now = new Date();
         var diff = (now.getTime() - lastUpdate.getTime()) / 1000;
@@ -41,7 +42,7 @@ $(document).ready(function() {
             var rate = parseInt($(this).attr("data-rate"));
             var added = diff * rate / parseFloat(3600);
             realValues[id] = value + added;
-            $(this).text(Math.floor(value + added));
+            $(this).text(Math.min(Math.floor(value + added)));
         });
     }
     setInterval(doTickers, 1000);
