@@ -27,4 +27,23 @@ $(document).ready(function() {
     }
     setInterval(doCountdowns, 1000);
     doCountdowns();
+
+    var tickers = $(".ticker").children().filter(function() { return $(this).attr("data-rate"); });
+    var lastUpdate = new Date();
+    var realValues = {};
+    function doTickers() {
+        var now = new Date();
+        var diff = (now.getTime() - lastUpdate.getTime()) / 1000;
+        lastUpdate = now;
+        tickers.each(function() {
+            var id = $(this).attr("class");
+            var value = realValues[id] || parseInt($(this).text());
+            var rate = parseInt($(this).attr("data-rate"));
+            var added = diff * rate / parseFloat(3600);
+            realValues[id] = value + added;
+            $(this).text(Math.floor(value + added));
+        });
+    }
+    setInterval(doTickers, 1000);
+    doTickers();
 });
