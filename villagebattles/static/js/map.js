@@ -40,7 +40,6 @@ $(document).ready(function() {
         var realY = Math.round((y + ($("#map").height() - size) / 2) / size);
         $("#x").val(realX);
         $("#y").val(realY);
-        history.replaceState(undefined, undefined, "#" + realX + "-" + realY);
     });
 
     $("#world").on("click", ".village", function() {
@@ -59,6 +58,7 @@ $(document).ready(function() {
             if (x && y) {
                 $("#map").scrollLeft(x * size - ($("#map").width() - size) / 2).scrollTop(y * size - ($("#map").height() - size) / 2);
             }
+            history.replaceState(undefined, undefined, "#" + realX + "-" + realY);
         }
     });
 
