@@ -18,10 +18,25 @@
                         {% for build in buildings %}
                         <tr><td>{{ build.get_type_display }}</td><td>{{ build.level }}</td>
                             <td>
+                                {% if build.level < build.max_level %}
                                 <form method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="building" value="{{ build.id }}" />
                                     <button type="submit" class="btn btn-primary btn-sm">Upgrade</button>
+                                </form>
+                                {% else %}
+                                Max Level
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% for value, name in not_built %}
+                        <tr><td>{{ name }}</td><td>-</td>
+                            <td>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="build" value="{{ value }}" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Build</button>
                                 </form>
                             </td>
                         </tr>

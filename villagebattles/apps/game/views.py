@@ -121,9 +121,18 @@ def hq(request, village_id):
             pass
         return redirect("hq", village_id=village.id)
 
+    built = set(Building.objects.filter(village=village).values_list("type", flat=True))
+
+    not_built = []
+
+    for building in Building.CHOICES:
+        if building[0] not in built:
+            not_built.append(building)
+
     context = {
         "village": village,
-        "buildings": Building.objects.filter(village=village).order_by("type")
+        "buildings": Building.objects.filter(village=village).order_by("type"),
+        "not_built": not_built
     }
 
     return render(request, "game/hq.html", context)

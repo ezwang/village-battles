@@ -107,10 +107,15 @@ class Building(models.Model):
         ("IM", "Iron Mine"),
         ("WH", "Warehouse"),
         ("FM", "Farm"),
+        ("BR", "Barracks"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
     level = models.IntegerField(default=1)
+
+    @property
+    def max_level(self):
+        return 10
 
     @property
     def population(self):
