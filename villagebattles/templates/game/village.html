@@ -41,7 +41,7 @@
             <div class="card-body">
                 <h4>Outgoing Attacks</h4>
                 {% for att in outgoing %}
-                <div><a href="{{ att.destination.url }}">{{ att.destination }}</a> <span class="float-right countdown" datetime="{{ att.end_time|date:"c" }}">{{ att.end_time|default_if_none:"" }}</span></div>
+                <div><a href="{{ att.destination.url }}">{{ att.destination }}</a>{% if att.returning %} (Returning){% endif %} <span class="float-right countdown" datetime="{{ att.end_time|date:"c" }}">{{ att.end_time|default_if_none:"" }}</span></div>
                 {% endfor %}
             </div>
         </div>

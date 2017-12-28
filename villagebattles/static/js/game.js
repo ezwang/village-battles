@@ -9,6 +9,9 @@ $(document).ready(function() {
                 window.location.reload();
             }
             var diff = Math.floor((time.getTime() - now.getTime()) / 1000);
+            if (diff < 0) {
+                return;
+            }
             var hours = Math.floor(diff / 3600);
             if (hours < 10) {
                 hours = "0" + hours;
