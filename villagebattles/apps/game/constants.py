@@ -26,3 +26,7 @@ def get_max_capacity(level):
 
 def get_max_population(level):
     return int(200 * 1.2**(level - 1))
+
+
+def get_building_cost(building, level):
+    return (50, 50, 50)

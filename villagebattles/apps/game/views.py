@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from .helpers import get_new_village_coords, get_villages
 from .models import Village, World, Building, BuildTask
 from ..users.models import User
+from .constants import get_building_cost, get_building_population
 
 
 @login_required
@@ -124,24 +125,36 @@ def hq(request, village_id):
             else:
                 messages.error(request, "Village name is too short!")
         elif "building" in request.POST:
-            # TODO: implement resources/restrictions for new buildings
-            # TODO: implement time to build building
             building = get_object_or_404(Building, id=request.POST.get("building"), village=village)
             if building.level < building.max_level:
-                queue_building(village, building.type)
-                messages.success(request, "Building has been queued!")
+                cost = get_building_cost(building.type, building.level)
+                pop = get_building_population(building.type, building.level) - get_building_population(building.type, building.level - 1)
+                if village.population + pop <= village.max_population:
+                    if village.pay(*cost):
+                        queue_building(village, building.type)
+                        messages.success(request, "Building has been queued!")
+                    else:
+                        messages.error(request, "You do not have enough resources to create this building!")
+                else:
+                    messages.error(request, "You do not have enough people to make this building!")
             else:
                 messages.error(request, "This building is already at max level!")
         elif "build" in request.POST:
-            # TODO: implement resources/restrictions for new buildings
-            # TODO: implement time to build building
             type = request.POST.get("build")
             if type in [x[0] for x in Building.CHOICES]:
-                if village.building_set.filter(type=type).count() > 0:
-                    messages.error(request, "You already have this building!")
+                cost = get_building_cost(type, 0)
+                pop = get_building_population(type, 0)
+                if village.population + pop <= village.max_population:
+                    if village.building_set.filter(type=type).count() > 0:
+                        messages.error(request, "You already have this building!")
+                    else:
+                        if village.pay(*cost):
+                            queue_building(village, building.type)
+                            messages.success(request, "Building has been queued!")
+                        else:
+                            messages.error(request, "You do not have enough resources to create this building!")
                 else:
-                    queue_building(village, building.type)
-                    messages.success(request, "Building has been queued!")
+                    messages.error(request, "You do not have enough people to make this building!")
             else:
                 messages.error(request, "Invalid building type passed to server!")
             pass

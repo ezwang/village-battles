@@ -41,6 +41,15 @@ class Village(models.Model):
     def max_population(self):
         return get_max_population(self._building_level("FM"))
 
+    def pay(self, wood, clay, iron):
+        if wood > self.wood or clay > self.clay or iron > self.iron:
+            return False
+        self.wood -= wood
+        self.clay -= clay
+        self.iron -= iron
+        self.save()
+        return True
+
     def _do_resource_update(self):
         if hasattr(self, "_done_resource_update"):
             return
