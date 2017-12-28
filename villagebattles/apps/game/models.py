@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import timedelta
 
 from django.db import models
 from django.urls import reverse
@@ -214,6 +215,7 @@ class BuildTask(models.Model):
             )
         if self.type in ["WM", "CM", "IM", "WH"]:
             self.village._do_resource_update(self.end_time)
+        return True
 
 
 class Troop(models.Model):
@@ -257,13 +259,39 @@ class TroopTask(models.Model):
                 type=self.type,
                 amount=self.amount
             )
+        return True
 
 
 class Attack(models.Model):
     source = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="outgoing")
     destination = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="incoming")
     end_time = models.DateTimeField()
+    returning = models.BooleanField(default=False)
 
     @property
     def population(self):
         return sum([x.population for x in self.troops.all()])
+
+    def process(self):
+        from .helpers import calculate_travel_time
+
+        if self.destination._update < self.end_time:
+            self.destination._do_resource_update(self.end_time)
+
+        if not self.returning:
+            # TODO: do attack
+            self.returning = True
+            self.end_time = self.end_time + timedelta(seconds=calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()]))
+            self.save()
+            return False
+        else:
+            for troop in self.troops.all():
+                if self.source.troops.filter(type=troop.type).exists():
+                    existing = self.source.troops.get(type=troop.type)
+                    existing.amount += troop.amount
+                    existing.save()
+                else:
+                    troop.village = self.source
+                    troop.attack = None
+                    troop.save()
+            return True

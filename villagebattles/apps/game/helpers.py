@@ -1,6 +1,7 @@
 from math import sqrt, floor, ceil
 
 from .models import Village
+from .constants import get_troop_travel
 
 
 def get_villages(request, user=None):
@@ -31,3 +32,9 @@ def square_spiral(n):
     else:
         dm = d - (l*3-2)
         return (floor(l/2), ceil(-floor(l/2) + dm))
+
+
+def calculate_travel_time(source, destination, troops):
+    dist = sqrt((destination.x - source.x)**2 + (destination.y - source.y)**2)
+    slowest_unit = max([get_troop_travel(x) for x in troops])
+    return dist * slowest_unit

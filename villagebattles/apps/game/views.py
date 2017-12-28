@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
 
-from .helpers import get_new_village_coords, get_villages
+from .helpers import get_new_village_coords, get_villages, calculate_travel_time
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack
 from ..users.models import User
 from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, get_troop_travel
@@ -297,12 +297,10 @@ def rally(request, village_id):
         if flag:
             return redirect("rally", village_id=village.id)
 
-        dist = sqrt((target.x - village.x)**2 + (target.y - village.y)**2)
-
         attack = Attack.objects.create(
             source=village,
             destination=target,
-            end_time=timezone.now() + timedelta(seconds=dist * max([get_troop_travel(x) for x, _ in attackers]))
+            end_time=timezone.now() + timedelta(seconds=calculate_travel_time(village, target, [x[0] for x in attackers]))
         )
 
         for troop, amt in attackers:
