@@ -126,7 +126,7 @@ def hq(request, village_id):
                 messages.error(request, "Village name is too short!")
         elif "building" in request.POST:
             building = get_object_or_404(Building, id=request.POST.get("building"), village=village)
-            if building.level < building.max_level:
+            if building.level_after_upgrade < building.max_level:
                 cost = get_building_cost(building.type, building.level)
                 pop = get_building_population(building.type, building.level) - get_building_population(building.type, building.level - 1)
                 if village.population + pop <= village.max_population:

@@ -135,6 +135,10 @@ class Building(models.Model):
         return get_max_building_level(self.type)
 
     @property
+    def level_after_upgrade(self):
+        return self.level + self.village.buildqueue.filter(type=self.type).count()
+
+    @property
     def population(self):
         return get_building_population(self.type, self.level)
 
