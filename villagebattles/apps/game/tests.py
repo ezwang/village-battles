@@ -67,3 +67,19 @@ class ResourceTests(TestCase):
         )
         process_village(self.village, now)
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
+
+    def test_update_with_loot_same_time(self):
+        now = timezone.now()
+        initial_wood = self.village._wood
+        expected_wood = min(initial_wood + self.village.wood_rate + 100, self.village.max_capacity)
+        self.village._update = now - timedelta(hours=1)
+        self.village.save()
+        Attack.objects.create(
+            source=self.village,
+            destination=self.village2,
+            loot="100,100,100",
+            end_time=now - timedelta(hours=1),
+            returning=True
+        )
+        process_village(self.village, now)
+        self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
