@@ -10,6 +10,8 @@
         <h3>{{ village.name }}</h3>
         <div>Owner: <a href="{% url "user" village.owner.id %}">{{ village.owner.username }}</a></div>
         <div>Coordinates: ({{ village.x }}|{{ village.y }})</div>
+        <hr />
+        <a href="{% url "map" %}#{{ village.x }}-{{ village.y }}" class="btn btn-primary">Map</a>
     </div>
 </div>
 {% endblock %}

@@ -2,14 +2,19 @@ var size = 50;
 var village_info = {};
 
 function addVillage(x, y, id) {
-    $("#world").append($("<div class='village' />").attr("data-id", id).css("left", (x*size) + "px").css("top", (y*size) + "px"));
+    var vil = $("<div class='village' />").attr("data-id", id).css("left", (x*size) + "px").css("top", (y*size) + "px");
+    $("#world").append(vil);
+    return vil;
 }
 
 function loadVillages() {
     $.get(MAP_ENDPOINT, function(data) {
         data.villages.forEach(function(v) {
-            addVillage(v.x, v.y, v.id);
+            var vil = addVillage(v.x, v.y, v.id);
             village_info[v.id] = v;
+            if (v.x == coords[0] && v.y == coords[1]) {
+                vil.click();
+            }
         });
     });
 }
@@ -34,8 +39,6 @@ $(document).ready(function() {
         $("#y").val(realY);
     });
 
-    loadVillages();
-
     $("#world").on("click", ".village", function() {
         var id = $(this).attr("data-id");
         var vil = village_info[id];
@@ -43,4 +46,6 @@ $(document).ready(function() {
         $("#world .village").removeClass("selected");
         $(this).addClass("selected");
     });
+
+    loadVillages();
 });
