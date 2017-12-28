@@ -8,7 +8,14 @@
 
 {% block subheader %}
 <div id="topbar">
-    <a class="snippet" href="{% url "dashboard" %}">Overview</a> {% if current_village %}<a class="snippet" href="{% url "map" %}#{{ current_village.x }}-{{ current_village.y }}">Map</a> <span class="snippet"><a href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>{% endif %}
+    <a class="snippet" href="{% url "dashboard" %}">Overview</a>
+    {% if current_village %}
+    <a class="snippet" href="{% url "map" %}#{{ current_village.x }}-{{ current_village.y }}">Map</a>
+    <span class="snippet"><a href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>
+    <div class="float-right">
+        <span class="snippet">Wood: {{ current_village.wood }} / {{ current_village.max_capacity }} - Clay: {{ current_village.clay }} / {{ current_village.max_capacity }} - Iron: {{ current_village.iron }} / {{ current_village.max_capacity }}</span>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
