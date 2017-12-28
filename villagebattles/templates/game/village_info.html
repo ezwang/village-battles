@@ -12,6 +12,7 @@
         <div>Coordinates: ({{ village.x }}|{{ village.y }})</div>
         <hr />
         <a href="{% url "map" %}#{{ village.x }}-{{ village.y }}" class="btn btn-primary">Map</a>
+        <a href="{% url "rally" current_village.id %}#{{ village.x }}-{{ village.y }}" class="btn btn-primary">Attack</a>
     </div>
 </div>
 {% endblock %}

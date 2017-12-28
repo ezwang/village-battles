@@ -190,6 +190,10 @@ def hq(request, village_id):
 def barracks(request, village_id):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
+    if not village.buildings.filter(type="BR").exists():
+        messages.error(request, "You do not have a barracks!")
+        return redirect("village", village_id=village.id)
+
     if request.method == "POST":
         order = []
         for choice, _ in Troop.CHOICES:
@@ -233,3 +237,18 @@ def barracks(request, village_id):
     }
 
     return render(request, "game/barracks.html", context)
+
+
+@login_required
+def rally(request, village_id):
+    village = get_object_or_404(Village, id=village_id, owner=request.user)
+
+    if not village.buildings.filter(type="RP").exists():
+        messages.error(request, "You do not have a rally point!")
+        return redirect("village", village_id=village.id)
+
+    context = {
+        "village": village
+    }
+
+    return render(request, "game/rally.html", context)

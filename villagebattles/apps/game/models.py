@@ -34,14 +34,20 @@ class Village(models.Model):
         return get_max_capacity(self._building_level("WH"))
 
     @property
+    def troop_population(self):
+        in_village = sum([x.population for x in self.troops.all()])
+        attacking = sum([x.population for x in self.outgoing.all()])
+        return in_village + attacking
+
+    @property
     def population(self):
+        troop_pop = self.troop_population
         building_pop = sum([x.population for x in self.buildings.all()])
-        troop_pop = sum([x.population for x in self.troops.all()])
         return building_pop + troop_pop
 
     @property
     def population_after_upgrade(self):
-        troop_pop = sum([x.population for x in self.troops.all()])
+        troop_pop = self.troop_population
         building_queue = sum([x.population_after_upgrade for x in self.buildings.all()])
         troop_queue = sum([x.population for x in self.troopqueue.all()])
         return troop_pop + building_queue + troop_queue
@@ -165,6 +171,8 @@ class Building(models.Model):
             return reverse("hq", kwargs={"village_id": self.village.id})
         elif self.type == "BR":
             return reverse("barracks", kwargs={"village_id": self.village.id})
+        elif self.type == "RP":
+            return reverse("rally", kwargs={"village_id": self.village.id})
 
     class Meta:
         unique_together = (("village", "type"),)
@@ -248,3 +256,7 @@ class Attack(models.Model):
     source = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="outgoing")
     destination = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="incoming")
     end_time = models.DateTimeField()
+
+    @property
+    def population(self):
+        return sum([x.population for x in self.troops.all()])

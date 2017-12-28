@@ -16,4 +16,5 @@ urlpatterns = [
     path('village/<int:village_id>', views.village, name="village"),
     path('hq/<int:village_id>', views.hq, name="hq"),
     path('barracks/<int:village_id>', views.barracks, name="barracks"),
+    path('rally/<int:village_id>', views.rally, name="rally"),
 ]
