@@ -39,9 +39,9 @@ class Village(models.Model):
         now = timezone.now()
         diff = (now - self._update)
         diff = int(diff.total_seconds()) + (diff.microseconds / Decimal(1000000))
-        self.wood = self._wood + diff * self.wood_rate
-        self.clay = self._clay + diff * self.clay_rate
-        self.iron = self._iron + diff * self.iron_rate
+        self.wood = self._wood + (diff / Decimal(3600)) * self.wood_rate
+        self.clay = self._clay + (diff / Decimal(3600)) * self.clay_rate
+        self.iron = self._iron + (diff / Decimal(3600)) * self.iron_rate
         self._update = now
         self.save()
 
@@ -62,14 +62,17 @@ class Village(models.Model):
 
     @property
     def wood_rate(self):
+        """ How much wood should be produced every hour. """
         return 1
 
     @property
     def clay_rate(self):
+        """ How much clay should be produced every hour. """
         return 1
 
     @property
     def iron_rate(self):
+        """ How much iron should be produced every hour. """
         return 1
 
     @wood.setter

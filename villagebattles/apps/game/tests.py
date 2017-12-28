@@ -1,4 +1,5 @@
 from datetime import timedelta
+from decimal import Decimal
 
 from django.test import TestCase
 from django.utils import timezone
@@ -22,7 +23,7 @@ class ResourceTests(TestCase):
             owner=self.user
         )
         initial_wood = village._wood
-        expected_wood = min(initial_wood + 10 * village.wood_rate, village.max_capacity)
-        village._update = timezone.now() - timedelta(seconds=10)
+        expected_wood = min(initial_wood + village.wood_rate, village.max_capacity)
+        village._update = timezone.now() - timedelta(hours=1)
         village.save()
-        self.assertEquals(village.wood, expected_wood, (initial_wood, expected_wood))
+        self.assertEquals(village.wood, expected_wood, (village.wood, expected_wood))
