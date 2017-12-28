@@ -95,6 +95,7 @@ class Building(models.Model):
         ("CM", "Clay Mine"),
         ("IM", "Iron Mine"),
         ("WH", "Warehouse"),
+        ("FM", "Farm"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
