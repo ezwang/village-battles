@@ -98,6 +98,6 @@ def user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     context = {
         "user": user,
-        "villages": get_villages(request)
+        "villages": get_villages(request, user=user)
     }
     return render(request, "game/user_info.html", context)
