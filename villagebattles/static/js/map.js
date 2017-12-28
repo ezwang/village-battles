@@ -48,5 +48,16 @@ $(document).ready(function() {
         $(this).addClass("selected");
     });
 
+    $("#x, #y").keypress(function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            var x = parseInt($("#x").val());
+            var y = parseInt($("#y").val());
+            if (x && y) {
+                $("#map").scrollLeft(x * size - ($("#map").width() - size) / 2).scrollTop(y * size - ($("#map").height() - size) / 2);
+            }
+        }
+    });
+
     loadVillages();
 });
