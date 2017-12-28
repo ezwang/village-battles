@@ -112,15 +112,11 @@ def process_attack(attack):
     attacker_copy = copy.deepcopy(content)
     defender_copy = copy.deepcopy(content)
 
-    # If one side destroyed all of the troops, hide information about the winner
+    # If defender destroyed all of the troops, hide information
     if not content["attacker"]["remaining_troops"]:
         del attacker_copy["defender"]["remaining_troops"]
         del attacker_copy["defender"]["troops"]
         del attacker_copy["remaining"]
-
-    if not content["defender"]["remaining_troops"]:
-        del defender_copy["attacker"]["remaining_troops"]
-        del defender_copy["attacker"]["troops"]
 
     # Create the reports
     attacker_copy = json.dumps(attacker_copy, sort_keys=True, indent=4)
