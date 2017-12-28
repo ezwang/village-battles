@@ -52,11 +52,15 @@ class Village(models.Model):
         self.save()
         return True
 
-    def _do_resource_update(self):
-        if hasattr(self, "_done_resource_update"):
-            return
-        self._done_resource_update = True
+    def _do_resource_update(self, end_time=None):
         now = timezone.now()
+        if end_time is None:
+            if hasattr(self, "_done_resource_update"):
+                return
+            self._done_resource_update = True
+        else:
+            if end_time > self._update:
+                now = end_time
         diff = (now - self._update)
         diff = int(diff.total_seconds()) + (diff.microseconds / Decimal(1000000))
         self.wood = self._wood + (diff / Decimal(3600)) * self.wood_rate
@@ -182,6 +186,8 @@ class BuildTask(models.Model):
                 type=self.type,
                 level=1
             )
+        if self.type in ["WM", "CM", "IM", "WH"]:
+            village._do_resource_update(end_time)
 
 
 class Troop(models.Model):

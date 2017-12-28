@@ -24,6 +24,5 @@ def process(villages):
                     build_time = timedelta(seconds=get_building_upgrade_time(task.type, task.new_level - 1))
                     task.end_time = now + build_time
                     task.save()
-                village._do_resource_update()
             finally:
                 lock.release()
