@@ -7,5 +7,5 @@ urlpatterns = [
     path('dashboard', views.dashboard, name="dashboard"),
     path('village/<int:village_id>', views.village, name="village"),
     path('map', views.map, name="map"),
-    path('map/<int:x>-<int:y>', views.map, name="map_coords"),
+    path('map/load', views.map_load, name="map_load"),
 ]

@@ -1,0 +1,106 @@
+{% extends "game.html" %}
+
+{% block css %}
+    {{ block.super }}
+<style>
+#map-wrapper {
+    margin: 30px;
+}
+#map {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+#world {
+    width: 50000px;
+    height: 50000px;
+    background-color: green;
+    position: relative;
+}
+.village {
+    width: 50px;
+    height: 50px;
+    background-color: brown;
+    position: absolute;
+}
+#info {
+    margin-left: 20px;
+    float: left;
+}
+#coords {
+    font-weight: bold;
+    margin: 15px;
+    margin-right: 20px;
+    margin-top: 0;
+    float: right;
+}
+#x, #y {
+    display: inline-block;
+    width: 60px;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dragscroll/0.0.8/dragscroll.min.js" integrity="sha256-Y1FoPjA9P8r32Xxe8bgnq+YS2CNo2kH3YCiAMTvwofo=" crossorigin="anonymous"></script>
+<script>
+    var MAP_ENDPOINT = "{% url "map_load" %}";
+
+    var size = 50;
+    var coords = [{{ x }}, {{ y }}];
+    if (window.location.hash) {
+        var temp = window.location.hash.substring(1).split("-");
+        coords[0] = parseInt(temp[0]);
+        coords[1] = parseInt(temp[1]);
+    }
+
+    function addVillage(x, y, id, name) {
+        $("#world").append($("<div class='village' />").attr("data-id", id).attr("data-name", name).css("left", (x*size) + "px").css("top", (y*size) + "px"));
+    }
+
+    function loadVillages() {
+        $.get(MAP_ENDPOINT, function(data) {
+            data.villages.forEach(function(v) {
+                addVillage(v.x, v.y, v.id, v.name);
+            });
+        });
+    }
+
+    $(document).ready(function() {
+        $("#x").val(coords[0]);
+        $("#y").val(coords[1]);
+        $("#map").scrollLeft(coords[0] * size - ($("#map").width() - size) / 2).scrollTop(coords[1] * size - ($("#map").height() - size) / 2);
+        $("#map").scroll(function() {
+            var x = $(this).scrollLeft();
+            var y = $(this).scrollTop();
+            var realX = Math.round((x + ($("#map").width() - size) / 2) / size);
+            var realY = Math.round((y + ($("#map").height() - size) / 2) / size);
+            $("#x").val(realX);
+            $("#y").val(realY);
+        });
+
+        loadVillages();
+
+        $("#world").on("click", ".village", function() {
+            $("#info").text($(this).attr("data-name"));
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="map-wrapper" class="card">
+    <div class="card-body">
+        <div id="map" class="dragscroll">
+            <div id="world">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix">
+        <div id="info"></div>
+        <div id="coords">(X: <input type="number" id="x" />, Y: <input type="number" id="y" />)</div>
+    </div>
+</div>
+{% endblock %}

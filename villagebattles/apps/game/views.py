@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .helpers import get_new_village_coords, get_villages
 from .models import Village, World
@@ -13,7 +14,7 @@ def create_village(request):
     world = get_object_or_404(World, id=request.session["world"])
     if request.method == "POST":
         x, y = get_new_village_coords(world)
-        Village.objects.create(
+        vil = Village.objects.create(
             x=x,
             y=y,
             name="{}'s Village".format(request.user.username),
@@ -21,7 +22,7 @@ def create_village(request):
             world=world
         )
         messages.success(request, "Your new village has been created!")
-        return redirect("dashboard")
+        return redirect("village", village_id=vil.id)
 
     return render(request, "game/create_village.html")
 
@@ -49,5 +50,27 @@ def village(request, village_id):
 
 
 @login_required
-def map(request, x, y):
-    pass
+def map(request):
+    vil = get_villages(request).first()
+
+    context = {
+        "x": vil.x,
+        "y": vil.y
+    }
+
+    return render(request, "game/map.html", context)
+
+
+@login_required
+def map_load(request):
+    world = get_object_or_404(World, id=request.session["world"])
+    output = []
+    for vil in Village.objects.filter(world=world):
+        output.append({
+            "id": vil.id,
+            "x": vil.x,
+            "y": vil.y,
+            "name": vil.name
+        })
+
+    return JsonResponse({"villages": output})
