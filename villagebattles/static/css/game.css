@@ -30,3 +30,22 @@ a.snippet:hover, .snippet a:hover {
     max-width: 400px;
     margin: 15px;
 }
+.wood:before, .clay:before, .iron:before {
+    display: inline-block;
+    content: " ";
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+.wood:before {
+    background: url("../images/wood.png");
+    background-size: cover;
+}
+.clay:before {
+    background: url("../images/clay.png");
+    background-size: cover;
+}
+.iron:before {
+    background: url("../images/iron.png");
+    background-size: cover;
+}
