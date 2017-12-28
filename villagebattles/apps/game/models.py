@@ -236,6 +236,7 @@ class Troop(models.Model):
 
     class Meta:
         unique_together = (("village", "type"),)
+        ordering = ["type"]
 
 
 class TroopTask(models.Model):
