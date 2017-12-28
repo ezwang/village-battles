@@ -295,3 +295,14 @@ class Attack(models.Model):
                     troop.attack = None
                     troop.save()
             return True
+
+
+class Report(models.Model):
+    title = models.TextField()
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    world = models.ForeignKey(World, on_delete=models.CASCADE)
+    created = models.DateTimeField(default=timezone.now)
+    body = models.TextField()
+
+    def __str__(self):
+        return self.title
