@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm
 
 from .models import User
 
@@ -30,3 +31,9 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class ChangePasswordForm(BasePasswordChangeForm):
+    class Meta:
+        model = User
+

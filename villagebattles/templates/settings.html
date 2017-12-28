@@ -1,4 +1,10 @@
 {% extends "game.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "css/index.css" %}" />
+{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -6,6 +12,19 @@
         <div class="card">
             <div class="card-body">
                 <h3>Settings</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card card-form">
+            <div class="card-body">
+                <h3>Change Password</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="password" />
+                    {{ password_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </form>
             </div>
         </div>
     </div>

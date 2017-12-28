@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreationForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import UserCreationForm, ChangePasswordForm
 from ..game.models import World
 from ..game.helpers import get_villages
 
@@ -55,4 +56,16 @@ def logout(request):
 
 @login_required
 def settings(request):
-    return render(request, "settings.html")
+    if request.method == "POST":
+        if request.POST.get("action") == "password":
+            form = ChangePasswordForm(request.user, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Your password has been changed!")
+                return redirect("settings")
+            else:
+                messages.error(request, "Your password as not changed.")
+    else:
+        form = ChangePasswordForm(request.user)
+    return render(request, "settings.html", {"password_form": form})
