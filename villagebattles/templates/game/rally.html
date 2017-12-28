@@ -43,6 +43,25 @@ $(document).ready(function() {
         }
     });
     $("#x").blur();
+    $("#select_none").click(function(e) {
+        e.preventDefault();
+        $("#recruit input[type=number]").each(function() {
+            $(this).val(0);
+        });
+    });
+    $("#select_all").click(function(e) {
+        e.preventDefault();
+        var troops = {};
+        $("#troops tbody tr").each(function() {
+            var info = $(this).find("td").map(function() { return $(this).text(); });
+            troops[info[0]] = info[1];
+        });
+        $("#recruit tbody tr").each(function() {
+            var troop = $(this).find("td:first-child").text();
+            var input = $(this).find("input[type=number]");
+            input.val(troops[troop]);
+        });
+    });
 });
     </script>
 {% endblock %}
@@ -52,10 +71,14 @@ $(document).ready(function() {
     <div class="col-md-8">
         <div class="card">
             <div class="card-body">
-                <h4>Attack - Rally Point</h4>
+                <div class="clearfix">
+                    <h4 class="float-left">Attack - Rally Point</h4>
+                    <span class="float-right"><button id="select_none" class="btn btn-primary btn-sm">No Troops</button><button id="select_all" class="btn btn-primary btn-sm">All Troops</button></span>
+                </div>
+                <br />
                 <form method="POST">
                     {% csrf_token %}
-                    <table class="table">
+                    <table id="recruit" class="table">
                         <thead>
                             <tr><th>Troop</th><th>Amount</th></tr>
                         </thead>
@@ -77,7 +100,7 @@ $(document).ready(function() {
         <div class="card">
             <div class="card-body">
                 <h4>Army</h4>
-                <table class="table">
+                <table id="troops" class="table">
                     <thead>
                         <tr><th>Type</th><th>Amount</th></tr>
                     </thead>
