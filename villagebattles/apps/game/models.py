@@ -19,3 +19,19 @@ class Village(models.Model):
 
     class Meta:
         unique_together = (("x", "y"),)
+
+
+class Building(models.Model):
+    CHOICES = (
+        ("HQ", "Headquarters"),
+        ("WM", "Wood Mine"),
+        ("CM", "Clay Mine"),
+        ("IM", "Iron Mine"),
+        ("WH", "Warehouse"),
+    )
+    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
+    level = models.IntegerField(default=1)
+
+    class Meta:
+        unique_together = (("village", "type"),)
