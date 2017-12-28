@@ -40,6 +40,13 @@ class Village(models.Model):
         return building_pop + troop_pop
 
     @property
+    def population_after_upgrade(self):
+        troop_pop = sum([x.population for x in self.troops.all()])
+        building_queue = sum([x.population_after_upgrade for x in self.buildings.all()])
+        troop_queue = sum([x.population for x in self.troopqueue.all()])
+        return troop_pop + building_queue + troop_queue
+
+    @property
     def max_population(self):
         return get_max_population(self._building_level("FM"))
 
@@ -149,6 +156,10 @@ class Building(models.Model):
         return get_building_population(self.type, self.level)
 
     @property
+    def population_after_upgrade(self):
+        return get_building_population(self.type, self.level_after_upgrade)
+
+    @property
     def url(self):
         if self.type == "HQ":
             return reverse("hq", kwargs={"village_id": self.village.id})
@@ -214,6 +225,10 @@ class TroopTask(models.Model):
     amount = models.IntegerField()
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(null=True)
+
+    @property
+    def population(self):
+        return self.amount * get_troop_population(self.type)
 
     def process(self):
         try:

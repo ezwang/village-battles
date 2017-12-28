@@ -131,7 +131,7 @@ def hq(request, village_id):
                 if building.level_after_upgrade < building.max_level:
                     cost = get_building_cost(building.type, building.level_after_upgrade)
                     pop = get_building_population(building.type, building.level) - get_building_population(building.type, building.level - 1)
-                    if village.population + pop <= village.max_population:
+                    if village.population_after_upgrade + pop <= village.max_population:
                         if village.pay(*cost):
                             queue_building(village, building.type)
                             messages.success(request, "Building has been queued!")
@@ -148,7 +148,7 @@ def hq(request, village_id):
             if type in [x[0] for x in Building.CHOICES]:
                 cost = get_building_cost(type, 0)
                 pop = get_building_population(type, 0)
-                if village.population + pop <= village.max_population:
+                if village.population_after_upgrade + pop <= village.max_population:
                     if village.buildings.filter(type=type).exists() or village.buildqueue.filter(type=type).exists():
                         messages.error(request, "You already have this building!")
                     else:
@@ -205,18 +205,21 @@ def barracks(request, village_id):
                 total_clay += clay * amt
                 total_iron += iron * amt
                 total_pop += pop * amt
-            if village.pay(total_wood, total_clay, total_iron):
-                for troop, amt in order:
-                    if amt == 0:
-                        continue
-                    TroopTask.objects.create(
-                        village=village,
-                        type=troop,
-                        amount=amt
-                    )
-                messages.success(request, "Your troops have been queued!")
+            if village.population_after_upgrade + total_pop <= village.max_population:
+                if village.pay(total_wood, total_clay, total_iron):
+                    for troop, amt in order:
+                        if amt == 0:
+                            continue
+                        TroopTask.objects.create(
+                            village=village,
+                            type=troop,
+                            amount=amt
+                        )
+                    messages.success(request, "Your troops have been queued!")
+                else:
+                    messages.error(request, "You do not have enough resources to create this number of troops!")
             else:
-                messages.error(request, "You do not have enough resources to create this number of troops!")
+                messages.error(request, "You do not have enough farm space to create this number of troops!")
             process([village])
         return redirect("barracks", village_id=village.id)
 
