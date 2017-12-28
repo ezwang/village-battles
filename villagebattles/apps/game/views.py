@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .helpers import get_new_village_coords, get_villages
-from .models import Village, World, Building
+from .models import Village, World, Building, BuildTask
 from ..users.models import User
 
 
@@ -22,7 +22,7 @@ def create_village(request):
             owner=request.user,
             world=world
         )
-        for t in ["HQ", "WM", "IM", "CM", "WH", "FM"]:
+        for t in ["HQ", "WM", "IM", "CM", "WH", "FM", "RP"]:
             Building.objects.create(
                 village=vil,
                 type=t,
@@ -103,6 +103,13 @@ def user(request, user_id):
     return render(request, "game/user_info.html", context)
 
 
+def queue_building(village, building_type):
+    BuildTask.objects.create(
+        village=village,
+        type=building_type
+    )
+
+
 @login_required
 def hq(request, village_id):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
@@ -117,7 +124,26 @@ def hq(request, village_id):
             else:
                 messages.error(request, "Village name is too short!")
         elif "building" in request.POST:
-            # TODO: build building
+            # TODO: implement resources/restrictions for new buildings
+            # TODO: implement time to build building
+            building = get_object_or_404(Building, id=request.POST.get("building"), village=village)
+            if building.level < building.max_level:
+                queue_building(village, building.type)
+                messages.success(request, "Building has been queued!")
+            else:
+                messages.error(request, "This building is already at max level!")
+        elif "build" in request.POST:
+            # TODO: implement resources/restrictions for new buildings
+            # TODO: implement time to build building
+            type = request.POST.get("build")
+            if type in [x[0] for x in Building.CHOICES]:
+                if village.building_set.filter(type=type).count() > 0:
+                    messages.error(request, "You already have this building!")
+                else:
+                    queue_building(village, building.type)
+                    messages.success(request, "Building has been queued!")
+            else:
+                messages.error(request, "Invalid building type passed to server!")
             pass
         return redirect("hq", village_id=village.id)
 
@@ -132,7 +158,8 @@ def hq(request, village_id):
     context = {
         "village": village,
         "buildings": Building.objects.filter(village=village).order_by("type"),
-        "not_built": not_built
+        "not_built": not_built,
+        "queue": BuildTask.objects.filter(village=village)
     }
 
     return render(request, "game/hq.html", context)

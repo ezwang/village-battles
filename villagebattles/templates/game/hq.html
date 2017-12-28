@@ -50,7 +50,11 @@
         <div class="card">
             <div class="card-body">
                 <h4>Build Queue</h4>
+                {% for item in queue %}
+                <div>{{ item.get_type_display }} to level {{ item.new_level }} <span class="float-right countdown">{{ item.end_time|default_if_none:"" }}</span></div>
+                {% empty %}
                 <p>The build queue is currently empty.</p>
+                {% endfor %}
             </div>
         </div>
         <div class="card">

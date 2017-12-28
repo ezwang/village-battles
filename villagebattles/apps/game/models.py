@@ -108,6 +108,7 @@ class Building(models.Model):
         ("WH", "Warehouse"),
         ("FM", "Farm"),
         ("BR", "Barracks"),
+        ("RP", "Rally Point"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
@@ -115,6 +116,8 @@ class Building(models.Model):
 
     @property
     def max_level(self):
+        if self.type == "RP":
+            return 1
         return 10
 
     @property
@@ -128,3 +131,16 @@ class Building(models.Model):
 
     class Meta:
         unique_together = (("village", "type"),)
+
+
+class BuildTask(models.Model):
+    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    type = models.CharField(max_length=2, choices=Building.CHOICES)
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(null=True)
+
+    @property
+    def new_level(self):
+        level = self.village.building_set.get(type=self.type).level
+        level += self.village.buildtask_set.filter(start_time__lt=self.start_time, type=self.type).count()
+        return level + 1
