@@ -30,3 +30,9 @@ def get_max_population(level):
 
 def get_building_cost(building, level):
     return (50, 50, 50)
+
+
+def get_building_population_difference(building, level):
+    if level == 0:
+        return get_building_population(building, 0)
+    return get_building_population(building, level) - get_building_population(building, level - 1)

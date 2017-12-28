@@ -30,7 +30,7 @@ a.snippet:hover, .snippet a:hover {
     max-width: 400px;
     margin: 15px;
 }
-.wood:before, .clay:before, .iron:before {
+.wood:before, .clay:before, .iron:before, .population:before {
     display: inline-block;
     content: " ";
     width: 16px;
@@ -47,5 +47,9 @@ a.snippet:hover, .snippet a:hover {
 }
 .iron:before {
     background: url("../images/iron.png");
+    background-size: cover;
+}
+.population:before {
+    background: url("../images/population.png");
     background-size: cover;
 }
