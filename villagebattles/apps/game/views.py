@@ -1,12 +1,16 @@
+from math import sqrt
+from datetime import timedelta
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.utils import timezone
 
 from .helpers import get_new_village_coords, get_villages
-from .models import Village, World, Building, BuildTask, Troop, TroopTask
+from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack
 from ..users.models import User
-from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population
+from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, get_troop_travel
 from .tasks import process
 
 
@@ -56,6 +60,8 @@ def village(request, village_id):
             "village": village,
             "buildings": village.buildings.order_by("type"),
             "troops": village.troops.order_by("type"),
+            "outgoing": village.outgoing.order_by("end_time"),
+            "incoming": village.incoming.order_by("end_time"),
         }
 
         request.session["village"] = village.id
@@ -245,6 +251,75 @@ def rally(request, village_id):
 
     if not village.buildings.filter(type="RP").exists():
         messages.error(request, "You do not have a rally point!")
+        return redirect("village", village_id=village.id)
+
+    if request.method == "POST":
+        x = request.POST.get("x")
+        y = request.POST.get("y")
+
+        if not x or not y:
+            messages.error(request, "No coordinates entered!")
+            return redirect("rally", village_id=village.id)
+
+        try:
+            x = int(x)
+            y = int(y)
+        except ValueError:
+            messages.error(request, "Invalid coordinates!")
+            return redirect("rally", village_id=village.id)
+
+        try:
+            target = Village.objects.get(x=x, y=y, world=village.world)
+        except Village.DoesNotExist:
+            messages.error(request, "Village does not exist!")
+            return redirect("rally", village_id=village.id)
+
+        if target.owner == request.user:
+            messages.error(request, "You cannot attack your own villages!")
+            return redirect("rally", village_id, village.id)
+
+        attackers = []
+        flag = False
+        for troop, name in Troop.CHOICES:
+            amt = int(request.POST.get(troop, 0))
+            if amt > 0:
+                try:
+                    if village.troops.get(type=troop).amount < amt:
+                        messages.error(request, "You do not have enough {}!".format(name))
+                        flag = True
+                        break
+                except Troop.DoesNotExist:
+                    messages.error(request, "You do not have any {}!".format(name))
+                    flag = True
+                    break
+                attackers.append((troop, amt))
+
+        if flag:
+            return redirect("rally", village_id=village.id)
+
+        dist = sqrt((target.x - village.x)**2 + (target.y - village.y)**2)
+
+        attack = Attack.objects.create(
+            source=village,
+            destination=target,
+            end_time=timezone.now() + timedelta(seconds=dist * max([get_troop_travel(x) for x, _ in attackers]))
+        )
+
+        for troop, amt in attackers:
+            cur = village.troops.get(type=troop)
+            cur.amount -= amt
+            if cur.amount > 0:
+                cur.save()
+            else:
+                cur.delete()
+            Troop.objects.create(
+                attack=attack,
+                type=troop,
+                amount=amt
+            )
+
+        messages.success(request, "Attack has been scheduled!")
+
         return redirect("village", village_id=village.id)
 
     context = {

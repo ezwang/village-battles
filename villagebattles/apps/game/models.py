@@ -130,6 +130,13 @@ class Village(models.Model):
     def iron(self, x):
         self._iron = min(x, self.max_capacity)
 
+    @property
+    def url(self):
+        return reverse("village", kwargs={"village_id": self.id})
+
+    def __str__(self):
+        return "{} ({}|{})".format(self.name, self.x, self.y)
+
     class Meta:
         unique_together = (("x", "y"),)
 

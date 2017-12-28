@@ -37,6 +37,7 @@ def get_troop_cost(troop):
 
 
 def get_troop_time(troop):
+    """ Returns troop build time in seconds. """
     return 30
 
 
@@ -53,3 +54,8 @@ def get_building_upgrade_time(building, level):
 
 def get_troop_population(troop):
     return 1
+
+
+def get_troop_travel(troop):
+    """ Returns troop travel time in seconds. """
+    return 10
