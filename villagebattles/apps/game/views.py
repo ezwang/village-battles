@@ -357,7 +357,7 @@ def report(request, report_id=None):
         }
     else:
         context = {
-            "reports": request.user.reports.order_by("read", "-created").values("title", "created", "id")
+            "reports": request.user.reports.order_by("read", "-created").values("title", "created", "id", "read")
         }
 
     return render(request, "game/report.html", context)

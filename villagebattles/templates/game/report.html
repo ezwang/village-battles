@@ -24,7 +24,7 @@
             </thead>
             <tbody>
                 {% for rep in reports %}
-                <tr><td><a href="{% url "report_detailed" rep.id %}">{{ rep.title }}</a></td><td><time class="timeago" datetime="{{ rep.created|date:"c" }}">{{ rep.created }}</time></td></tr>
+                <tr><td><a {% if not rep.read %}class="unread" {% endif %}href="{% url "report_detailed" rep.id %}">{{ rep.title }}</a></td><td><time class="timeago" datetime="{{ rep.created|date:"c" }}">{{ rep.created }}</time></td></tr>
                 {% endfor %}
             </tbody>
         </table>

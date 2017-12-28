@@ -30,7 +30,7 @@ a.snippet:hover, .snippet a:hover {
     max-width: 400px;
     margin: 15px;
 }
-.wood:before, .clay:before, .iron:before, .population:before {
+.wood:before, .clay:before, .iron:before, .population:before, .unread:after {
     display: inline-block;
     content: " ";
     width: 16px;
@@ -51,5 +51,10 @@ a.snippet:hover, .snippet a:hover {
 }
 .population:before {
     background: url("../images/population.png");
+    background-size: cover;
+}
+.unread:after {
+    margin-left: 3px;
+    background: url("../images/report.png");
     background-size: cover;
 }
