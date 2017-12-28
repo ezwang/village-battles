@@ -266,6 +266,7 @@ class TroopTask(models.Model):
 class Attack(models.Model):
     source = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="outgoing")
     destination = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="incoming")
+    loot = models.TextField(null=True)
     end_time = models.DateTimeField()
     returning = models.BooleanField(default=False)
 
@@ -286,6 +287,13 @@ class Attack(models.Model):
             self.save()
             return False
         else:
+            if self.loot is not None:
+                wood, clay, iron = [int(x) for x in self.loot.split(",")]
+                attacker = self.source
+                attacker.wood = attacker.wood + wood
+                attacker.clay = attacker.clay + clay
+                attacker.iron = attacker.iron + iron
+                attacker.save()
             for troop in self.troops.all():
                 if self.source.troops.filter(type=troop.type).exists():
                     existing = self.source.troops.get(type=troop.type)

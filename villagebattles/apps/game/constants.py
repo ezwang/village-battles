@@ -59,3 +59,7 @@ def get_troop_population(troop):
 def get_troop_travel(troop):
     """ Returns troop travel time in seconds. """
     return 10
+
+
+def get_troop_carry(troop):
+    return 10

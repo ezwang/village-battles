@@ -61,7 +61,7 @@ def village(request, village_id):
             "buildings": village.buildings.order_by("type"),
             "troops": village.troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
-            "incoming": village.incoming.order_by("end_time"),
+            "incoming": village.incoming.filter(returning=False).order_by("end_time"),
         }
 
         request.session["village"] = village.id
