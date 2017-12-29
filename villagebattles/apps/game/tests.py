@@ -180,6 +180,7 @@ class ResourceTests(TestCase):
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
 
     def test_update_with_loot_first(self):
+        """ Test resource update with incoming loot from an attack beforehand. """
         now = timezone.now()
         initial_wood = self.village._wood
         expected_wood = min(initial_wood + self.village.wood_rate + 100, self.village.max_capacity)
@@ -196,6 +197,7 @@ class ResourceTests(TestCase):
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
 
     def test_update_with_loot_last(self):
+        """ Test resource update with incoming loot from an attack afterwards. """
         now = timezone.now()
         initial_wood = self.village._wood
         expected_wood = min(initial_wood + self.village.wood_rate + 100, self.village.max_capacity)
@@ -212,6 +214,7 @@ class ResourceTests(TestCase):
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
 
     def test_update_with_loot_same_time(self):
+        """ Test resource update with incoming loot from an attack at the same time. """
         now = timezone.now()
         initial_wood = self.village._wood
         expected_wood = min(initial_wood + self.village.wood_rate + 100, self.village.max_capacity)
@@ -226,3 +229,20 @@ class ResourceTests(TestCase):
         )
         process_village(self.village, now)
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
+
+    def test_attack(self):
+        """ Test attacking and returning. """
+        now = timezone.now()
+        attack = Attack.objects.create(
+            source=self.village,
+            destination=self.village2,
+            end_time=now - timedelta(hours=1)
+        )
+        Troop.objects.create(
+            attack=attack,
+            type="SP",
+            amount=3
+        )
+        process_village(self.village, now)
+        self.assertEquals(Attack.objects.count(), 0)
+        self.assertTrue(self.village.troops.get(type="SP").amount, 3)
