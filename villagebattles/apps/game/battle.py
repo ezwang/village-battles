@@ -97,6 +97,8 @@ def process_attack(attack):
     defender_action = "defends"
     attacker_action = "attacks"
 
+    last_owner = attack.destination.owner
+
     if attack.troops.filter(type="NB").exists():
         attack.destination.loyalty = attack.destination.loyalty - 20
         if attack.destination.loyalty <= 0:
@@ -144,7 +146,7 @@ def process_attack(attack):
     )
     Report.objects.create(
         title="{} {} {}".format(attack.destination, defender_action, attack.source),
-        owner=attack.destination.owner,
+        owner=last_owner,
         world=attack.destination.world,
         body=defender_copy
     )

@@ -58,10 +58,10 @@ $(document).ready(function() {
             else {
                 type_max = iron_max;
             }
-            if (value > type_max * 0.9) {
+            if (value >= type_max) {
                 $(this).css("color", "red");
             }
-            else if (value > type_max * 0.75) {
+            else if (value > type_max * 0.8) {
                 $(this).css("color", "yellow");
             }
             $(this).text(Math.min(value, type_max));
