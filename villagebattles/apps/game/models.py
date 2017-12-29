@@ -301,11 +301,14 @@ class Attack(models.Model):
 
         if not self.returning:
             process_attack(self)
-            self.returning = True
-            travel_time = calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()])
-            self.end_time = self.end_time + timedelta(seconds=travel_time)
-            self.save()
-            return False
+            if self.troops.count() > 0:
+                self.returning = True
+                travel_time = calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()])
+                self.end_time = self.end_time + timedelta(seconds=travel_time)
+                self.save()
+                return False
+            else:
+                return True
         else:
             if self.loot is not None:
                 wood, clay, iron = [int(x) for x in self.loot.split(",")]
