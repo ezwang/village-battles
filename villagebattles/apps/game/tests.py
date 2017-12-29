@@ -189,6 +189,7 @@ class ResourceTests(TestCase):
         past = timezone.now() - timedelta(weeks=1)
         with patch.object(timezone, "now", return_value=past):
             self.village.loyalty = 20
+            self.village._update = past
             self.village.save()
 
         self.assertEqual(self.village.loyalty, 100)
@@ -260,3 +261,25 @@ class ResourceTests(TestCase):
         process_village(self.village, now)
         self.assertEquals(Attack.objects.count(), 0)
         self.assertTrue(self.village.troops.get(type="SP").amount, 3)
+
+    def test_attack_with_noble(self):
+        """ Test attacking with noble decreases loyalty. """
+        now = timezone.now()
+        attack = Attack.objects.create(
+            source=self.village,
+            destination=self.village2,
+            end_time=now - timedelta(hours=1)
+        )
+        Troop.objects.create(
+            attack=attack,
+            type="SP",
+            amount=100
+        )
+        Troop.objects.create(
+            attack=attack,
+            type="NB",
+            amount=1
+        )
+        process_village(self.village, now)
+        self.assertTrue(self.village.loyalty, 100)
+        self.assertTrue(self.village2.loyalty < 100, self.village2.loyalty)

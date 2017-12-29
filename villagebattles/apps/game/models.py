@@ -136,7 +136,7 @@ class Village(models.Model):
 
     @loyalty.setter
     def loyalty(self, x):
-        self._loyalty = max(min(0, x), 100)
+        self._loyalty = min(max(0, x), 100)
 
     @wood.setter
     def wood(self, x):
