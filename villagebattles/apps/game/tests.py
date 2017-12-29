@@ -289,6 +289,8 @@ class ResourceTests(TestCase):
         )
         process_village(self.village, now)
         self.assertEquals(Attack.objects.count(), 0)
+        self.assertTrue(self.village.owner.reports.count(), 1)
+        self.assertTrue(self.village2.owner.reports.count(), 1)
         self.assertTrue(self.village.troops.get(type="SP").amount, 3)
 
     def test_attack_with_noble(self):
