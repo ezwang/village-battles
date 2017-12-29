@@ -43,9 +43,13 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            request.session["world"] = World.objects.all().first().id
+            worlds = World.objects.all()
+            request.session["world"] = worlds.first().id
             messages.success(request, "Your user account has been created! Check your email to continue.")
-            return redirect("index")
+            if worlds.count() > 1:
+                return redirect("index")
+            else:
+                return redirect("create_village")
         else:
             messages.error(request, "There were errors while trying to create your account.")
     else:
