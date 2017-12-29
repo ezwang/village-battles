@@ -17,7 +17,7 @@
                             <td>{{ build.get_type_display }}</td>
                             <td>{{ build.level }}</td>
                             <td>{% if build.level < build.max_level %}{% building_cost build.type build.level_after_upgrade %}{% else %}-{% endif %}</td>
-                            <td>{% if build.level < build.max_level %}{% building_time build.type build.level_after_upgrade %}{% else %}-{% endif %}</td>
+                            <td>{% if build.level < build.max_level %}{% building_time build.type build.level_after_upgrade village %}{% else %}-{% endif %}</td>
                             <td>
                                 {% if build.level < build.max_level %}
                                 <form method="POST">
@@ -32,7 +32,7 @@
                         </tr>
                         {% endfor %}
                         {% for value, name in not_built %}
-                        <tr><td>{{ name }}</td><td>-</td><td>{% building_cost value 0 %}</td><td>{% building_time value 0 %}</td>
+                        <tr><td>{{ name }}</td><td>-</td><td>{% building_cost value 0 %}</td><td>{% building_time value 0 village %}</td>
                             <td>
                                 <form method="POST">
                                     {% csrf_token %}

@@ -4,7 +4,7 @@ from django import template
 from django.utils.safestring import mark_safe
 
 from ..constants import (get_building_cost, get_building_population_difference, get_building_upgrade_time,
-                         get_troop_cost, get_troop_population, get_troop_time)
+                         get_troop_cost, get_troop_population, get_troop_time, get_hq_buff)
 
 register = template.Library()
 
@@ -30,9 +30,10 @@ def troop_cost(troop):
 
 
 @register.simple_tag()
-def building_time(building, level):
+def building_time(building, level, village):
     t = get_building_upgrade_time(building, level)
-    return str(timedelta(seconds=t))
+    buff = get_hq_buff(village.get_level("HQ"))
+    return str(timedelta(seconds=t*buff))
 
 
 @register.simple_tag()

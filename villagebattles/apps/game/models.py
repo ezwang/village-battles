@@ -40,6 +40,12 @@ class Village(models.Model):
     def max_capacity(self):
         return get_max_capacity(self._building_level("WH"))
 
+    def get_level(self, building):
+        try:
+            return self.buildings.get(type=building).level
+        except Building.DoesNotExist:
+            return 0
+
     @property
     def troop_population(self):
         in_village = sum([x.population for x in self.troops.all()])

@@ -75,3 +75,8 @@ def get_troop_travel(troop):
 def get_troop_carry(troop):
     """ Returns the number of resources that this type of unit. """
     return 10
+
+
+def get_hq_buff(level):
+    """ Returns a multiplier for the build time. """
+    return 0.9**(level - 1)
