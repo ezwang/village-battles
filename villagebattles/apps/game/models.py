@@ -154,6 +154,14 @@ class Village(models.Model):
     def url(self):
         return reverse("village", kwargs={"village_id": self.id})
 
+    @property
+    def troops(self):
+        return self.all_troops.filter(original__isnull=True)
+
+    @property
+    def foreign_troops(self):
+        return self.all_troops.filter(original__isnull=False)
+
     def __str__(self):
         return "{} ({}|{})".format(self.name, self.x, self.y)
 
@@ -243,7 +251,8 @@ class Troop(models.Model):
         ("AR", "Archer"),
         ("NB", "Noble"),
     )
-    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops", null=True)
+    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="all_troops", null=True)
+    original = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="external_troops", null=True)
     attack = models.ForeignKey("Attack", on_delete=models.CASCADE, related_name="troops", null=True)
     type = models.CharField(max_length=2, choices=CHOICES, default="SP")
     amount = models.IntegerField()
@@ -253,7 +262,7 @@ class Troop(models.Model):
         return self.amount * get_troop_population(self.type)
 
     class Meta:
-        unique_together = (("village", "type"),)
+        unique_together = (("village", "type", "original"),)
         ordering = ["type"]
 
 
@@ -300,10 +309,12 @@ class TroopTask(models.Model):
 class Attack(models.Model):
     ATTACK = "AT"
     RETURN = "RT"
+    SUPPORT = "SP"
 
     CHOICES = (
         (ATTACK, "Attack"),
         (RETURN, "Return"),
+        (SUPPORT, "Support"),
     )
 
     source = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="outgoing")
@@ -354,6 +365,18 @@ class Attack(models.Model):
                     existing.save()
                 else:
                     troop.village = self.destination
+                    troop.attack = None
+                    troop.save()
+            return True
+        elif self.type == Attack.SUPPORT:
+            for troop in self.troops.all():
+                if self.destination.all_troops.filter(original=self.source, type=troop.type).exists():
+                    existing = self.destination.all_troops.get(original=self.source, type=troop.type)
+                    existing.amount += troop.amount
+                    existing.save()
+                else:
+                    troop.village = self.destination
+                    troop.original = self.source
                     troop.attack = None
                     troop.save()
             return True

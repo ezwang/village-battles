@@ -29,7 +29,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="clearfix">
-                    <h4 class="float-left">Attack - Rally Point</h4>
+                    <h4 class="float-left">Rally Point</h4>
                     <span class="float-right"><button id="select_none" class="btn btn-primary btn-sm">No Troops</button><button id="select_all" class="btn btn-primary btn-sm">All Troops</button></span>
                 </div>
                 <br />
@@ -49,7 +49,10 @@
                     </table>
                     <div class="clearfix">
                         <div id="coords" class="float-left">Target Village: (<input type="number" id="x" name="x" />|<input type="number" id="y" name="y" />) <span id="info"></span></div>
-                        <button type="submit" class="btn btn-primary float-right">Attack</button>
+                        <div class="float-right">
+                            <button type="submit" name="action" value="attack" class="btn btn-primary">Attack</button>
+                            <button type="submit" name="action" value="support" class="btn btn-primary">Support</button>
+                        </div>
                     </div>
                 </form>
             </div>

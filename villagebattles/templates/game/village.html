@@ -61,6 +61,32 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% if external_troops %}
+                <h3>External Troops</h3>
+                <table class="table">
+                    <thead>
+                        <tr><th>Type</th><th>Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for troop in external_troops %}
+                        <tr><td>{{ troop.get_type_display }}</td><td>{{ troop.amount }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+                {% if foreign_troops %}
+                <h3>Foreign Troops</h3>
+                <table class="table">
+                    <thead>
+                        <tr><th>Type</th><th>Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for troop in foreign_troops %}
+                        <tr><td>{{ troop.get_type_display }}</td><td>{{ troop.amount }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
             </div>
         </div>
         {% include "game/panels/build_queue.html" %}

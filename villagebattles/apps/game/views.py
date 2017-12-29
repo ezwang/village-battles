@@ -66,6 +66,8 @@ def village(request, village_id):
             "village": village,
             "buildings": village.buildings.order_by("type"),
             "troops": village.troops.order_by("type"),
+            "foreign_troops": village.foreign_troops.order_by("type"),
+            "external_troops": village.external_troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
             "incoming": village.incoming.order_by("end_time"),
             "build_queue": village.buildqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
@@ -265,6 +267,12 @@ def rally(request, village_id):
         x = request.POST.get("x")
         y = request.POST.get("y")
 
+        action = request.POST.get("action")
+
+        if not action or action not in ["support", "attack"]:
+            messages.error(request, "Invalid action specified!")
+            return redirect("rally", village_id=village.id)
+
         if not x or not y:
             messages.error(request, "No coordinates entered!")
             return redirect("rally", village_id=village.id)
@@ -282,7 +290,7 @@ def rally(request, village_id):
             messages.error(request, "Village does not exist!")
             return redirect("rally", village_id=village.id)
 
-        if target.owner == request.user:
+        if action == "attack" and target.owner == request.user:
             messages.error(request, "You cannot attack your own villages!")
             return redirect("rally", village_id=village.id)
 
@@ -307,6 +315,10 @@ def rally(request, village_id):
                     break
                 attackers.append((troop, amt))
 
+        if not attackers:
+            messages.error(request, "No troops sent.")
+            flag = True
+
         if flag:
             return redirect("rally", village_id=village.id)
 
@@ -314,7 +326,7 @@ def rally(request, village_id):
             source=village,
             destination=target,
             end_time=timezone.now() + timedelta(seconds=calculate_travel_time(village, target, [x[0] for x in attackers])),
-            type=Attack.ATTACK,
+            type=Attack.ATTACK if action == "attack" else Attack.SUPPORT,
         )
 
         for troop, amt in attackers:
@@ -330,7 +342,7 @@ def rally(request, village_id):
                 amount=amt
             )
 
-        messages.success(request, "Attack has been scheduled!")
+        messages.success(request, "{} has been scheduled!".format("Attack" if action == "attack" else "Support"))
 
         return redirect("village", village_id=village.id)
 

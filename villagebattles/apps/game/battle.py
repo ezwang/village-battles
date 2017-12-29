@@ -1,12 +1,23 @@
 import json
 import copy
 
+from django.db.models import Sum
+
 from .constants import get_troop_carry
+
+
+def get_troop_type_display(t):
+    from .models import Troop
+
+    for val, name in Troop.CHOICES:
+        if val == t:
+            return name
+    raise ValueError("Could not find troop name for '{}'!".format(t))
 
 
 def do_damage(attack):
     attacking = attack.troops.all()
-    defending = attack.destination.troops.all()
+    defending = attack.destination.all_troops.all()
 
     total_attack = sum([x.amount for x in attacking])
     total_defend = sum([x.amount for x in defending])
@@ -23,14 +34,14 @@ def do_damage(attack):
 
     for defender in defending:
         defender.amount -= attacker_damage
-        if defender.amount < 0:
+        if defender.amount <= 0:
             defender.delete()
         else:
             defender.save()
 
     for attacker in attacking:
         attacker.amount -= defender_damage
-        if attacker.amount < 0:
+        if attacker.amount <= 0:
             attacker.delete()
         else:
             attacker.save()
@@ -83,7 +94,7 @@ def process_attack(attack):
                 "id": attack.destination.id,
                 "name": str(attack.destination)
             },
-            "troops": [(x.get_type_display(), x.amount) for x in attack.destination.troops.all()]
+            "troops": [(get_troop_type_display(x["type"]), x["amount"]) for x in attack.destination.all_troops.values("type").annotate(amount=Sum("amount"))]
         }
     }
 
@@ -92,7 +103,7 @@ def process_attack(attack):
     # Add remaining troop values
     attacker_remaining = [(x.get_type_display(), x.amount) for x in attack.troops.all()]
     content["attacker"]["remaining_troops"] = attacker_remaining
-    content["defender"]["remaining_troops"] = [(x.get_type_display(), x.amount) for x in attack.destination.troops.all()]
+    content["defender"]["remaining_troops"] = [(get_troop_type_display(x["type"]), x["amount"]) for x in attack.destination.all_troops.values("type").annotate(amount=Sum("amount"))]
 
     defender_action = "defends"
     attacker_action = "attacks"
