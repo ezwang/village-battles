@@ -4,11 +4,11 @@ from mock import patch
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import World, Village, Attack, TroopTask, Troop
+from .models import World, Village, Attack, TroopTask, Troop, Building
 from ..users.models import User
 from .tasks import process_village
 from .helpers import create_default_setup
-from .constants import get_troop_time
+from .constants import get_troop_time, get_barracks_buff
 
 
 class ResourceTests(TestCase):
@@ -47,6 +47,31 @@ class ResourceTests(TestCase):
         process_village(self.village, now)
         self.assertEqual(self.village.troopqueue.count(), 0)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
+
+    def test_troop_creation_with_barracks(self):
+        """ Make sure barracks increases recruitment time. """
+        barracks = Building.objects.create(
+            village=self.village,
+            type="BR",
+            level=5
+        )
+
+        now = timezone.now()
+        TYPE = Troop.CHOICES[0][0]
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=100
+        )
+
+        expected_amount = int(1800 / int(get_troop_time(TYPE) * get_barracks_buff(barracks.level)))
+
+        past = now - timedelta(minutes=30)
+        with patch.object(timezone, "now", return_value=past):
+            process_village(self.village, past)
+
+        process_village(self.village, now)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, expected_amount)
 
     def test_troop_creation_middle(self):
         """ Make sure producing troops is the same amount with a call in the middle. """

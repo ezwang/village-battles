@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from .forms import UserCreationForm, ChangePasswordForm
 from ..game.models import World
-from ..game.helpers import get_villages
 
 
 def index(request):

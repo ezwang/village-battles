@@ -37,7 +37,7 @@ def building_time(building, level, village):
 
 
 @register.simple_tag()
-def troop_time(troop, buff):
+def troop_time(troop, village):
     t = get_troop_time(troop)
     buff = get_barracks_buff(village.get_level("BR"))
     return str(timedelta(seconds=int(t * buff)))
