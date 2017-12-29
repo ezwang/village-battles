@@ -19,6 +19,9 @@ class World(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["name"]
+
 
 class Village(models.Model):
     x = models.IntegerField()
@@ -143,7 +146,7 @@ class Village(models.Model):
         return "{} ({}|{})".format(self.name, self.x, self.y)
 
     class Meta:
-        unique_together = (("x", "y"),)
+        unique_together = (("x", "y", "world"),)
 
 
 class Building(models.Model):
