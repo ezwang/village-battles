@@ -343,7 +343,7 @@ def rally(request, village_id):
         return redirect("village", village_id=village.id)
 
     context = {
-        "village": village
+        "village": village,
     }
 
     return render(request, "game/rally.html", context)

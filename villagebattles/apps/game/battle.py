@@ -78,6 +78,11 @@ def calculate_loot(attack):
     return (wood, clay, iron)
 
 
+def get_defending_troops(village):
+    troops = village.all_troops.values("type").annotate(amount=Sum("amount"))
+    return [(get_troop_type_display(x["type"]), x["amount"]) for x in troops]
+
+
 def process_attack(attack):
     from .models import Report
 
@@ -94,7 +99,7 @@ def process_attack(attack):
                 "id": attack.destination.id,
                 "name": str(attack.destination)
             },
-            "troops": [(get_troop_type_display(x["type"]), x["amount"]) for x in attack.destination.all_troops.values("type").annotate(amount=Sum("amount"))]
+            "troops": get_defending_troops(attack.destination)
         }
     }
 
@@ -103,7 +108,7 @@ def process_attack(attack):
     # Add remaining troop values
     attacker_remaining = [(x.get_type_display(), x.amount) for x in attack.troops.all()]
     content["attacker"]["remaining_troops"] = attacker_remaining
-    content["defender"]["remaining_troops"] = [(get_troop_type_display(x["type"]), x["amount"]) for x in attack.destination.all_troops.values("type").annotate(amount=Sum("amount"))]
+    content["defender"]["remaining_troops"] = get_defending_troops(attack.destination)
 
     defender_action = "defends"
     attacker_action = "attacks"
