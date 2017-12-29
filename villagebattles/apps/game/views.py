@@ -1,4 +1,3 @@
-from math import sqrt
 from datetime import timedelta
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -11,7 +10,7 @@ from django.core.paginator import Paginator, InvalidPage
 from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
 from ..users.models import User
-from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, get_troop_travel
+from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population
 from .tasks import process
 
 

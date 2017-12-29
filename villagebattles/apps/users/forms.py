@@ -36,4 +36,3 @@ class UserCreationForm(forms.ModelForm):
 class ChangePasswordForm(BasePasswordChangeForm):
     class Meta:
         model = User
-

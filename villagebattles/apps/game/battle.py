@@ -122,13 +122,13 @@ def process_attack(attack):
     attacker_copy = json.dumps(attacker_copy, sort_keys=True, indent=4)
     defender_copy = json.dumps(defender_copy, sort_keys=True, indent=4)
 
-    attacker = Report.objects.create(
+    Report.objects.create(
         title="{} attacks {}".format(attack.source, attack.destination),
         owner=attack.source.owner,
         world=attack.source.world,
         body=attacker_copy
     )
-    defender = Report.objects.create(
+    Report.objects.create(
         title="{} defends {}".format(attack.destination, attack.source),
         owner=attack.destination.owner,
         world=attack.destination.world,
