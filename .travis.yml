@@ -2,11 +2,18 @@ language: python
 python:
     - '3.5'
 sudo: false
+services:
+    - redis-server
+    - postgresql
+env:
+    - DATABASE_URL=postgres://postgres@localhost:5432/test
 cache:
     directories:
         - "$HOME/.cache/pip"
 install:
     - pip install pip flake8 -r requirements.txt
+before_script:
+    - psql -c 'CREATE DATABASE test;' -U postgres
 script:
-    - flake8 --exclude=*/migrations/* villagebattles
+    - flake8 --max-line-length=150 --exclude=*/migrations/* villagebattles
     - ./manage.py test
