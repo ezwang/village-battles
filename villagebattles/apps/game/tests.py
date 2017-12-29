@@ -48,6 +48,48 @@ class ResourceTests(TestCase):
         self.assertEqual(self.village.troopqueue.count(), 0)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
 
+    def test_troop_creation_middle(self):
+        """ Make sure producing troops is the same amount with a call in the middle. """
+        now = timezone.now()
+        TYPE = Troop.CHOICES[0][0]
+        time = get_troop_time(TYPE)
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10
+        )
+        # Create event
+        past = now - timedelta(seconds=11 * time)
+        with patch.object(timezone, "now", return_value=past):
+            process_village(self.village, past)
+        self.assertFalse(self.village.troops.filter(type=TYPE).exists())
+
+        # Two seconds before the troop
+        rightbefore = past + timedelta(seconds=time - 1)
+        with patch.object(timezone, "now", return_value=rightbefore):
+            process_village(self.village, rightbefore)
+        self.assertFalse(self.village.troops.filter(type=TYPE).exists())
+        self.assertTrue(self.village.troopqueue.first().step_time, past + timedelta(seconds=time))
+
+        # One troop and 1 second later
+        rightafter = past + timedelta(seconds=time + 1)
+        with patch.object(timezone, "now", return_value=rightafter):
+            process_village(self.village, rightafter)
+        self.assertEqual(self.village.troopqueue.first().amount, 9)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 1)
+
+        # Around halfway
+        middle = now - timedelta(seconds=6 * time)
+        with patch.object(timezone, "now", return_value=middle):
+            process_village(self.village, middle)
+        self.assertTrue(self.village.troops.get(type=TYPE).amount > 3)
+
+        # Completion
+        process_village(self.village, now)
+
+        self.assertEqual(self.village.troopqueue.count(), 0)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
+
     def test_multiple_troop_creation(self):
         """ Test multiple amounts of same troop in different orders. """
         now = timezone.now()
