@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, InvalidPage
+from django.db.models import F
 
 from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
@@ -67,8 +68,8 @@ def village(request, village_id):
             "troops": village.troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
             "incoming": village.incoming.filter(returning=False).order_by("end_time"),
-            "build_queue": village.buildqueue.all().order_by("end_time", "start_time"),
-            "troop_queue": village.troopqueue.all().order_by("end_time"),
+            "build_queue": village.buildqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
+            "troop_queue": village.troopqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
         }
 
         request.session["village"] = village.id
@@ -193,7 +194,7 @@ def hq(request, village_id):
         "buildings": village.buildings.all().order_by("type"),
         "troops": village.troops.all().order_by("type"),
         "not_built": not_built,
-        "build_queue": village.buildqueue.all().order_by("end_time", "start_time")
+        "build_queue": village.buildqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time")
     }
 
     return render(request, "game/hq.html", context)
@@ -245,7 +246,7 @@ def barracks(request, village_id):
     context = {
         "village": village,
         "troop_options": Troop.CHOICES,
-        "troop_queue": village.troopqueue.order_by("start_time"),
+        "troop_queue": village.troopqueue.order_by(F("end_time").asc(nulls_last=True), "start_time"),
         "troops": Troop.objects.filter(village=village).order_by("type"),
     }
 
