@@ -33,4 +33,16 @@ class BasicTests(TestCase):
 
     def test_village_creation(self):
         response = self.client.post(reverse("create_village"))
-        self.assertRedirects(response, reverse("village", kwargs={"village_id": Village.objects.get().id}))
+        self.assertEqual(Village.objects.all().count(), 1)
+
+        village_id = Village.objects.get().id
+        self.assertRedirects(response, reverse("village", kwargs={"village_id": village_id}))
+
+        response = self.client.get(reverse("hq", kwargs={"village_id": village_id}))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("rally", kwargs={"village_id": village_id}))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("barracks", kwargs={"village_id": village_id}))
+        self.assertRedirects(response, reverse("village", kwargs={"village_id": village_id}))
