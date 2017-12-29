@@ -10,24 +10,29 @@ from ..game.helpers import get_villages
 
 def index(request):
     if request.user.is_authenticated:
-        num_villages = get_villages(request).count()
-        if num_villages == 0:
-            return redirect("create_village")
-        if num_villages == 1:
-            return redirect("village", village_id=get_villages(request).first().id)
-        return redirect("dashboard")
+        return render(request, "index.html", {"worlds": World.objects.all()})
     else:
         return render(request, "index.html")
 
 
 def login(request):
     if request.method == "POST":
+        if request.user.is_authenticated:
+            world = request.POST.get("world")
+            if world and World.objects.filter(id=world).exists():
+                request.session["world"] = world
+                return redirect("start")
         username = request.POST.get("username")
         password = request.POST.get("password")
         user = authenticate(username=username, password=password)
         if user:
             auth_login(request, user)
-            request.session["world"] = World.objects.all().first().id
+            worlds = World.objects.all()
+            request.session["world"] = worlds.first().id
+            if worlds.count() > 1:
+                return redirect("index")
+            else:
+                return redirect("start")
         else:
             messages.error(request, "Login failed! Is your username and password correct?")
     return redirect("index")

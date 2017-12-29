@@ -36,6 +36,16 @@ def create_village(request):
 
 
 @login_required
+def start(request):
+    num_villages = get_villages(request).count()
+    if num_villages == 0:
+        return redirect("create_village")
+    if num_villages == 1:
+        return redirect("village", village_id=get_villages(request).first().id)
+    return redirect("dashboard")
+
+
+@login_required
 def dashboard(request):
     if get_villages(request).count() == 0:
         return redirect("create_village")

@@ -24,6 +24,12 @@
                 <h4>Login</h4>
                 <form action="{% url "login" %}" method="POST">
                     {% csrf_token %}
+                    {% if worlds %}
+                        <p>Please select the world you want to join.</p>
+                        {% for world in worlds %}
+                        <button type="submit" name="world" class="btn btn-primary" value="{{ world.id }}">{{ world.name }}</button>
+                        {% endfor world %}
+                    {% else %}
                     <div class="form-group">
                         <label>Username</label>
                         <input type="text" name="username" class="form-control" />
@@ -33,6 +39,7 @@
                         <input type="password" name="password" class="form-control" />
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
+                    {% endif %}
                 </form>
             </div>
         </div>

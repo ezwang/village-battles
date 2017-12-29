@@ -3,6 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('', views.start, name="start"),
+
     # Map
     path('map', views.map, name="map"),
     path('map/load', views.map_load, name="map_load"),
