@@ -28,7 +28,7 @@ class Village(models.Model):
     y = models.IntegerField()
     name = models.TextField()
     world = models.ForeignKey(World, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="villages")
 
     _wood = models.DecimalField(max_digits=16, decimal_places=6, default=settings.STARTING_RESOURCES)
     _clay = models.DecimalField(max_digits=16, decimal_places=6, default=settings.STARTING_RESOURCES)

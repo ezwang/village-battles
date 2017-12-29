@@ -23,6 +23,21 @@
                 </form>
             </div>
         </div>
+        <div class="card card-form">
+            <div class="card-body">
+                <h3>Leave World</h3>
+                <p>Enter your password below to leave the world. This action is permanant and irreversible!</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="leave" />
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Leave World</button>
+                </form>
+            </div>
+        </div>
     </div>
     <div class="col-md-8">
         <div class="card card-form">

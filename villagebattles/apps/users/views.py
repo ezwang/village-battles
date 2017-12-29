@@ -78,6 +78,14 @@ def settings(request):
             request.user.save()
             messages.success(request, "Your profile has been updated!")
             return redirect("settings")
+        elif action == "leave":
+            password = request.POST.get("password")
+            if request.user.check_password(password):
+                request.user.villages.update(owner=None)
+                return redirect("index")
+            else:
+                messages.error(request, "Incorrect password!")
+                return redirect("settings")
     if form is None:
         form = ChangePasswordForm(request.user)
     return render(request, "settings.html", {"password_form": form})
