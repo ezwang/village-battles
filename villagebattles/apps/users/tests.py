@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from .models import User
+from ..game.models import Village, World
 
 
 class UnauthenticatedTests(TestCase):
@@ -23,7 +24,7 @@ class BasicTests(TestCase):
         User.objects.create_user(username="test", password="test")
         self.client.login(username="test", password="test")
         session = self.client.session
-        session["world"] = 1
+        session["world"] = World.objects.get().id
         session.save()
 
     def test_world_creation(self):
@@ -32,4 +33,4 @@ class BasicTests(TestCase):
 
     def test_village_creation(self):
         response = self.client.post(reverse("create_village"))
-        self.assertRedirects(response, reverse("village", kwargs={"village_id": 1}))
+        self.assertRedirects(response, reverse("village", kwargs={"village_id": Village.objects.get().id}))
