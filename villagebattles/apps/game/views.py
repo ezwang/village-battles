@@ -67,7 +67,7 @@ def village(request, village_id):
             "troops": village.troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
             "incoming": village.incoming.filter(returning=False).order_by("end_time"),
-            "build_queue": village.buildqueue.all().order_by("end_time"),
+            "build_queue": village.buildqueue.all().order_by("end_time", "start_time"),
             "troop_queue": village.troopqueue.all().order_by("end_time"),
         }
 
@@ -193,7 +193,7 @@ def hq(request, village_id):
         "buildings": village.buildings.all().order_by("type"),
         "troops": village.troops.all().order_by("type"),
         "not_built": not_built,
-        "build_queue": village.buildqueue.all().order_by("end_time")
+        "build_queue": village.buildqueue.all().order_by("end_time", "start_time")
     }
 
     return render(request, "game/hq.html", context)
