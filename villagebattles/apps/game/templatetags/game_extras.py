@@ -3,7 +3,8 @@ from datetime import timedelta
 from django import template
 from django.utils.safestring import mark_safe
 
-from ..constants import get_building_cost, get_building_population_difference, get_building_upgrade_time, get_troop_cost, get_troop_population, get_troop_time
+from ..constants import (get_building_cost, get_building_population_difference, get_building_upgrade_time,
+                         get_troop_cost, get_troop_population, get_troop_time)
 
 register = template.Library()
 

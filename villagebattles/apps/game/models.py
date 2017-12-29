@@ -9,7 +9,8 @@ from django.utils import timezone
 
 from ..users.models import User
 from .battle import process_attack
-from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population, get_troop_population, get_troop_time
+from .constants import (get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate,
+                        get_max_capacity, get_max_population, get_troop_population, get_troop_time)
 
 
 class World(models.Model):
@@ -301,7 +302,8 @@ class Attack(models.Model):
         if not self.returning:
             process_attack(self)
             self.returning = True
-            self.end_time = self.end_time + timedelta(seconds=calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()]))
+            travel_time = calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()])
+            self.end_time = self.end_time + timedelta(seconds=travel_time)
             self.save()
             return False
         else:
