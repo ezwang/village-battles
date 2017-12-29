@@ -48,16 +48,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h4>Build Queue</h4>
-                {% for item in queue %}
-                <div>{{ item.get_type_display }} to level {{ item.new_level }} <span class="float-right countdown" datetime="{{ item.end_time|date:"c" }}">{{ item.end_time|default_if_none:"" }}</span></div>
-                {% empty %}
-                <span>The build queue is currently empty.</span>
-                {% endfor %}
-            </div>
-        </div>
+        {% include "game/panels/build_queue.html" %}
         <div class="card">
             <div class="card-body">
                 <h4>Rename Village</h4>
