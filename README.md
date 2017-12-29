@@ -1,5 +1,7 @@
 # Village Battles
 
+[![Build Status](https://travis-ci.org/ezwang/village-battles.svg?branch=master)](https://travis-ci.org/ezwang/village-battles)
+
 Village Battles is a simple real time strategy game.
 
 ## Setup
