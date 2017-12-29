@@ -29,6 +29,7 @@ class Village(models.Model):
     name = models.TextField()
     world = models.ForeignKey(World, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="villages")
+    loyalty = models.PositiveSmallIntegerField(default=100)
 
     _wood = models.DecimalField(max_digits=16, decimal_places=6, default=settings.STARTING_RESOURCES)
     _clay = models.DecimalField(max_digits=16, decimal_places=6, default=settings.STARTING_RESOURCES)
@@ -229,6 +230,7 @@ class Troop(models.Model):
         ("SW", "Swordsman"),
         ("AX", "Axeman"),
         ("AR", "Archer"),
+        ("NB", "Noble"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops", null=True)
     attack = models.ForeignKey("Attack", on_delete=models.CASCADE, related_name="troops", null=True)
