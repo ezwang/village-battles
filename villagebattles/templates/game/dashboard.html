@@ -5,7 +5,7 @@
     <div class="card-body">
         <h3>Your Villages</h3>
         {% for village in villages %}
-        <a href="{% url "village" village.id %}"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</a>
+        <div><a href="{% url "village" village.id %}"><b>{{ village.name }}</b> ({{ village.x }}|{{ village.y }})</a></div>
         {% endfor %}
     </div>
 </div>
