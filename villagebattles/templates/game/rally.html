@@ -59,23 +59,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h4>Army</h4>
-                <table id="troops" class="table">
-                    <thead>
-                        <tr><th>Type</th><th>Amount</th></tr>
-                    </thead>
-                    <tbody>
-                        {% for troop in village.troops.all %}
-                        <tr><td>{{ troop.get_type_display }}</td><td>{{ troop.amount }}</td></tr>
-                        {% empty %}
-                        <tr><td colspan="2">You don't have any soldiers.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        {% include "game/panels/army.html" %}
     </div>
 </div>
 {% endblock %}

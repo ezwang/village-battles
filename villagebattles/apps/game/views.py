@@ -65,9 +65,6 @@ def village(request, village_id):
         context = {
             "village": village,
             "buildings": village.buildings.order_by("type"),
-            "troops": village.troops.order_by("type"),
-            "foreign_troops": village.foreign_troops.order_by("type"),
-            "external_troops": village.external_troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
             "incoming": village.incoming.order_by("end_time"),
             "build_queue": village.buildqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
@@ -249,7 +246,6 @@ def barracks(request, village_id):
         "village": village,
         "troop_options": Troop.CHOICES,
         "troop_queue": village.troopqueue.order_by(F("end_time").asc(nulls_last=True), "start_time"),
-        "troops": Troop.objects.filter(village=village).order_by("type"),
     }
 
     return render(request, "game/barracks.html", context)

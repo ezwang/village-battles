@@ -156,11 +156,11 @@ class Village(models.Model):
 
     @property
     def troops(self):
-        return self.all_troops.filter(original__isnull=True)
+        return self.all_troops.filter(original__isnull=True).order_by("type")
 
     @property
     def foreign_troops(self):
-        return self.all_troops.filter(original__isnull=False)
+        return self.all_troops.filter(original__isnull=False).order_by("type")
 
     def __str__(self):
         return "{} ({}|{})".format(self.name, self.x, self.y)
