@@ -159,6 +159,7 @@ class Building(models.Model):
         ("FM", "Farm"),
         ("BR", "Barracks"),
         ("RP", "Rally Point"),
+        ("ST", "Stable"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildings")
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
@@ -227,6 +228,7 @@ class Troop(models.Model):
         ("SP", "Spearman"),
         ("SW", "Swordsman"),
         ("AX", "Axeman"),
+        ("AR", "Archer"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troops", null=True)
     attack = models.ForeignKey("Attack", on_delete=models.CASCADE, related_name="troops", null=True)
