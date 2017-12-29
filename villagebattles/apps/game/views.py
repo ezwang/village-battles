@@ -67,7 +67,7 @@ def village(request, village_id):
             "buildings": village.buildings.order_by("type"),
             "troops": village.troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
-            "incoming": village.incoming.filter(returning=False).order_by("end_time"),
+            "incoming": village.incoming.order_by("end_time"),
             "build_queue": village.buildqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
             "troop_queue": village.troopqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
         }
@@ -313,7 +313,8 @@ def rally(request, village_id):
         attack = Attack.objects.create(
             source=village,
             destination=target,
-            end_time=timezone.now() + timedelta(seconds=calculate_travel_time(village, target, [x[0] for x in attackers]))
+            end_time=timezone.now() + timedelta(seconds=calculate_travel_time(village, target, [x[0] for x in attackers])),
+            type=Attack.ATTACK,
         )
 
         for troop, amt in attackers:

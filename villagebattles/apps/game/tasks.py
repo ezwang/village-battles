@@ -18,7 +18,7 @@ def process_village(village, now):
     lock = cache.lock("process:village:{}".format(village.id))
     if lock.acquire(blocking=False):
         try:
-            for other in village.outgoing.filter(end_time__lte=now, returning=False):
+            for other in village.outgoing.filter(end_time__lte=now):
                 process_village(other.destination, now)
 
             while True:
@@ -27,8 +27,8 @@ def process_village(village, now):
 
                 finished = [(x.end_time, x) for x in village.buildqueue.filter(end_time__lte=now).order_by("end_time")]
                 finished += [(x.step_time, x) for x in village.troopqueue.filter(step_time__lte=now).order_by("step_time")]
-                finished += [(x.end_time, x) for x in village.incoming.filter(end_time__lte=now, returning=False).order_by("end_time")]
-                finished += [(x.end_time, x) for x in village.outgoing.filter(end_time__lte=now, returning=True).order_by("end_time")]
+                finished += [(x.end_time, x) for x in village.incoming.filter(end_time__lte=now).order_by("end_time")]
+                finished += [(x.end_time, x) for x in village.outgoing.filter(end_time__lte=now).order_by("end_time")]
                 finished.sort()
                 for time, done in finished:
                     if isinstance(done, BuildTask):

@@ -230,11 +230,11 @@ class ResourceTests(TestCase):
         self.village._update = now - timedelta(hours=1)
         self.village.save()
         Attack.objects.create(
-            source=self.village,
-            destination=self.village2,
+            source=self.village2,
+            destination=self.village,
             loot="100,100,100",
             end_time=now - timedelta(minutes=30),
-            returning=True
+            type=Attack.RETURN
         )
         process_village(self.village, now)
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
@@ -247,11 +247,11 @@ class ResourceTests(TestCase):
         self.village._update = now - timedelta(hours=1)
         self.village.save()
         Attack.objects.create(
-            source=self.village,
-            destination=self.village2,
+            source=self.village2,
+            destination=self.village,
             loot="100,100,100",
             end_time=now - timedelta(hours=2),
-            returning=True
+            type=Attack.RETURN
         )
         process_village(self.village, now)
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
@@ -264,11 +264,11 @@ class ResourceTests(TestCase):
         self.village._update = now - timedelta(hours=1)
         self.village.save()
         Attack.objects.create(
-            source=self.village,
-            destination=self.village2,
+            source=self.village2,
+            destination=self.village,
             loot="100,100,100",
             end_time=now - timedelta(hours=1),
-            returning=True
+            type=Attack.RETURN
         )
         process_village(self.village, now)
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
@@ -279,7 +279,8 @@ class ResourceTests(TestCase):
         attack = Attack.objects.create(
             source=self.village,
             destination=self.village2,
-            end_time=now - timedelta(hours=1)
+            end_time=now - timedelta(hours=1),
+            type=Attack.ATTACK
         )
         Troop.objects.create(
             attack=attack,
@@ -296,7 +297,8 @@ class ResourceTests(TestCase):
         attack = Attack.objects.create(
             source=self.village,
             destination=self.village2,
-            end_time=now - timedelta(hours=1)
+            end_time=now - timedelta(hours=1),
+            type=Attack.ATTACK
         )
         Troop.objects.create(
             attack=attack,

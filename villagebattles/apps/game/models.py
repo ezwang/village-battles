@@ -298,11 +298,19 @@ class TroopTask(models.Model):
 
 
 class Attack(models.Model):
+    ATTACK = "AT"
+    RETURN = "RT"
+
+    CHOICES = (
+        (ATTACK, "Attack"),
+        (RETURN, "Return"),
+    )
+
     source = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="outgoing")
     destination = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="incoming")
     loot = models.TextField(null=True)
     end_time = models.DateTimeField()
-    returning = models.BooleanField(default=False)
+    type = models.CharField(max_length=2, choices=CHOICES)
 
     @property
     def population(self):
@@ -314,34 +322,43 @@ class Attack(models.Model):
         if self.destination._update < self.end_time:
             self.destination._do_resource_update(self.end_time)
 
-        if not self.returning:
+        if self.type == Attack.ATTACK:
             process_attack(self)
             if self.troops.count() > 0:
-                self.returning = True
-                travel_time = calculate_travel_time(self.destination, self.source, [x.type for x in self.troops.all()])
+                # Set return journey
+                self.type = Attack.RETURN
+
+                # Swap source and destination
+                temp = self.destination
+                self.destination = self.source
+                self.source = temp
+
+                travel_time = calculate_travel_time(self.source, self.destination, [x.type for x in self.troops.all()])
                 self.end_time = self.end_time + timedelta(seconds=travel_time)
                 self.save()
                 return False
             else:
                 return True
-        else:
+        elif self.type == Attack.RETURN:
             if self.loot is not None:
                 wood, clay, iron = [int(x) for x in self.loot.split(",")]
-                attacker = self.source
-                attacker.wood = attacker.wood + wood
-                attacker.clay = attacker.clay + clay
-                attacker.iron = attacker.iron + iron
-                attacker.save()
+                recipient = self.destination
+                recipient.wood = recipient.wood + wood
+                recipient.clay = recipient.clay + clay
+                recipient.iron = recipient.iron + iron
+                recipient.save()
             for troop in self.troops.all():
-                if self.source.troops.filter(type=troop.type).exists():
-                    existing = self.source.troops.get(type=troop.type)
+                if self.destination.troops.filter(type=troop.type).exists():
+                    existing = self.destination.troops.get(type=troop.type)
                     existing.amount += troop.amount
                     existing.save()
                 else:
-                    troop.village = self.source
+                    troop.village = self.destination
                     troop.attack = None
                     troop.save()
             return True
+        else:
+            raise ValueError("'{}' is not a valid action!".format(self.type))
 
 
 class Report(models.Model):
