@@ -42,6 +42,8 @@
                         <tbody>
                             {% for troop in village.troops.all %}
                             <tr><td>{{ troop.get_type_display }}</td><td><input type="number" name="{{ troop.type }}" value="0" class="form-control" /></td></tr>
+                            {% empty %}
+                            <tr><td colspan="2">You don't have any soldiers! You can recruit some in the <a href="{% url "barracks" village.id %}">barracks</a>.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
