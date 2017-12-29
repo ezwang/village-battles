@@ -283,7 +283,7 @@ def rally(request, village_id):
 
         if target.owner == request.user:
             messages.error(request, "You cannot attack your own villages!")
-            return redirect("rally", village_id, village.id)
+            return redirect("rally", village_id=village.id)
 
         attackers = []
         flag = False
