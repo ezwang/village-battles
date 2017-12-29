@@ -5,6 +5,9 @@
 #card-login button, .card-form button {
     min-width: 100px;
 }
+.has-footer {
+    margin-bottom: 0;
+}
 #register {
     min-width: 150px;
 }
@@ -24,4 +27,8 @@
 }
 .card-form .errorlist {
     color: red;
+}
+.footer {
+    text-align: center;
+    margin-bottom: 30px;
 }
