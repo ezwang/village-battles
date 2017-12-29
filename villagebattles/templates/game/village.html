@@ -6,7 +6,11 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-4">
+        {% include "game/panels/build_queue.html" %}
+        {% include "game/panels/recruit_queue.html" %}
+    </div>
+    <div class="col-md-4">
         <div class="card">
             <div class="card-body">
                 <h4>Buildings</h4>
@@ -47,8 +51,6 @@
         </div>
         {% endif %}
         {% include "game/panels/army.html" %}
-        {% include "game/panels/build_queue.html" %}
-        {% include "game/panels/recruit_queue.html" %}
     </div>
 </div>
 {% endblock %}
