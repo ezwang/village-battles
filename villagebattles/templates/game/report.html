@@ -36,9 +36,21 @@
             <tbody>
                 {% for rep in reports %}
                 <tr><td><a {% if not rep.read %}class="unread" {% endif %}href="{% url "report_detailed" rep.id %}">{{ rep.title }}</a></td><td><time class="timeago" datetime="{{ rep.created|date:"c" }}">{{ rep.created }}</time></td></tr>
+                {% empty %}
+                <tr><td colspan="2">There are no reports on this page.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
+        {% if reports.has_other_pages %}
+        <hr />
+        <div class="pagination">
+            <a {% if reports.has_previous %}href="?page={{ reports.previous_page_number }}"{% endif %}>Prev</a>
+            {% for i in reports.paginator.page_range %}
+            <a {% if not reports.number == i %}href="?page={{ i }}{% endif %}">{% if reports.number == i %}<b>{{ i }}</b>{% else %}{{ i }}{% endif %}</a>
+            {% endfor %}
+            <a {% if reports.has_next %}href="?page={{ reports.next_page_number }}"{% endif %}>Next</a>
+        </div>
+        {% endif %}
         {% endif %}
     </div>
 </div>

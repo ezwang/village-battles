@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
+from django.core.paginator import Paginator, InvalidPage
 
 from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
@@ -358,8 +359,18 @@ def report(request, report_id=None):
             "report": report
         }
     else:
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
+        reports = request.user.reports.order_by("read", "-created").values("title", "created", "id", "read")
+        p = Paginator(reports, 10)
+        try:
+            page = p.page(page)
+        except InvalidPage:
+            page = []
         context = {
-            "reports": request.user.reports.order_by("read", "-created").values("title", "created", "id", "read")
+            "reports": page
         }
 
     return render(request, "game/report.html", context)
