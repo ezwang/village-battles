@@ -1,5 +1,6 @@
 from decimal import Decimal
 from datetime import timedelta
+from math import ceil
 
 from django.db import models
 from django.urls import reverse
@@ -258,11 +259,15 @@ class TroopTask(models.Model):
             amt = self.amount
             ret = True
         else:
-            time = get_troop_time(self.type)
-            elapsed = (now - self.step_time).total_seconds()
-            amt = (elapsed / time)
+            time_per_unit = get_troop_time(self.type)
+            total_time = (self.end_time - self.start_time).total_seconds()
+            elapsed_time = (now - self.start_time).total_seconds()
+            produced = ceil((total_time - elapsed_time) / time_per_unit)
+            original_total = total_time / time_per_unit
+            remaining = original_total = produced
+            amt = self.amount - remaining
             self.amount -= amt
-            self.step_time = now + timedelta(seconds=time)
+            self.step_time = self.step_time + timedelta(seconds=amt * time_per_unit)
             self.save()
             ret = False
         try:
