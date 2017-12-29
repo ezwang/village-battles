@@ -10,7 +10,8 @@ from django.utils import timezone
 from ..users.models import User
 from .battle import process_attack
 from .constants import (get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate,
-                        get_max_capacity, get_max_population, get_troop_population, get_troop_time, get_barracks_buff)
+                        get_max_capacity, get_max_population, get_troop_population, get_troop_time, get_barracks_buff,
+                        get_loyalty_regen)
 
 
 class World(models.Model):
@@ -29,7 +30,7 @@ class Village(models.Model):
     name = models.TextField()
     world = models.ForeignKey(World, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="villages")
-    loyalty = models.PositiveSmallIntegerField(default=100)
+    _loyalty = models.DecimalField(max_digits=9, decimal_places=6, default=100)
 
     _wood = models.DecimalField(max_digits=16, decimal_places=6, default=settings.STARTING_RESOURCES)
     _clay = models.DecimalField(max_digits=16, decimal_places=6, default=settings.STARTING_RESOURCES)
@@ -94,6 +95,7 @@ class Village(models.Model):
         self.wood = self._wood + (diff / Decimal(3600)) * self.wood_rate
         self.clay = self._clay + (diff / Decimal(3600)) * self.clay_rate
         self.iron = self._iron + (diff / Decimal(3600)) * self.iron_rate
+        self.loyalty = self._loyalty + (diff / Decimal(3600)) * get_loyalty_regen()
         self._update = now
         self.save()
 
@@ -126,6 +128,15 @@ class Village(models.Model):
     def iron_rate(self):
         """ How much iron should be produced every hour. """
         return get_iron_rate(self.get_level("IM"))
+
+    @property
+    def loyalty(self):
+        self._do_resource_update()
+        return int(self._loyalty)
+
+    @loyalty.setter
+    def loyalty(self, x):
+        self._loyalty=max(min(0, x), 100)
 
     @wood.setter
     def wood(self, x):

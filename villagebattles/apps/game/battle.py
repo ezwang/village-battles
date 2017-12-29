@@ -90,8 +90,22 @@ def process_attack(attack):
     do_damage(attack)
 
     # Add remaining troop values
-    content["attacker"]["remaining_troops"] = [(x.get_type_display(), x.amount) for x in attack.troops.all()]
+    attacker_remaining = [(x.get_type_display(), x.amount) for x in attack.troops.all()]
+    content["attacker"]["remaining_troops"] = attacker_remaining
     content["defender"]["remaining_troops"] = [(x.get_type_display(), x.amount) for x in attack.destination.troops.all()]
+
+    defender_action = "defends"
+    attacker_action = "attacks"
+
+    if attack.troops.filter(type="NB").exists():
+        attack.destination.loyalty = attack.destination.loyalty - 20
+        if attack.destination.loyalty <= 0:
+            defender_action = "conquered by"
+            attacker_action = "conquers"
+            attack.destination.loyalty = 20
+            attack.destination.owner = attack.source.owner
+        attack.save()
+        content["loyalty"] = attack.destination.loyalty
 
     loot = calculate_loot(attack)
     content["loot"] = {
@@ -123,13 +137,13 @@ def process_attack(attack):
     defender_copy = json.dumps(defender_copy, sort_keys=True, indent=4)
 
     Report.objects.create(
-        title="{} attacks {}".format(attack.source, attack.destination),
+        title="{} {} {}".format(attack.source, attacker_action, attack.destination),
         owner=attack.source.owner,
         world=attack.source.world,
         body=attacker_copy
     )
     Report.objects.create(
-        title="{} defends {}".format(attack.destination, attack.source),
+        title="{} {} {}".format(attack.destination, defender_action, attack.source),
         owner=attack.destination.owner,
         world=attack.destination.world,
         body=defender_copy

@@ -185,6 +185,14 @@ class ResourceTests(TestCase):
         self.assertEquals(self.village.clay, expected_clay, (self.village.clay, expected_clay))
         self.assertEquals(self.village.iron, expected_iron, (self.village.iron, expected_iron))
 
+    def test_loyalty_regeneration(self):
+        past = timezone.now() - timedelta(weeks=1)
+        with patch.object(timezone, "now", return_value=past):
+            self.village.loyalty = 20
+            self.village.save()
+
+        self.assertEqual(self.village.loyalty, 100)
+
     def test_update_with_loot_first(self):
         """ Test resource update with incoming loot from an attack beforehand. """
         now = timezone.now()

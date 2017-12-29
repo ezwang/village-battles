@@ -25,6 +25,11 @@ def get_iron_rate(level):
     return int(30 * (1.2**(level - 1)))
 
 
+def get_loyalty_regen():
+    """ Returns the loyalty regeneration rate per hour. """
+    return 1
+
+
 def get_max_capacity(level):
     """ Accepts the warehouse level and returns the maximum population for the village. """
     return int(1000 * 1.2**(level - 1))
