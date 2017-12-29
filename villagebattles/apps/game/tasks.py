@@ -26,7 +26,7 @@ def process_village(village, now):
                 troop_times = []
 
                 finished = [(x.end_time, x) for x in village.buildqueue.filter(end_time__lte=now).order_by("end_time")]
-                finished += [(x.end_time, x) for x in village.troopqueue.filter(end_time__lte=now).order_by("end_time")]
+                finished += [(x.step_time, x) for x in village.troopqueue.filter(step_time__lte=now).order_by("step_time")]
                 finished += [(x.end_time, x) for x in village.incoming.filter(end_time__lte=now, returning=False).order_by("end_time")]
                 finished += [(x.end_time, x) for x in village.outgoing.filter(end_time__lte=now, returning=True).order_by("end_time")]
                 finished.sort()
@@ -53,8 +53,11 @@ def process_village(village, now):
                 if not village.troopqueue.filter(end_time__isnull=False).exists():
                     task = village.troopqueue.filter(end_time__isnull=True).order_by("start_time").first()
                     if task:
-                        build_time = timedelta(seconds=get_troop_time(task.type) * task.amount)
-                        task.end_time = (troop_times.pop(0) if troop_times else now) + build_time
+                        initial = (troop_times.pop(0) if troop_times else now)
+                        single = get_troop_time(task.type)
+                        build_time = timedelta(seconds=single * task.amount)
+                        task.end_time = initial + build_time
+                        task.step_time = initial + timedelta(seconds=single)
                         if task.end_time < now:
                             processing_finished = False
                         task.save()

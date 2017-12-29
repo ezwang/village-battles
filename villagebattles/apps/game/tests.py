@@ -1,4 +1,5 @@
 from datetime import timedelta
+from mock import patch
 
 from django.test import TestCase
 from django.utils import timezone
@@ -40,9 +41,11 @@ class ResourceTests(TestCase):
             village=self.village,
             type=TYPE,
             amount=10,
+            step_time=now - timedelta(days=1),
             end_time=now - timedelta(days=1)
         )
         process_village(self.village, now)
+        self.assertEqual(self.village.troopqueue.count(), 0)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
 
     def test_multiple_troop_creation(self):
@@ -53,15 +56,18 @@ class ResourceTests(TestCase):
             village=self.village,
             type=TYPE,
             amount=10,
+            step_time=now - timedelta(hours=12),
             end_time=now - timedelta(days=1)
         )
         TroopTask.objects.create(
             village=self.village,
             type=TYPE,
             amount=10,
+            step_time=now - timedelta(days=1),
             end_time=now - timedelta(days=2)
         )
         process_village(self.village, now)
+        self.assertEqual(self.village.troopqueue.count(), 0)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 20)
 
     def test_partial_troop_creation(self):
@@ -74,10 +80,29 @@ class ResourceTests(TestCase):
             type=TYPE,
             amount=10,
             start_time=now - timedelta(seconds=time),
+            step_time=now - timedelta(seconds=get_troop_time(TYPE)),
             end_time=now + timedelta(seconds=get_troop_time(TYPE) * 10 - time)
         )
         process_village(self.village, now)
+        self.assertEqual(self.village.troopqueue.count(), 1)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 1)
+
+    def test_troop_creation_via_autoqueue(self):
+        """ Tests troop creation without manually setting a time. """
+        now = timezone.now()
+        past = now - timedelta(days=1)
+        TYPE = Troop.CHOICES[0][0]
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10,
+            start_time=past
+        )
+        with patch.object(timezone, "now", return_value=past):
+            process_village(self.village, past)
+        process_village(self.village, now)
+        self.assertEqual(self.village.troopqueue.count(), 0)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
 
     def test_auto_update(self):
         """ Make sure resource values are being updated on each call. """

@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from ..users.models import User
 from .battle import process_attack
-from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population, get_troop_population
+from .constants import get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate, get_max_capacity, get_max_population, get_troop_population, get_troop_time
 
 
 class World(models.Model):
@@ -245,6 +245,7 @@ class TroopTask(models.Model):
     type = models.CharField(max_length=2, choices=Troop.CHOICES)
     amount = models.IntegerField()
     start_time = models.DateTimeField(default=timezone.now)
+    step_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
 
     @property
@@ -252,17 +253,29 @@ class TroopTask(models.Model):
         return self.amount * get_troop_population(self.type)
 
     def process(self):
+        now = timezone.now()
+        if self.end_time <= now:
+            amt = self.amount
+            ret = True
+        else:
+            time = get_troop_time(self.type)
+            elapsed = (now - self.step_time).total_seconds()
+            amt = (elapsed / time)
+            self.amount -= amt
+            self.step_time = now + timedelta(seconds=time)
+            self.save()
+            ret = False
         try:
             item = self.village.troops.get(type=self.type)
-            item.amount += self.amount
+            item.amount += amt
             item.save()
         except Troop.DoesNotExist:
             Troop.objects.create(
                 village=self.village,
                 type=self.type,
-                amount=self.amount
+                amount=amt
             )
-        return True
+        return ret
 
 
 class Attack(models.Model):
