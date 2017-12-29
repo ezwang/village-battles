@@ -38,7 +38,7 @@ class Village(models.Model):
 
     @property
     def max_capacity(self):
-        return get_max_capacity(self._building_level("WH"))
+        return get_max_capacity(self.get_level("WH"))
 
     def get_level(self, building):
         try:
@@ -67,7 +67,7 @@ class Village(models.Model):
 
     @property
     def max_population(self):
-        return get_max_population(self._building_level("FM"))
+        return get_max_population(self.get_level("FM"))
 
     def pay(self, wood, clay, iron):
         if wood > self.wood or clay > self.clay or iron > self.iron:
@@ -114,23 +114,17 @@ class Village(models.Model):
     @property
     def wood_rate(self):
         """ How much wood should be produced every hour. """
-        return get_wood_rate(self._building_level("WM"))
+        return get_wood_rate(self.get_level("WM"))
 
     @property
     def clay_rate(self):
         """ How much clay should be produced every hour. """
-        return get_clay_rate(self._building_level("CM"))
+        return get_clay_rate(self.get_level("CM"))
 
     @property
     def iron_rate(self):
         """ How much iron should be produced every hour. """
-        return get_iron_rate(self._building_level("IM"))
-
-    def _building_level(self, type):
-        try:
-            return self.buildings.get(type=type).level
-        except Building.DoesNotExist:
-            return 0
+        return get_iron_rate(self.get_level("IM"))
 
     @wood.setter
     def wood(self, x):
@@ -207,10 +201,7 @@ class BuildTask(models.Model):
 
     @property
     def new_level(self):
-        try:
-            level = self.village.buildings.get(type=self.type).level
-        except Building.DoesNotExist:
-            level = 0
+        level = self.village.get_level(self.type)
         level += self.village.buildqueue.filter(start_time__lt=self.start_time, type=self.type).count()
         return level + 1
 
