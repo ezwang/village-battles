@@ -19,6 +19,9 @@ function loadVillages() {
             if (v.x == coords[0] && v.y == coords[1]) {
                 vil.click();
             }
+            if (!v.owner) {
+                vil.addClass("abandoned");
+            }
         });
     });
 }
@@ -46,7 +49,14 @@ $(document).ready(function() {
     $("#world").on("click", ".village", function() {
         selected = $(this).attr("data-id");
         var vil = village_info[selected];
-        $("#info").html("<a href='village/" + selected + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a> owned by <a href='user/" + vil.owner.id + "'>" + $("<div />").text(vil.owner.name).html() + "</a>");
+        var owner_text;
+        if (vil.owner) {
+            owner_text = " owned by <a href='user/" + vil.owner.id + "'>" + $("<div />").text(vil.owner.name).html() + "</a>";
+        }
+        else {
+            owner_text = " (Abandoned Village)";
+        }
+        $("#info").html("<a href='village/" + selected + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a>" + owner_text);
         $("#world .village").removeClass("selected");
         $(this).addClass("selected");
     });

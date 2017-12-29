@@ -13,7 +13,14 @@ $(document).ready(function() {
                     $("#info").css("color", "red").text("Nonexistent Village!");
                 }
                 else {
-                    $("#info").css("color", "black").text(" - " + data.name + " (owned by " + data.owner + ")");
+                    var owned;
+                    if (data.owner) {
+                        owned = " (owned by " + data.owner + ")";
+                    }
+                    else {
+                        owned = " (Abandoned)";
+                    }
+                    $("#info").css("color", "black").text(" - " + data.name + owned);
                 }
             });
         }

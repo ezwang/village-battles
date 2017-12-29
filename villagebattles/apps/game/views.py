@@ -103,7 +103,7 @@ def map_load(request):
             "owner": {
                 "id": vil.owner.id,
                 "name": vil.owner.username
-            }
+            } if vil.owner else None
         })
 
     return JsonResponse({"villages": output})
@@ -348,7 +348,7 @@ def map_coord(request):
 
     try:
         vil = Village.objects.get(x=x, y=y, world=world)
-        return JsonResponse({"exists": True, "name": vil.name, "owner": vil.owner.username})
+        return JsonResponse({"exists": True, "name": vil.name, "owner": vil.owner.username if vil.owner else None})
     except Village.DoesNotExist:
         return JsonResponse({"exists": False})
 
