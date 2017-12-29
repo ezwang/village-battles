@@ -19,7 +19,7 @@
                         </thead>
                         <tbody>
                             {% for value, name in troop_options %}
-                            <tr><td>{{ name }}</td><td>{% troop_cost value %}</td><td>{% troop_time value %}</td><td><input type="number" name="{{ value }}" value="0" class="form-control" /></td></tr>
+                            <tr><td>{{ name }}</td><td>{% troop_cost value %}</td><td>{% troop_time value village %}</td><td><input type="number" name="{{ value }}" value="0" class="form-control" /></td></tr>
                             {% endfor %}
                         </tbody>
                     </table>

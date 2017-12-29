@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.core.cache import cache
 
 from .models import BuildTask, TroopTask
-from .constants import get_building_upgrade_time, get_troop_time, get_hq_buff
+from .constants import get_building_upgrade_time, get_troop_time, get_hq_buff, get_barracks_buff
 
 
 def process(villages, now=None):
@@ -44,7 +44,7 @@ def process_village(village, now):
                 existing = village.buildqueue.filter(end_time__isnull=False).count()
                 for task in village.buildqueue.filter(end_time__isnull=True).order_by("start_time")[:2-existing]:
                     basetime = get_building_upgrade_time(task.type, task.new_level - 1)
-                    build_time = timedelta(seconds=basetime * get_hq_buff(village.get_level("HQ")))
+                    build_time = timedelta(seconds=int(basetime * get_hq_buff(village.get_level("HQ"))))
                     task.end_time = (build_times.pop(0) if build_times else now) + build_time
                     if task.end_time < now:
                         processing_finished = False
@@ -55,7 +55,7 @@ def process_village(village, now):
                     task = village.troopqueue.filter(end_time__isnull=True).order_by("start_time").first()
                     if task:
                         initial = (troop_times.pop(0) if troop_times else now)
-                        single = get_troop_time(task.type)
+                        single = int(get_troop_time(task.type) * get_barracks_buff(village.get_level("BR")))
                         build_time = timedelta(seconds=single * task.amount)
                         task.end_time = initial + build_time
                         task.step_time = initial + timedelta(seconds=single)

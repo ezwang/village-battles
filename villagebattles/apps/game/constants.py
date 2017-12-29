@@ -80,3 +80,8 @@ def get_troop_carry(troop):
 def get_hq_buff(level):
     """ Returns a multiplier for the build time. """
     return 0.9**(level - 1)
+
+
+def get_barracks_buff(level):
+    """ Returns a multiplier for the troop build time. """
+    return 0.95**(level - 1)
