@@ -1,4 +1,5 @@
 var size = 50;
+var selected = -1;
 var village_info = {};
 
 function addVillage(x, y, id) {
@@ -43,11 +44,18 @@ $(document).ready(function() {
     });
 
     $("#world").on("click", ".village", function() {
-        var id = $(this).attr("data-id");
-        var vil = village_info[id];
-        $("#info").html("<a href='village/" + id + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a> owned by <a href='user/" + vil.owner.id + "'>" + $("<div />").text(vil.owner.name).html() + "</a>");
+        selected = $(this).attr("data-id");
+        var vil = village_info[selected];
+        $("#info").html("<a href='village/" + selected + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a> owned by <a href='user/" + vil.owner.id + "'>" + $("<div />").text(vil.owner.name).html() + "</a>");
         $("#world .village").removeClass("selected");
         $(this).addClass("selected");
+    });
+
+    $("#attack").click(function(e) {
+        e.preventDefault();
+        if (selected >= 0) {
+            window.location.href = RALLY_ENDPOINT + "#" + village_info[selected].x + "-" + village_info[selected].y;
+        }
     });
 
     $("#x, #y").keypress(function(e) {

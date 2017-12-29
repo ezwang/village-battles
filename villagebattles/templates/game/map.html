@@ -12,6 +12,7 @@
 <script src="{% static "js/map.js" %}"></script>
 <script>
     var MAP_ENDPOINT = "{% url "map_load" %}";
+    var RALLY_ENDPOINT = "{% url "rally" current_village.id %}";
     var userid = {{ request.user.id }};
     var coords = [{{ x }}, {{ y }}];
 </script>
@@ -27,6 +28,7 @@
     </div>
     <div class="clearfix">
         <div id="info">Click on a village to view more information.</div>
+        <div id="buttons"><button id="attack" class="btn btn-primary btn-sm">Attack</button></div>
         <div id="coords">(X: <input type="number" id="x" />, Y: <input type="number" id="y" />)</div>
     </div>
 </div>

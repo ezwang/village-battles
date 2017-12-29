@@ -30,9 +30,12 @@
 .village.owned {
     background-color: blue;
 }
-#info {
+#info, #buttons {
     margin-left: 20px;
     float: left;
+}
+#buttons {
+    margin-top: -7px;
 }
 #coords {
     font-weight: bold;
