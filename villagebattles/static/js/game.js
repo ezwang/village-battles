@@ -34,7 +34,9 @@ $(document).ready(function() {
     var tickers = $(".ticker").children().filter(function() { return $(this).attr("data-rate"); });
     var lastUpdate = new Date();
     var realValues = {};
-    var max = parseInt($(".ticker .wood-cap").text());
+    var wood_max = parseInt($(".ticker .wood-cap").text());
+    var clay_max = parseInt($(".ticker .clay-cap").text());
+    var iron_max = parseInt($(".ticker .iron-cap").text());
     function doTickers() {
         var now = new Date();
         var diff = (now.getTime() - lastUpdate.getTime()) / 1000;
@@ -45,7 +47,24 @@ $(document).ready(function() {
             var rate = parseInt($(this).attr("data-rate"));
             var added = diff * rate / parseFloat(3600);
             realValues[id] = value + added;
-            $(this).text(Math.min(Math.floor(value + added)));
+            var value = Math.floor(value + added);
+            var type_max;
+            if ($(this).hasClass("wood")) {
+                type_max = wood_max;
+            }
+            else if ($(this).hasClass("clay")) {
+                type_max = clay_max;
+            }
+            else {
+                type_max = iron_max;
+            }
+            if (value > type_max * 0.9) {
+                $(this).css("color", "red");
+            }
+            else if (value > type_max * 0.75) {
+                $(this).css("color", "yellow");
+            }
+            $(this).text(Math.min(value, type_max));
         });
     }
     setInterval(doTickers, 1000);
