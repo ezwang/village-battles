@@ -57,6 +57,8 @@ def village(request, village_id):
             "troops": village.troops.order_by("type"),
             "outgoing": village.outgoing.order_by("end_time"),
             "incoming": village.incoming.filter(returning=False).order_by("end_time"),
+            "build_queue": village.buildqueue.all().order_by("end_time"),
+            "troop_queue": village.troopqueue.all().order_by("end_time"),
         }
 
         request.session["village"] = village.id
@@ -178,10 +180,10 @@ def hq(request, village_id):
 
     context = {
         "village": village,
-        "buildings": Building.objects.filter(village=village).order_by("type"),
-        "troops": Troop.objects.filter(village=village).order_by("type"),
+        "buildings": village.buildings.all().order_by("type"),
+        "troops": village.troops.all().order_by("type"),
         "not_built": not_built,
-        "queue": BuildTask.objects.filter(village=village)
+        "build_queue": village.buildqueue.all().order_by("end_time")
     }
 
     return render(request, "game/hq.html", context)
