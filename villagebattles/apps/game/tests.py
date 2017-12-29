@@ -174,10 +174,16 @@ class ResourceTests(TestCase):
     def test_auto_update(self):
         """ Make sure resource values are being updated on each call. """
         initial_wood = self.village._wood
+        initial_clay = self.village._clay
+        initial_iron = self.village._iron
         expected_wood = min(initial_wood + self.village.wood_rate, self.village.max_capacity)
+        expected_clay = min(initial_clay + self.village.clay_rate, self.village.max_capacity)
+        expected_iron = min(initial_iron + self.village.iron_rate, self.village.max_capacity)
         self.village._update = timezone.now() - timedelta(hours=1)
         self.village.save()
         self.assertEquals(self.village.wood, expected_wood, (self.village.wood, expected_wood))
+        self.assertEquals(self.village.clay, expected_clay, (self.village.clay, expected_clay))
+        self.assertEquals(self.village.iron, expected_iron, (self.village.iron, expected_iron))
 
     def test_update_with_loot_first(self):
         """ Test resource update with incoming loot from an attack beforehand. """
