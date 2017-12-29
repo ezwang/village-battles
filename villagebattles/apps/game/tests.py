@@ -4,7 +4,7 @@ from mock import patch
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import World, Village, Attack, TroopTask, Troop, Building
+from .models import World, Village, Attack, TroopTask, Troop, Building, BuildTask
 from ..users.models import User
 from .tasks import process_village
 from .helpers import create_default_setup
@@ -113,6 +113,34 @@ class ResourceTests(TestCase):
         process_village(self.village, now)
 
         self.assertEqual(self.village.troopqueue.count(), 0)
+        self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
+
+    def test_troop_creation_during_upgrade(self):
+        """ Test troop creation in the middle of a barracks upgrade. """
+        now = timezone.now()
+        TYPE = Troop.CHOICES[0][0]
+        time = get_troop_time(TYPE)
+        TroopTask.objects.create(
+            village=self.village,
+            type=TYPE,
+            amount=10
+        )
+        BuildTask.objects.create(
+            village=self.village,
+            type="BR",
+            end_time=now - timedelta(seconds=6 * time)
+        )
+        past = now - timedelta(seconds=11 * time)
+        with patch.object(timezone, "now", return_value=past):
+            process_village(self.village, past)
+
+        middle = now - timedelta(seconds=6 * time)
+        with patch.object(timezone, "now", return_value=middle):
+            process_village(self.village, middle)
+
+        process_village(self.village, now)
+
+        self.assertEqual(self.village.get_level("BR"), 1)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
 
     def test_multiple_troop_creation(self):
