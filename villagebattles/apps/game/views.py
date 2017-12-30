@@ -237,15 +237,6 @@ def troop_building(request, village_id, building_type):
     building_name = building.get_type_display()
     building_choices = get_allowed_troops(building_type)
 
-    if building_type == "BR":
-        building_choices = ["SP", "SW", "AX", "AR"]
-    elif building_type == "ST":
-        building_choices = ["SC"]
-    elif building_type == "WS":
-        building_choices = []
-    elif building_type == "AC":
-        building_choices = ["NB"]
-
     if request.method == "POST":
         order = []
         for choice in building_choices:
