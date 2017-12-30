@@ -95,13 +95,24 @@
             "population": 1
         },
         "SC": {
-            "name": "Scout"
+            "name": "Scout",
+            "attack": 0,
+            "defense": 10,
+            "cost": [30, 70, 30],
+            "build_time": 60,
+            "population": 1
         },
         "CA": {
-            "name": "Catapult"
+            "name": "Catapult",
+            "build_time": 240,
+            "population": 5
         },
         "NB": {
-            "name": "Noble"
+            "name": "Noble",
+            "build_time": 3600,
+            "travel_time": 50,
+            "carry": 5,
+            "population": 10
         }
     }
 }
