@@ -51,7 +51,8 @@ def get_loyalty_regen():
 def get_max_capacity(level):
     """ Accepts the warehouse level and returns the maximum population for the village. """
     try:
-        return settings.GAME_CONFIG["buildings"]["WH"]["capacity"][level]
+        obj = settings.GAME_CONFIG["buildings"]["WH"]["capacity"]
+        return int(obj.get("initial", 1000) * (obj.get("scale", 1.2) ** (level - 1)))
     except KeyError:
         return 1000
 
@@ -59,7 +60,8 @@ def get_max_capacity(level):
 def get_max_population(level):
     """ Accepts the farm level and returns the maximum population for the village. """
     try:
-        return settings.GAME_CONFIG["buildings"]["FM"]["capacity"][level]
+        obj = settings.GAME_CONFIG["buildings"]["FM"]["capacity"]
+        return int(obj.get("initial", 200) * obj.get("scale", 1.2) ** (level - 1))
     except KeyError:
         return 200
 
@@ -127,7 +129,8 @@ def get_troop_carry(troop):
 def get_hq_buff(level):
     """ Returns a multiplier for the build time. """
     try:
-        return settings.GAME_CONFIG["buildings"]["HQ"]["buff"][level]
+        obj = settings.GAME_CONFIG["buildings"]["HQ"]["buff"]
+        return obj.get("initial", 1) * (obj.get("scale", 0.97) ** (level - 1))
     except KeyError:
         return 1
 
@@ -135,7 +138,8 @@ def get_hq_buff(level):
 def get_recruitment_buff(building, level):
     """ Returns a multiplier for the troop build time. """
     try:
-        return settings.GAME_CONFIG["buildings"][building]["buff"][level]
+        obj = settings.GAME_CONFIG["buildings"][building]["buff"]
+        return obj.get("initial", 1) * (obj.get("scale", 0.97) ** (level - 1))
     except KeyError:
         return 1
 
