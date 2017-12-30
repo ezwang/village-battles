@@ -315,3 +315,23 @@ class ResourceTests(TestCase):
         process_village(self.village, now)
         self.assertTrue(self.village.loyalty, 100)
         self.assertTrue(self.village2.loyalty < 100, self.village2.loyalty)
+
+    def test_support(self):
+        """ Test supporting another player. """
+        now = timezone.now()
+        support = Attack.objects.create(
+            source=self.village,
+            destination=self.village2,
+            end_time=now - timedelta(hours=1),
+            type=Attack.SUPPORT
+        )
+        Troop.objects.create(
+            attack=support,
+            type="SP",
+            amount=100
+        )
+        process_village(self.village, now)
+        self.assertEqual(self.village2.troops.count(), 0)
+        self.assertEqual(self.village2.all_troops.count(), 1)
+        self.assertEqual(self.village2.foreign_troops.count(), 1)
+        self.assertEqual(self.village.external_troops.count(), 1)
