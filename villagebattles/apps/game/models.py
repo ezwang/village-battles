@@ -29,7 +29,7 @@ class Village(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     name = models.TextField()
-    world = models.ForeignKey(World, on_delete=models.CASCADE)
+    world = models.ForeignKey(World, on_delete=models.CASCADE, related_name="villages")
     owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="villages")
     _loyalty = models.DecimalField(max_digits=9, decimal_places=6, default=100)
 
