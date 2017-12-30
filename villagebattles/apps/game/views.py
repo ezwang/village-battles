@@ -218,7 +218,7 @@ def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
     if not village.buildings.filter(type=building_type).exists():
-        messages.error(request, "You do not have a {}!".format(building_name))
+        messages.error(request, "You do not have this building!")
         return redirect("village", village_id=village.id)
 
     building = village.buildings.get(type=building_type)
