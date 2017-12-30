@@ -216,6 +216,11 @@ def stable(request, village_id):
 
 def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
+
+    if not village.buildings.filter(type=building_type).exists():
+        messages.error(request, "You do not have a {}!".format(building_name))
+        return redirect("village", village_id=village.id)
+
     building = village.buildings.get(type=building_type)
     building_name = building.get_type_display()
 
@@ -225,10 +230,6 @@ def troop_building(request, village_id, building_type):
         building_choices = ["SC"]
     elif building_type == "AC":
         building_choices = ["NB"]
-
-    if not village.buildings.filter(type=building_type).exists():
-        messages.error(request, "You do not have a {}!".format(building_name))
-        return redirect("village", village_id=village.id)
 
     if request.method == "POST":
         order = []
