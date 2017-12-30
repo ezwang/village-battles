@@ -375,29 +375,41 @@ def rally(request, village_id):
         if flag:
             return redirect("rally", village_id=village.id)
 
-        attack = Attack.objects.create(
-            source=village,
-            destination=target,
-            end_time=timezone.now() + timedelta(seconds=calculate_travel_time(village, target, [x[0] for x in attackers])),
-            type=Attack.ATTACK if action == "attack" else Attack.SUPPORT,
-        )
+        travel_time = calculate_travel_time(village, target, [x[0] for x in attackers])
 
-        for troop, amt in attackers:
-            cur = village.troops.get(type=troop)
-            cur.amount -= amt
-            if cur.amount > 0:
-                cur.save()
-            else:
-                cur.delete()
-            Troop.objects.create(
-                attack=attack,
-                type=troop,
-                amount=amt
+        if request.POST.get("confirm", "false") == "true":
+            attack = Attack.objects.create(
+                source=village,
+                destination=target,
+                end_time=timezone.now() + timedelta(seconds=travel_time),
+                type=Attack.ATTACK if action == "attack" else Attack.SUPPORT,
             )
 
-        messages.success(request, "{} has been scheduled!".format("Attack" if action == "attack" else "Support"))
+            for troop, amt in attackers:
+                cur = village.troops.get(type=troop)
+                cur.amount -= amt
+                if cur.amount > 0:
+                    cur.save()
+                else:
+                    cur.delete()
+                Troop.objects.create(
+                    attack=attack,
+                    type=troop,
+                    amount=amt
+                )
 
-        return redirect("village", village_id=village.id)
+            messages.success(request, "{} has been scheduled!".format("Attack" if action == "attack" else "Support"))
+            return redirect("village", village_id=village.id)
+        else:
+            context = {
+                "village": village,
+                "target": target,
+                "travel_time": travel_time,
+                "action": action,
+                "troops": attackers
+            }
+
+            return render(request, "game/rally_confirm.html", context)
 
     external_villages = Village.objects.filter(all_troops__original=village)
     foreign_villages = Village.objects.filter(external_troops__village=village)

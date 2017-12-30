@@ -3,6 +3,7 @@ from datetime import timedelta
 from django import template
 from django.utils.safestring import mark_safe
 
+from ..helpers import get_troop_type_display
 from ..constants import (get_building_cost, get_building_population_difference, get_building_upgrade_time,
                          get_troop_cost, get_troop_population, get_troop_time, get_hq_buff, get_recruitment_buff,
                          get_troop_attack, get_troop_defense, get_troop_carry)
@@ -58,3 +59,13 @@ def can_build(village, building):
         return True
     else:
         return not village.buildqueue.filter(type=building).exists()
+
+
+@register.filter(name="to_hhmmss")
+def to_hhmmss(time):
+    return str(timedelta(seconds=int(time)))
+
+
+@register.filter(name="troop_name")
+def troop_name(troop):
+    return get_troop_type_display(troop)

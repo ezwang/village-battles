@@ -1,0 +1,35 @@
+{% extends "game.html" %}
+{% load game_extras %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h4>Confirm Troop Movement</h4>
+                <p>
+                    Type: {{ action|title }}<br />
+                    Destination: <a href="{% url "map" %}#{{ target.x }}-{{ target.y }}">{{ target }}</a><br />
+                    Travel Time: {{ travel_time|to_hhmmss }}
+                </p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="confirm" value="true" />
+                    <input type="hidden" name="x" value="{{ target.x }}" />
+                    <input type="hidden" name="y" value="{{ target.y }}" />
+                    {% for troop, amt in troops %}
+                    <input type="hidden" name="{{ troop }}" value="{{ amt }}" />
+                    {% endfor %}
+                    <b>Troops</b>
+                    <p>
+                    {% for troop, amt in troops %}
+                    {{ troop|troop_name }} ({{ amt }})<br />
+                    {% endfor %}
+                    </p>
+                    <button type="submit" class="btn btn-primary" name="action" value="{{ action }}">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
