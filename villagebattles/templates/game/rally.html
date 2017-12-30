@@ -57,6 +57,42 @@
                 </form>
             </div>
         </div>
+        {% if external %}
+        <div class="card">
+            <div class="card-body">
+                <h4>External Troops</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="withdrawl" />
+                    <table class="table">
+                        <tbody>
+                            {% for village in external %}
+                            <tr><td>{{ village }}</td><td><button type="submit" name="id" value="{{ village.id }}" class="btn btn-primary btn-sm">Withdrawl</button></td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        {% if foreign %}
+        <div class="card">
+            <div class="card-body">
+                <h4>Foreign Troops</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="sendback" />
+                    <table class="table">
+                        <tbody>
+                            {% for village in foreign %}
+                            <tr><td>{{ village }}</td><td><button type="submit" name="id" value="{{ village.id }}" class="btn btn-primary btn-sm">Send Back</button></td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div class="col-md-4">
         {% include "game/panels/army.html" %}

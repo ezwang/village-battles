@@ -260,10 +260,33 @@ def rally(request, village_id):
         return redirect("village", village_id=village.id)
 
     if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action in ["withdrawl", "sendback"]:
+            other = get_object_or_404(Village, id=request.POST.get("id"))
+            if action == "withdrawl":
+                troops = other.foreign_troops.filter(original=village)
+                source = other
+                destination = village
+            else:
+                troops = village.foreign_troops.filter(original=other)
+                source = village
+                destination = other
+            if not troops.count():
+                messages.error(request, "There are no troops to {}!".format(action if action == "withdrawl" else "send back"))
+            else:
+                travel = Attack.objects.create(
+                    source=source,
+                    destination=destination,
+                    end_time=timezone.now() + timedelta(seconds=calculate_travel_time(source, destination, troops.values_list("type", flat=True))),
+                    type=Attack.RETURN,
+                )
+                troops.update(village=None, original=None, attack=travel)
+                messages.success(request, "Troops have been {}!".format("withdrawn" if action == "withdrawl" else "sent back"))
+            return redirect("rally", village_id=village.id)
+
         x = request.POST.get("x")
         y = request.POST.get("y")
-
-        action = request.POST.get("action")
 
         if not action or action not in ["support", "attack"]:
             messages.error(request, "Invalid action specified!")
@@ -342,8 +365,13 @@ def rally(request, village_id):
 
         return redirect("village", village_id=village.id)
 
+    external_villages = Village.objects.filter(all_troops__original=village)
+    foreign_villages = Village.objects.filter(external_troops__village=village)
+
     context = {
         "village": village,
+        "external": external_villages,
+        "foreign": foreign_villages,
     }
 
     return render(request, "game/rally.html", context)
