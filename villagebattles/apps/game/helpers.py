@@ -45,15 +45,29 @@ def calculate_travel_time(source, destination, troops):
     return dist * slowest_unit
 
 
+def create_npc_village(world):
+    from .models import Village
+
+    x, y = get_new_village_coords(world)
+    vil = Village.objects.create(
+        x=x,
+        y=y,
+        name="Barbarian village",
+        world=world,
+        owner=None
+    )
+    create_default_setup(vil)
+    return vil
+
+
 def create_default_setup(vil):
     from .models import Building
 
+    buildings = []
+
     for t in ["HQ", "WM", "IM", "CM", "WH", "FM", "RP"]:
-        Building.objects.create(
-            village=vil,
-            type=t,
-            level=1
-        )
+        buildings.append(Building(village=vil, type=t, level=1))
+    Building.objects.bulk_create(buildings)
 
 
 def get_troop_type_display(t):

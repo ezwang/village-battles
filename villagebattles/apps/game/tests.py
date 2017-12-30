@@ -7,7 +7,7 @@ from django.utils import timezone
 from .models import World, Village, Attack, TroopTask, Troop, Building, BuildTask
 from ..users.models import User
 from .tasks import process_village
-from .helpers import create_default_setup
+from .helpers import create_default_setup, create_npc_village
 from .constants import get_troop_time, get_recruitment_buff
 
 
@@ -38,6 +38,14 @@ class ResourceTests(TestCase):
                 type="BR",
                 level=1
             )
+
+    def test_npc_village_generation(self):
+        """ Make sure the npc village generation function works. """
+        village = create_npc_village(self.world)
+
+        self.assertTrue(village)
+        self.assertTrue(village.buildings.count() > 1)
+        self.assertEquals(self.world.villages.count(), 3)
 
     def test_troop_creation(self):
         """ Make sure producing troops works. """
