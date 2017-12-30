@@ -80,10 +80,11 @@ class ResourceTests(TestCase):
     def test_troop_creation_middle(self):
         """ Make sure producing troops is the same amount with a call in the middle. """
         now = timezone.now()
+        barracks = self.village.buildings.get(type="BR")
         TYPE = Troop.CHOICES[0][0]
-        time = get_troop_time(TYPE)
+        time = get_troop_time(TYPE) * get_recruitment_buff("BR", barracks.level)
         TroopTask.objects.create(
-            building=self.village.buildings.get(type="BR"),
+            building=barracks,
             type=TYPE,
             amount=10
         )
