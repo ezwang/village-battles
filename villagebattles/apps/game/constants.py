@@ -50,12 +50,18 @@ def get_loyalty_regen():
 
 def get_max_capacity(level):
     """ Accepts the warehouse level and returns the maximum population for the village. """
-    return int(1000 * 1.2**(level - 1))
+    try:
+        return settings.GAME_CONFIG["buildings"]["WH"]["capacity"][level]
+    except KeyError:
+        return 1000
 
 
 def get_max_population(level):
     """ Accepts the farm level and returns the maximum population for the village. """
-    return int(200 * 1.2**(level - 1))
+    try:
+        return settings.GAME_CONFIG["buildings"]["FM"]["capacity"][level]
+    except KeyError:
+        return 200
 
 
 def get_building_cost(building, level):
