@@ -14,7 +14,9 @@ def do_damage(attack):
     total_attacker_attack = sum([x.amount * get_troop_attack(x.type) / 100 for x in attacking])
     total_defender_attack = sum([x.amount * get_troop_attack(x.type) / 100 for x in defending])
 
-    if total_attacker_attack > total_defender_attack:
+    total_defender_defense = sum([x.amount * get_troop_defense(x.type) / 100 for x in defending])
+
+    if total_attacker_attack > total_defender_defense:
         attack_power = 0.9
         defend_power = 0.5
     else:
