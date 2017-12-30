@@ -10,7 +10,7 @@ from django.utils import timezone
 from ..users.models import User
 from .battle import process_attack
 from .constants import (get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate,
-                        get_max_capacity, get_max_population, get_troop_population, get_troop_time, get_barracks_buff,
+                        get_max_capacity, get_max_population, get_troop_population, get_troop_time, get_recruitment_buff,
                         get_loyalty_regen)
 
 
@@ -294,7 +294,7 @@ class TroopTask(models.Model):
             amt = self.amount
             ret = True
         else:
-            time_per_unit = int(get_troop_time(self.type) * get_barracks_buff(self.building.level))
+            time_per_unit = int(get_troop_time(self.type) * get_recruitment_buff(self.building.type, self.building.level))
             total_time = (self.end_time - self.start_time).total_seconds()
             elapsed_time = (now - self.start_time).total_seconds()
             remaining = ceil((total_time - elapsed_time) / time_per_unit)

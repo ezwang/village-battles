@@ -87,6 +87,6 @@ def get_hq_buff(level):
     return 0.9**(level - 1)
 
 
-def get_barracks_buff(level):
+def get_recruitment_buff(building, level):
     """ Returns a multiplier for the troop build time. """
     return 0.95**(level - 1)

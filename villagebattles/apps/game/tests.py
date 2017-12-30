@@ -8,7 +8,7 @@ from .models import World, Village, Attack, TroopTask, Troop, Building, BuildTas
 from ..users.models import User
 from .tasks import process_village
 from .helpers import create_default_setup
-from .constants import get_troop_time, get_barracks_buff
+from .constants import get_troop_time, get_recruitment_buff
 
 
 class ResourceTests(TestCase):
@@ -68,7 +68,7 @@ class ResourceTests(TestCase):
             amount=100
         )
 
-        expected_amount = int(1800 / int(get_troop_time(TYPE) * get_barracks_buff(barracks.level)))
+        expected_amount = int(1800 / int(get_troop_time(TYPE) * get_recruitment_buff("BR", barracks.level)))
 
         past = now - timedelta(minutes=30)
         with patch.object(timezone, "now", return_value=past):
