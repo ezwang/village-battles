@@ -192,6 +192,8 @@ def hq(request, village_id):
         if building[0] not in built:
             not_built.append((building[0], building[1], building_requirements_met(building[0], village)))
 
+    not_built.sort(key=lambda x: (not x[2], x[0]))
+
     context = {
         "village": village,
         "buildings": village.buildings.all().order_by("type"),
