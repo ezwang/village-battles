@@ -3,7 +3,8 @@
     "loyalty_regen": 1,
     "buildings": {
         "HQ": {
-            "name": "Headquarters"
+            "name": "Headquarters",
+            "max_level": 30
         },
         "RP": {
             "name": "Rally Point",
@@ -11,11 +12,13 @@
         },
         "BR": {
             "name": "Barracks",
-            "troops": ["SP", "SW", "AX", "AC"]
+            "troops": ["SP", "SW", "AX", "AC"],
+            "max_level": 25
         },
         "ST": {
             "name": "Stable",
-            "troops": ["SC"]
+            "troops": ["SC"],
+            "max_level": 20
         },
         "AC": {
             "name": "Academy",
@@ -63,6 +66,12 @@
             "travel_time": 30,
             "carry": 20,
             "population": 1
+        },
+        "SC": {
+            "name": "Scout"
+        },
+        "NB": {
+            "name": "Noble"
         }
     }
 }

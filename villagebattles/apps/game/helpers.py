@@ -1,5 +1,7 @@
 from math import sqrt, floor, ceil
 
+from django.conf import settings
+
 from .constants import get_troop_travel
 
 
@@ -55,9 +57,8 @@ def create_default_setup(vil):
 
 
 def get_troop_type_display(t):
-    from .models import Troop
+    return settings.GAME_CONFIG["troops"][t]["name"]
 
-    for val, name in Troop.CHOICES:
-        if val == t:
-            return name
-    raise ValueError("Could not find troop name for '{}'!".format(t))
+
+def get_troop_choices():
+    return sorted([(k, v["name"]) for k, v in settings.GAME_CONFIG["troops"].items()])

@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from ..users.models import User
 from .battle import process_attack
+from .helpers import get_troop_choices
 from .constants import (get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate,
                         get_max_capacity, get_max_population, get_troop_population, get_troop_time, get_recruitment_buff,
                         get_loyalty_regen)
@@ -256,14 +257,8 @@ class BuildTask(models.Model):
 
 
 class Troop(models.Model):
-    CHOICES = (
-        ("SP", "Spearman"),
-        ("SW", "Swordsman"),
-        ("AX", "Axeman"),
-        ("AR", "Archer"),
-        ("SC", "Scout"),
-        ("NB", "Noble"),
-    )
+    CHOICES = get_troop_choices()
+
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="all_troops", null=True)
     original = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="external_troops", null=True)
     attack = models.ForeignKey("Attack", on_delete=models.CASCADE, related_name="troops", null=True)
