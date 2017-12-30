@@ -210,6 +210,8 @@ class Building(models.Model):
             return reverse("barracks", kwargs={"village_id": self.village.id})
         elif self.type == "RP":
             return reverse("rally", kwargs={"village_id": self.village.id})
+        elif self.type == "AC":
+            return reverse("academy", kwargs={"village_id": self.village.id})
 
     class Meta:
         unique_together = (("village", "type"),)

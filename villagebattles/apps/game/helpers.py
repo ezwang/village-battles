@@ -1,16 +1,19 @@
 from math import sqrt, floor, ceil
 
-from .models import Village, Building
 from .constants import get_troop_travel
 
 
 def get_villages(request, user=None):
+    from .models import Village
+
     if not user:
         user = request.user
     return Village.objects.filter(world=request.session["world"], owner=user)
 
 
 def get_new_village_coords(world):
+    from .models import Village
+
     n = Village.objects.filter(world=world).count() + 1
     x, y = square_spiral(n*2)
     return (x + 500, y + 500)
@@ -41,9 +44,20 @@ def calculate_travel_time(source, destination, troops):
 
 
 def create_default_setup(vil):
+    from .models import Building
+
     for t in ["HQ", "WM", "IM", "CM", "WH", "FM", "RP"]:
         Building.objects.create(
             village=vil,
             type=t,
             level=1
         )
+
+
+def get_troop_type_display(t):
+    from .models import Troop
+
+    for val, name in Troop.CHOICES:
+        if val == t:
+            return name
+    raise ValueError("Could not find troop name for '{}'!".format(t))

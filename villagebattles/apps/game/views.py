@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator, InvalidPage
 from django.db.models import F
 
-from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup
+from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
 from ..users.models import User
 from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population
@@ -201,15 +201,31 @@ def hq(request, village_id):
 
 @login_required
 def barracks(request, village_id):
+    return troop_building(request, village_id, "BR")
+
+
+@login_required
+def academy(request, village_id):
+    return troop_building(request, village_id, "AC")
+
+
+def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
-    if not village.buildings.filter(type="BR").exists():
-        messages.error(request, "You do not have a barracks!")
+    if building_type == "BR":
+        building_choices = ["SP", "SW", "AX", "AR"]
+        building_name = "Barracks"
+    elif building_type == "AC":
+        building_choices = ["NB"]
+        building_name = "Academy"
+
+    if not village.buildings.filter(type=building_type).exists():
+        messages.error(request, "You do not have a {}!".format(building_name))
         return redirect("village", village_id=village.id)
 
     if request.method == "POST":
         order = []
-        for choice, _ in Troop.CHOICES:
+        for choice in building_choices:
             amt = int(request.POST.get(choice, 0))
             order.append((choice, amt))
         if sum([x[1] for x in order]) == 0:
@@ -240,12 +256,16 @@ def barracks(request, village_id):
             else:
                 messages.error(request, "You do not have enough farm space to create this number of troops!")
             process([village])
-        return redirect("barracks", village_id=village.id)
+        if building_type == "BR":
+            return redirect("barracks", village_id=village.id)
+        elif building_type == "AC":
+            return redirect("academy", village_id=village.id)
 
     context = {
         "village": village,
-        "troop_options": Troop.CHOICES,
+        "troop_options": [(x, get_troop_type_display(x)) for x in building_choices],
         "troop_queue": village.troopqueue.order_by(F("end_time").asc(nulls_last=True), "start_time"),
+        "building_name": building_name,
     }
 
     return render(request, "game/barracks.html", context)

@@ -4,15 +4,7 @@ import copy
 from django.db.models import Sum
 
 from .constants import get_troop_carry
-
-
-def get_troop_type_display(t):
-    from .models import Troop
-
-    for val, name in Troop.CHOICES:
-        if val == t:
-            return name
-    raise ValueError("Could not find troop name for '{}'!".format(t))
+from .helpers import get_troop_type_display
 
 
 def do_damage(attack):
