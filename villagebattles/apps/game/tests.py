@@ -32,13 +32,19 @@ class ResourceTests(TestCase):
             owner=self.user2
         )
         create_default_setup(self.village2)
+        for v in [self.village, self.village2]:
+            Building.objects.create(
+                village=v,
+                type="BR",
+                level=1
+            )
 
     def test_troop_creation(self):
         """ Make sure producing troops works. """
         now = timezone.now()
         TYPE = Troop.CHOICES[0][0]
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10,
             step_time=now - timedelta(days=1),
@@ -50,16 +56,14 @@ class ResourceTests(TestCase):
 
     def test_troop_creation_with_barracks(self):
         """ Make sure barracks increases recruitment time. """
-        barracks = Building.objects.create(
-            village=self.village,
-            type="BR",
-            level=5
-        )
+        barracks = self.village.buildings.get(type="BR")
+        barracks.level = 5
+        barracks.save()
 
         now = timezone.now()
         TYPE = Troop.CHOICES[0][0]
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=100
         )
@@ -79,7 +83,7 @@ class ResourceTests(TestCase):
         TYPE = Troop.CHOICES[0][0]
         time = get_troop_time(TYPE)
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10
         )
@@ -121,7 +125,7 @@ class ResourceTests(TestCase):
         TYPE = Troop.CHOICES[0][0]
         time = get_troop_time(TYPE)
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10
         )
@@ -140,7 +144,7 @@ class ResourceTests(TestCase):
 
         process_village(self.village, now)
 
-        self.assertEqual(self.village.get_level("BR"), 1)
+        self.assertEqual(self.village.get_level("BR"), 2)
         self.assertEqual(self.village.troops.get(type=TYPE).amount, 10)
 
     def test_multiple_troop_creation(self):
@@ -148,14 +152,14 @@ class ResourceTests(TestCase):
         now = timezone.now()
         TYPE = Troop.CHOICES[0][0]
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10,
             step_time=now - timedelta(hours=12),
             end_time=now - timedelta(days=1)
         )
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10,
             step_time=now - timedelta(days=1),
@@ -171,7 +175,7 @@ class ResourceTests(TestCase):
         TYPE = Troop.CHOICES[0][0]
         time = get_troop_time(TYPE) * 1.5
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10,
             start_time=now - timedelta(seconds=time),
@@ -188,7 +192,7 @@ class ResourceTests(TestCase):
         past = now - timedelta(days=1)
         TYPE = Troop.CHOICES[0][0]
         TroopTask.objects.create(
-            village=self.village,
+            building=self.village.buildings.get(type="BR"),
             type=TYPE,
             amount=10,
             start_time=past

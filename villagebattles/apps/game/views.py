@@ -254,7 +254,7 @@ def troop_building(request, village_id, building_type):
                         if amt == 0:
                             continue
                         TroopTask.objects.create(
-                            village=village,
+                            building=village.buildings.get(type=building_type),
                             type=troop,
                             amount=amt
                         )

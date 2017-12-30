@@ -42,6 +42,10 @@ class Village(models.Model):
     def max_capacity(self):
         return get_max_capacity(self.get_level("WH"))
 
+    @property
+    def troopqueue(self):
+        return TroopTask.objects.filter(building__village=self)
+
     def get_level(self, building):
         try:
             return self.buildings.get(type=building).level
@@ -273,7 +277,7 @@ class Troop(models.Model):
 
 
 class TroopTask(models.Model):
-    village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="troopqueue")
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="troopqueue")
     type = models.CharField(max_length=2, choices=Troop.CHOICES)
     amount = models.IntegerField()
     start_time = models.DateTimeField(default=timezone.now)
@@ -290,7 +294,7 @@ class TroopTask(models.Model):
             amt = self.amount
             ret = True
         else:
-            time_per_unit = int(get_troop_time(self.type) * get_barracks_buff(self.village.get_level("BR")))
+            time_per_unit = int(get_troop_time(self.type) * get_barracks_buff(self.building.level))
             total_time = (self.end_time - self.start_time).total_seconds()
             elapsed_time = (now - self.start_time).total_seconds()
             remaining = ceil((total_time - elapsed_time) / time_per_unit)
@@ -300,12 +304,12 @@ class TroopTask(models.Model):
             self.save()
             ret = False
         try:
-            item = self.village.troops.get(type=self.type)
+            item = self.building.village.troops.get(type=self.type)
             item.amount += amt
             item.save()
         except Troop.DoesNotExist:
             Troop.objects.create(
-                village=self.village,
+                village=self.building.village,
                 type=self.type,
                 amount=amt
             )

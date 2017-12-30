@@ -51,11 +51,10 @@ def process_village(village, now):
                     task.save()
 
                 # Queue new troops
-                if not village.troopqueue.filter(end_time__isnull=False).exists():
-                    task = village.troopqueue.filter(end_time__isnull=True).order_by("start_time").first()
-                    if task:
+                for task in village.troopqueue.filter(end_time__isnull=True).order_by("start_time"):
+                    if not task.building.troopqueue.filter(end_time__isnull=False).exists():
                         initial = (troop_times.pop(0) if troop_times else now)
-                        single = int(get_troop_time(task.type) * get_barracks_buff(village.get_level("BR")))
+                        single = int(get_troop_time(task.type) * get_barracks_buff(task.building.level))
                         build_time = timedelta(seconds=single * task.amount)
                         task.end_time = initial + build_time
                         task.step_time = initial + timedelta(seconds=single)
