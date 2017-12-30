@@ -267,7 +267,7 @@ class Troop(models.Model):
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="all_troops", null=True)
     original = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="external_troops", null=True)
     attack = models.ForeignKey("Attack", on_delete=models.CASCADE, related_name="troops", null=True)
-    type = models.CharField(max_length=2, choices=CHOICES, default="SP")
+    type = models.CharField(max_length=2, choices=CHOICES)
     amount = models.IntegerField()
 
     @property
