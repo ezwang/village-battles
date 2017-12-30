@@ -1,8 +1,12 @@
+from django.conf import settings
+
+
 def get_max_building_level(building):
     """ Returns the maximum building level for a particular building. """
-    if building == "RP" or building == "AC":
-        return 1
-    return 20
+    try:
+        return settings.GAME_CONFIG["buildings"][building]["max_level"]
+    except KeyError:
+        return 20
 
 
 def get_building_population(building, level):
@@ -27,7 +31,7 @@ def get_iron_rate(level):
 
 def get_loyalty_regen():
     """ Returns the loyalty regeneration rate per hour. """
-    return 1
+    return settings.GAME_CONFIG.get("loyalty_regen", 1)
 
 
 def get_max_capacity(level):
@@ -42,17 +46,26 @@ def get_max_population(level):
 
 def get_building_cost(building, level):
     """ Returns a tuple of (wood, clay, iron) indicating how much this building costs. """
-    return (50, 50, 50)
+    try:
+        return settings.GAME_CONFIG["buildings"][building]["cost"][level]
+    except KeyError:
+        return (50, 50, 50)
 
 
 def get_troop_cost(troop):
     """ Returns a tuple of (wood, clay, iron) indicating how much a unit of this type costs. """
-    return (25, 25, 25)
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["cost"]
+    except KeyError:
+        return (25, 25, 25)
 
 
 def get_troop_time(troop):
     """ Returns troop build time in seconds. """
-    return 30
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["build_time"]
+    except KeyError:
+        return 30
 
 
 def get_building_population_difference(building, level):
@@ -69,17 +82,26 @@ def get_building_upgrade_time(building, level):
 
 def get_troop_population(troop):
     """ Returns the number of population units that this type of troop takes up. """
-    return 1
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["population"]
+    except KeyError:
+        return 1
 
 
 def get_troop_travel(troop):
     """ Returns troop travel time in seconds. """
-    return 10
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["travel_time"]
+    except KeyError:
+        return 10
 
 
 def get_troop_carry(troop):
     """ Returns the number of resources that this type of unit. """
-    return 10
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["carry"]
+    except KeyError:
+        return 10
 
 
 def get_hq_buff(level):

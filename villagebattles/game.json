@@ -1,0 +1,28 @@
+{
+    "starting_resources": 500,
+    "loyalty_regen": 1,
+    "buildings": {
+        "RP": {
+            "max_level": 1
+        },
+        "AC": {
+            "max_level": 1
+        }
+    },
+    "troops": {
+        "SP": {
+            "cost": [25, 25, 25],
+            "build_time": 30,
+            "travel_time": 20,
+            "carry": 30,
+            "population": 1
+        },
+        "AX": {
+            "cost": [30, 25, 70],
+            "build_time": 40,
+            "travel_time": 10,
+            "carry": 100,
+            "population": 1
+        }
+    }
+}

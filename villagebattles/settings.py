@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import json
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -151,4 +152,8 @@ LOGIN_URL = "/"
 AUTH_USER_MODEL = "users.User"
 
 
-STARTING_RESOURCES = 500
+# Load game variables
+with open(os.path.join(BASE_DIR, "villagebattles", "game.json"), "r") as f:
+    GAME_CONFIG = json.load(f)
+
+STARTING_RESOURCES = GAME_CONFIG.get("starting_resources", 500)
