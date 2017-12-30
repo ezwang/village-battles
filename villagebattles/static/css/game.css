@@ -30,7 +30,7 @@ a.snippet:hover, .snippet a:hover {
     max-width: 400px;
     margin: 15px;
 }
-.wood:before, .clay:before, .iron:before, .population:before, .unread:after {
+.wood:before, .clay:before, .iron:before, .population:before, .village:before, .unread:after {
     display: inline-block;
     content: " ";
     width: 16px;
@@ -57,4 +57,9 @@ a.snippet:hover, .snippet a:hover {
     margin-left: 3px;
     background: url("../images/report.png");
     background-size: cover;
+}
+.village:before {
+    background: url("../images/village.png");
+    background-size: cover;
+    margin-right: 3px;
 }

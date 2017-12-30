@@ -56,7 +56,7 @@ $(document).ready(function() {
         else {
             owner_text = " (Abandoned Village)";
         }
-        $("#info").html("<a href='village/" + selected + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a>" + owner_text);
+        $("#info").html("<a class='village' href='village/" + selected + "'>" + $("<div />").text(vil.name).html() + " (" + vil.x + "|" + vil.y + ")</a>" + owner_text);
         $("#world .village").removeClass("selected");
         $(this).addClass("selected");
     });

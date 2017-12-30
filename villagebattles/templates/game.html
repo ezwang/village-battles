@@ -16,7 +16,7 @@
     <a class="snippet" href="{% url "dashboard" %}">Overview</a>
     {% if current_village %}
     <a class="snippet" href="{% url "map" %}#{{ current_village.x }}-{{ current_village.y }}">Map</a>
-    <span class="snippet"><a href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>
+    <span class="snippet"><a class="village" href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>
     <div class="float-right">
         <span class="snippet ticker">
             <span class="wood" data-rate="{{ current_village.wood_rate }}">{{ current_village.wood }}</span> / <span class="wood-cap">{{ current_village.max_capacity }}</span>
