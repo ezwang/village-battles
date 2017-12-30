@@ -12,8 +12,8 @@
     "troops": {
         "SP": {
             "name": "Spearman",
-            "attack": 30,
-            "defense": 70,
+            "attack": 50,
+            "defense": 50,
             "cost": [25, 25, 25],
             "build_time": 30,
             "travel_time": 20,
@@ -28,6 +28,26 @@
             "build_time": 40,
             "travel_time": 10,
             "carry": 100,
+            "population": 1
+        },
+        "SW": {
+            "name": "Swordsman",
+            "attack": 50,
+            "defense": 50,
+            "cost": [30, 25, 70],
+            "build_time": 40,
+            "travel_time": 10,
+            "carry": 40,
+            "population": 1
+        },
+        "AR": {
+            "name": "Archer",
+            "attack": 20,
+            "defense": 100,
+            "cost": [70, 25, 30],
+            "build_time": 40,
+            "travel_time": 30,
+            "carry": 20,
             "population": 1
         }
     }
