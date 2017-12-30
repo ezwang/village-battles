@@ -306,6 +306,25 @@ class ResourceTests(TestCase):
         self.assertTrue(self.village2.owner.reports.count(), 1)
         self.assertTrue(self.village.troops.get(type="SP").amount, 3)
 
+    def test_attack_npc_village(self):
+        """ Test attacking a NPC village. """
+        village = create_npc_village(self.world)
+        now = timezone.now()
+        attack = Attack.objects.create(
+            source=self.village,
+            destination=village,
+            end_time=now - timedelta(hours=3),
+            type=Attack.ATTACK
+        )
+        Troop.objects.create(
+            attack=attack,
+            type="SP",
+            amount=10
+        )
+        process_village(self.village, now)
+        self.assertEquals(Attack.objects.count(), 0)
+        self.assertTrue(self.village.owner.reports.count(), 1)
+
     def test_attack_with_noble(self):
         """ Test attacking with noble decreases loyalty. """
         now = timezone.now()
