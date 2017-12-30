@@ -31,6 +31,13 @@ class BasicTests(TestCase):
         response = self.client.get(reverse("start"))
         self.assertRedirects(response, reverse("create_village"))
 
+    def test_common_pages(self):
+        response = self.client.get(reverse("report"))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("settings"))
+        self.assertEqual(response.status_code, 200)
+
     def test_village_creation(self):
         response = self.client.post(reverse("create_village"))
         self.assertEqual(Village.objects.all().count(), 1)
