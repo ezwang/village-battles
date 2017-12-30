@@ -209,12 +209,20 @@ def academy(request, village_id):
     return troop_building(request, village_id, "AC")
 
 
+@login_required
+def stable(request, village_id):
+    return troop_building(request, village_id, "ST")
+
+
 def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
     if building_type == "BR":
         building_choices = ["SP", "SW", "AX", "AR"]
         building_name = "Barracks"
+    elif building_type == "ST":
+        building_choices = ["SC"]
+        building_name = "Stable"
     elif building_type == "AC":
         building_choices = ["NB"]
         building_name = "Academy"
@@ -260,6 +268,8 @@ def troop_building(request, village_id, building_type):
             return redirect("barracks", village_id=village.id)
         elif building_type == "AC":
             return redirect("academy", village_id=village.id)
+        elif building_type == "ST":
+            return redirect("stable", village_id=village.id)
 
     context = {
         "village": village,

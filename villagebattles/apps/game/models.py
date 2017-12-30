@@ -210,6 +210,8 @@ class Building(models.Model):
             return reverse("barracks", kwargs={"village_id": self.village.id})
         elif self.type == "RP":
             return reverse("rally", kwargs={"village_id": self.village.id})
+        elif self.type == "ST":
+            return reverse("stable", kwargs={"village_id": self.village.id})
         elif self.type == "AC":
             return reverse("academy", kwargs={"village_id": self.village.id})
 
@@ -252,6 +254,7 @@ class Troop(models.Model):
         ("SW", "Swordsman"),
         ("AX", "Axeman"),
         ("AR", "Archer"),
+        ("SC", "Scout"),
         ("NB", "Noble"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="all_troops", null=True)
