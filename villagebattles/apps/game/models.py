@@ -271,6 +271,9 @@ class Troop(models.Model):
     def population(self):
         return self.amount * get_troop_population(self.type)
 
+    def __str__(self):
+        return "<Troop: {} ({})>".format(self.get_type_display(), self.amount)
+
     class Meta:
         unique_together = (("village", "type", "original"),)
         ordering = ["type"]
@@ -287,6 +290,9 @@ class TroopTask(models.Model):
     @property
     def population(self):
         return self.amount * get_troop_population(self.type)
+
+    def __str__(self):
+        return "<TroopTask: {} ({})>".format(self.get_type_display(), self.amount)
 
     def process(self):
         now = timezone.now()
