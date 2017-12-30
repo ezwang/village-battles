@@ -11,7 +11,8 @@ from django.db.models import F
 from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
 from ..users.models import User
-from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, building_requirements_met
+from .constants import (get_building_cost, get_building_population, get_troop_cost, get_troop_population,
+                        building_requirements_met, get_allowed_troops)
 from .tasks import process
 
 
@@ -234,6 +235,7 @@ def troop_building(request, village_id, building_type):
 
     building = village.buildings.get(type=building_type)
     building_name = building.get_type_display()
+    building_choices = get_allowed_troops(building_type)
 
     if building_type == "BR":
         building_choices = ["SP", "SW", "AX", "AR"]
@@ -280,14 +282,7 @@ def troop_building(request, village_id, building_type):
             else:
                 messages.error(request, "You do not have enough farm space to create this number of troops!")
             process([village])
-        if building_type == "BR":
-            return redirect("barracks", village_id=village.id)
-        elif building_type == "AC":
-            return redirect("academy", village_id=village.id)
-        elif building_type == "WS":
-            return redirect("workshop", village_id=village.id)
-        elif building_type == "ST":
-            return redirect("stable", village_id=village.id)
+        return redirect(building.url)
 
     context = {
         "village": village,

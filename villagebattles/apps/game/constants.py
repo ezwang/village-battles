@@ -139,3 +139,10 @@ def building_requirements_met(building_type, village):
     if building_type == "AC":
         return village.get_level("HQ") >= 20
     return True
+
+
+def get_allowed_troops(building_type):
+    try:
+        return settings.GAME_CONFIG["buildings"][building_type]["troops"]
+    except KeyError:
+        return []

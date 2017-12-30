@@ -2,11 +2,25 @@
     "starting_resources": 500,
     "loyalty_regen": 1,
     "buildings": {
+        "HQ": {
+            "name": "Headquarters"
+        },
         "RP": {
+            "name": "Rally Point",
             "max_level": 1
         },
+        "BR": {
+            "name": "Barracks",
+            "troops": ["SP", "SW", "AX", "AC"]
+        },
+        "ST": {
+            "name": "Stable",
+            "troops": ["SC"]
+        },
         "AC": {
-            "max_level": 1
+            "name": "Academy",
+            "max_level": 1,
+            "troops": ["NB"]
         }
     },
     "troops": {
