@@ -14,7 +14,7 @@ function addVillage(x, y, id) {
 function loadVillages() {
     $.get(MAP_ENDPOINT, function(data) {
         data.villages.forEach(function(v) {
-            var vil = addVillage(v.x, v.y, v.owner.id);
+            var vil = addVillage(v.x, v.y, v.id);
             village_info[v.id] = v;
             if (v.x == coords[0] && v.y == coords[1]) {
                 vil.click();
