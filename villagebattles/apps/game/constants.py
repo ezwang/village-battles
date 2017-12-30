@@ -134,6 +134,8 @@ def building_requirements_met(building_type, village):
         return village.get_level("HQ") >= 3
     if building_type == "ST":
         return village.get_level("HQ") >= 10
+    if building_type == "WS":
+        return village.get_level("HQ") >= 15
     if building_type == "AC":
         return village.get_level("HQ") >= 20
     return True

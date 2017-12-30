@@ -220,6 +220,11 @@ def stable(request, village_id):
     return troop_building(request, village_id, "ST")
 
 
+@login_required
+def workshop(request, village_id):
+    return troop_building(request, village_id, "WS")
+
+
 def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
@@ -234,6 +239,8 @@ def troop_building(request, village_id, building_type):
         building_choices = ["SP", "SW", "AX", "AR"]
     elif building_type == "ST":
         building_choices = ["SC"]
+    elif building_type == "WS":
+        building_choices = []
     elif building_type == "AC":
         building_choices = ["NB"]
 
@@ -277,6 +284,8 @@ def troop_building(request, village_id, building_type):
             return redirect("barracks", village_id=village.id)
         elif building_type == "AC":
             return redirect("academy", village_id=village.id)
+        elif building_type == "WS":
+            return redirect("workshop", village_id=village.id)
         elif building_type == "ST":
             return redirect("stable", village_id=village.id)
 

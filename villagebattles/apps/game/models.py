@@ -184,6 +184,7 @@ class Building(models.Model):
         ("BR", "Barracks"),
         ("RP", "Rally Point"),
         ("ST", "Stable"),
+        ("WS", "Workshop"),
         ("AC", "Academy"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildings")
@@ -216,6 +217,8 @@ class Building(models.Model):
             return reverse("rally", kwargs={"village_id": self.village.id})
         elif self.type == "ST":
             return reverse("stable", kwargs={"village_id": self.village.id})
+        elif self.type == "WS":
+            return reverse("workshop", kwargs={"village_id": self.village.id})
         elif self.type == "AC":
             return reverse("academy", kwargs={"village_id": self.village.id})
 
