@@ -40,7 +40,7 @@
         },
         "WS": {
             "name": "Workshop",
-            "troops": [],
+            "troops": ["CA"],
             "max_level": 15
         },
         "AC": {
@@ -92,6 +92,9 @@
         },
         "SC": {
             "name": "Scout"
+        },
+        "CA": {
+            "name": "Catapult"
         },
         "NB": {
             "name": "Noble"
