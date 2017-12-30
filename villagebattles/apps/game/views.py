@@ -240,8 +240,11 @@ def troop_building(request, village_id, building_type):
     if request.method == "POST":
         order = []
         for choice in building_choices:
-            amt = int(request.POST.get(choice, 0))
-            order.append((choice, amt))
+            try:
+                amt = int(request.POST.get(choice, 0))
+                order.append((choice, amt))
+            except ValueError:
+                pass
         if sum([x[1] for x in order]) == 0:
             messages.warning(request, "You did not order any troops!")
         else:
