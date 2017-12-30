@@ -148,15 +148,17 @@ def process_attack(attack):
     attacker_copy = json.dumps(attacker_copy, sort_keys=True, indent=4)
     defender_copy = json.dumps(defender_copy, sort_keys=True, indent=4)
 
-    Report.objects.create(
-        title="{} {} {}".format(attack.source, attacker_action, attack.destination),
-        owner=attack.source.owner,
-        world=attack.source.world,
-        body=attacker_copy
-    )
-    Report.objects.create(
-        title="{} {} {}".format(attack.destination, defender_action, attack.source),
-        owner=last_owner,
-        world=attack.destination.world,
-        body=defender_copy
-    )
+    if attack.source.owner is not None:
+        Report.objects.create(
+            title="{} {} {}".format(attack.source, attacker_action, attack.destination),
+            owner=attack.source.owner,
+            world=attack.source.world,
+            body=attacker_copy
+        )
+    if last_owner is not None:
+        Report.objects.create(
+            title="{} {} {}".format(attack.destination, defender_action, attack.source),
+            owner=last_owner,
+            world=attack.destination.world,
+            body=defender_copy
+        )
