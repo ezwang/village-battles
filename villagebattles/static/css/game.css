@@ -30,7 +30,7 @@ a.snippet:hover, .snippet a:hover {
     max-width: 400px;
     margin: 15px;
 }
-.wood:before, .clay:before, .iron:before, .population:before, .village:before, .attack:before, .defense:before, .unread:after {
+.wood:before, .clay:before, .iron:before, .population:before, .village:before, .attack:before, .defense:before, .resource:before, .unread:after {
     display: inline-block;
     content: " ";
     width: 16px;
@@ -48,6 +48,11 @@ a.snippet:hover, .snippet a:hover {
 .iron:before {
     background: url("../images/iron.png");
     background-size: cover;
+}
+.resource:before {
+    background: url("../images/resource.png");
+    background-size: cover;
+    margin-left: 3px;
 }
 .population:before {
     background: url("../images/population.png");
