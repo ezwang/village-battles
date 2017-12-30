@@ -1,6 +1,6 @@
 def get_max_building_level(building):
     """ Returns the maximum building level for a particular building. """
-    if building == "RP":
+    if building == "RP" or building == "AC":
         return 1
     return 20
 

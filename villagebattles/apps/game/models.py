@@ -180,6 +180,7 @@ class Building(models.Model):
         ("BR", "Barracks"),
         ("RP", "Rally Point"),
         ("ST", "Stable"),
+        ("AC", "Academy"),
     )
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildings")
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
