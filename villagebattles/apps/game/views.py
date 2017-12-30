@@ -216,16 +216,15 @@ def stable(request, village_id):
 
 def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
+    building = village.buildings.get(type=building_type)
+    building_name = building.get_type_display()
 
     if building_type == "BR":
         building_choices = ["SP", "SW", "AX", "AR"]
-        building_name = "Barracks"
     elif building_type == "ST":
         building_choices = ["SC"]
-        building_name = "Stable"
     elif building_type == "AC":
         building_choices = ["NB"]
-        building_name = "Academy"
 
     if not village.buildings.filter(type=building_type).exists():
         messages.error(request, "You do not have a {}!".format(building_name))
@@ -254,7 +253,7 @@ def troop_building(request, village_id, building_type):
                         if amt == 0:
                             continue
                         TroopTask.objects.create(
-                            building=village.buildings.get(type=building_type),
+                            building=building,
                             type=troop,
                             amount=amt
                         )
