@@ -11,7 +11,7 @@ from django.db.models import F
 from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display
 from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
 from ..users.models import User
-from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population
+from .constants import get_building_cost, get_building_population, get_troop_cost, get_troop_population, building_requirements_met
 from .tasks import process
 
 
@@ -143,7 +143,9 @@ def hq(request, village_id):
         elif "building" in request.POST:
             try:
                 building = Building.objects.get(id=request.POST.get("building"), village=village)
-                if building.level_after_upgrade < building.max_level:
+                if not building_requirements_met(building.type, village):
+                    messages.error(request, "You no longer have the requirements to upgrade this building!")
+                elif building.level_after_upgrade < building.max_level:
                     cost = get_building_cost(building.type, building.level_after_upgrade)
                     pop = get_building_population(building.type, building.level) - get_building_population(building.type, building.level - 1)
                     if village.population_after_upgrade + pop <= village.max_population:
@@ -163,7 +165,9 @@ def hq(request, village_id):
             if type in [x[0] for x in Building.CHOICES]:
                 cost = get_building_cost(type, 0)
                 pop = get_building_population(type, 0)
-                if village.population_after_upgrade + pop <= village.max_population:
+                if not building_requirements_met(type, village):
+                    messages.error(request, "You do not have the requirements for this building yet.")
+                elif village.population_after_upgrade + pop <= village.max_population:
                     if village.buildings.filter(type=type).exists() or village.buildqueue.filter(type=type).exists():
                         messages.error(request, "You already have this building!")
                     else:
@@ -186,7 +190,7 @@ def hq(request, village_id):
 
     for building in Building.CHOICES:
         if building[0] not in built:
-            not_built.append(building)
+            not_built.append((building[0], building[1], building_requirements_met(building[0], village)))
 
     context = {
         "village": village,

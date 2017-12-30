@@ -90,3 +90,14 @@ def get_hq_buff(level):
 def get_recruitment_buff(building, level):
     """ Returns a multiplier for the troop build time. """
     return 0.95**(level - 1)
+
+
+def building_requirements_met(building_type, village):
+    """ Given a building type and a village, check if the village can build the building. """
+    if building_type == "BR":
+        return village.get_level("HQ") >= 3
+    if building_type == "ST":
+        return village.get_level("HQ") >= 10
+    if building_type == "AC":
+        return village.get_level("HQ") >= 20
+    return True
