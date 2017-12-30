@@ -3,7 +3,7 @@ import copy
 
 from django.db.models import Sum
 
-from .constants import get_troop_carry
+from .constants import get_troop_carry, get_troop_attack, get_troop_defense
 from .helpers import get_troop_type_display
 
 
@@ -11,18 +11,18 @@ def do_damage(attack):
     attacking = attack.troops.all()
     defending = attack.destination.all_troops.all()
 
-    total_attack = sum([x.amount for x in attacking])
-    total_defend = sum([x.amount for x in defending])
+    total_attacker_attack = sum([x.amount * get_troop_attack(x.type) / 100 for x in attacking])
+    total_defender_attack = sum([x.amount * get_troop_attack(x.type) / 100 for x in defending])
 
-    if total_attack > total_defend:
+    if total_attacker_attack > total_defender_attack:
         attack_power = 0.9
         defend_power = 0.5
     else:
         attack_power = 0.5
         defend_power = 0.9
 
-    attacker_damage = total_attack * attack_power
-    defender_damage = total_defend * defend_power
+    attacker_damage = total_attacker_attack * attack_power
+    defender_damage = total_defender_attack * defend_power
 
     for defender in defending:
         defender.amount -= attacker_damage

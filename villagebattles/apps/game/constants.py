@@ -9,6 +9,20 @@ def get_max_building_level(building):
         return 20
 
 
+def get_troop_attack(troop):
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["attack"]
+    except KeyError:
+        return 50
+
+
+def get_troop_defense(troop):
+    try:
+        return settings.GAME_CONFIG["troops"][troop]["defense"]
+    except KeyError:
+        return 50
+
+
 def get_building_population(building, level):
     """ Returns how many population units a building takes up. """
     return 1 * level
