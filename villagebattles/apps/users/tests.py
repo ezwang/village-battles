@@ -89,3 +89,26 @@ class BasicTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEquals(village.buildings.get(type="HQ").level, 2)
+
+    def test_troop_creation(self):
+        """ Make sure that making troops works. """
+        village = self.do_enter_game()
+        now = timezone.now()
+
+        Building.objects.create(
+            village=village,
+            type="BR",
+            level=5,
+        )
+
+        with patch.object(timezone, "now", return_value=now - timedelta(days=1)):
+            village._update = timezone.now()
+            village.save()
+
+            response = self.client.post(reverse("barracks", kwargs={"village_id": village.id}), {"SP": 10})
+            self.assertRedirects(response, reverse("barracks", kwargs={"village_id": village.id}))
+
+        response = self.client.get(reverse("hq", kwargs={"village_id": village.id}))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEquals(village.troops.get(type="SP").amount, 10)
