@@ -15,11 +15,17 @@
                     {% csrf_token %}
                     <table class="table">
                         <thead>
-                            <tr><th>Troop</th><th>Cost</th><th>Time</th><th>Amount</th></tr>
+                            <tr><th>Troop</th><th>Cost</th><th>Time</th><th>Stats</th><th>Amount</th></tr>
                         </thead>
                         <tbody>
                             {% for value, name in troop_options %}
-                            <tr><td>{{ name }}</td><td>{% troop_cost value %}</td><td>{% troop_time value village %}</td><td><input type="number" name="{{ value }}" value="0" class="form-control" /></td></tr>
+                            <tr>
+                                <td>{{ name }}</td>
+                                <td>{% troop_cost value %}</td>
+                                <td>{% troop_time value village %}</td>
+                                <td>{% troop_stats value village %}</td>
+                                <td><input type="number" name="{{ value }}" value="0" class="form-control" /></td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
