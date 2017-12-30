@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from ..users.models import User
 from .battle import process_attack
-from .helpers import get_troop_choices
+from .helpers import get_troop_choices, get_building_choices
 from .constants import (get_max_building_level, get_building_population, get_wood_rate, get_clay_rate, get_iron_rate,
                         get_max_capacity, get_max_population, get_troop_population, get_troop_time, get_recruitment_buff,
                         get_loyalty_regen)
@@ -175,19 +175,8 @@ class Village(models.Model):
 
 
 class Building(models.Model):
-    CHOICES = (
-        ("HQ", "Headquarters"),
-        ("WM", "Wood Mine"),
-        ("CM", "Clay Mine"),
-        ("IM", "Iron Mine"),
-        ("WH", "Warehouse"),
-        ("FM", "Farm"),
-        ("BR", "Barracks"),
-        ("RP", "Rally Point"),
-        ("ST", "Stable"),
-        ("WS", "Workshop"),
-        ("AC", "Academy"),
-    )
+    CHOICES = get_building_choices()
+
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildings")
     type = models.CharField(max_length=2, choices=CHOICES, default="HQ")
     level = models.IntegerField(default=1)

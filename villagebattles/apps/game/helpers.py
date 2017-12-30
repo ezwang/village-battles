@@ -62,3 +62,7 @@ def get_troop_type_display(t):
 
 def get_troop_choices():
     return sorted([(k, v["name"]) for k, v in settings.GAME_CONFIG["troops"].items()])
+
+
+def get_building_choices():
+    return sorted([(k, v["name"]) for k, v in settings.GAME_CONFIG["buildings"].items()])

@@ -6,6 +6,24 @@
             "name": "Headquarters",
             "max_level": 30
         },
+        "WM": {
+            "name": "Wood Mine",
+            "max_level": 30
+        },
+        "CM": {
+            "name": "Clay Mine",
+            "max_level": 30
+        },
+        "IM": {
+            "name": "Iron Mine",
+            "max_level": 30
+        },
+        "WH": {
+            "name": "Warehouse"
+        },
+        "FM": {
+            "name": "Farm"
+        },
         "RP": {
             "name": "Rally Point",
             "max_level": 1
@@ -19,6 +37,11 @@
             "name": "Stable",
             "troops": ["SC"],
             "max_level": 20
+        },
+        "WS": {
+            "name": "Workshop",
+            "troops": [],
+            "max_level": 15
         },
         "AC": {
             "name": "Academy",
