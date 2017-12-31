@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'villagebattles.apps.users',
     'villagebattles.apps.game',
+    'villagebattles.apps.tribes',
 ]
 
 MIDDLEWARE = [

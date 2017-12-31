@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('villagebattles.apps.users.urls')),
     path('game/', include('villagebattles.apps.game.urls')),
+    path('tribe/', include('villagebattles.apps.tribes.urls')),
 ]
