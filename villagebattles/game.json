@@ -43,7 +43,11 @@
         },
         "RP": {
             "name": "Rally Point",
-            "max_level": 1
+            "max_level": 1,
+            "upgrade": {
+                "initial": 120,
+                "scale": 1
+            }
         },
         "BR": {
             "name": "Barracks",

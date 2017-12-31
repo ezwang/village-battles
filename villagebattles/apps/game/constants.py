@@ -1,13 +1,17 @@
 from django.conf import settings
 
 
-def _get_value(path, level, initial=1, scale=1.2, constant=0):
+def _get_value(path, level=None, initial=0, scale=0, constant=0, default=None):
     try:
         obj = settings.GAME_CONFIG
         for item in path:
             obj = obj[item]
     except KeyError:
-        return initial
+        if default is not None:
+            return default
+        return initial * (scale ** (level - 1)) + constant
+    if not level:
+        return obj
     if isinstance(obj, list):
         return obj.get(level, initial)
     elif isinstance(obj, dict):
@@ -18,44 +22,35 @@ def _get_value(path, level, initial=1, scale=1.2, constant=0):
 
 def get_max_building_level(building):
     """ Returns the maximum building level for a particular building. """
-    try:
-        return settings.GAME_CONFIG["buildings"][building]["max_level"]
-    except KeyError:
-        return 20
+    return int(_get_value(["buildings", building, "max_level"], default=20))
 
 
 def get_troop_attack(troop):
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["attack"]
-    except KeyError:
-        return 50
+    return int(_get_value(["troops", troop, "attack"], default=50))
 
 
 def get_troop_defense(troop):
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["defense"]
-    except KeyError:
-        return 50
+    return int(_get_value(["troops", troop, "defense"], default=50))
 
 
 def get_building_population(building, level):
     """ Returns how many population units a building takes up. """
-    return 1 * level
+    return int(_get_value(["buildings", building, "population"], level, default=level))
 
 
 def get_wood_rate(level):
     """ Accepts the wood mine level and returns wood produced per hour. """
-    return int(30 * (1.2**(level - 1)))
+    return int(_get_value(["buildings", "WM", "production"], level, initial=30, scale=1.2))
 
 
 def get_clay_rate(level):
     """ Accepts the clay mine level and returns clay produced per hour. """
-    return int(30 * (1.2**(level - 1)))
+    return int(_get_value(["buildings", "CM", "production"], level, initial=30, scale=1.2))
 
 
 def get_iron_rate(level):
     """ Accepts the iron mine level and returns iron produced per hour. """
-    return int(30 * (1.2**(level - 1)))
+    return int(_get_value(["buildings", "IM", "production"], level, initial=30, scale=1.2))
 
 
 def get_loyalty_regen():
@@ -91,10 +86,7 @@ def get_troop_cost(troop):
 
 def get_troop_time(troop):
     """ Returns troop build time in seconds. """
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["build_time"]
-    except KeyError:
-        return 30
+    return _get_value(["troops", troop, "build_time"], default=30)
 
 
 def get_building_population_difference(building, level):
@@ -106,31 +98,22 @@ def get_building_population_difference(building, level):
 
 def get_building_upgrade_time(building, level):
     """ Returns the building upgrade time in seconds. """
-    return _get_value(["buildings", building, "upgrade"], level, initial=300, scale=1.5)
+    return _get_value(["buildings", building, "upgrade"], level, initial=60, scale=1.5)
 
 
 def get_troop_population(troop):
     """ Returns the number of population units that this type of troop takes up. """
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["population"]
-    except KeyError:
-        return 1
+    return _get_value(["troops", troop, "population"], default=1)
 
 
 def get_troop_travel(troop):
     """ Returns troop travel time in seconds. """
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["travel_time"]
-    except KeyError:
-        return 10
+    return _get_value(["troops", troop, "travel_time"], default=10)
 
 
 def get_troop_carry(troop):
     """ Returns the number of resources that this type of unit. """
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["carry"]
-    except KeyError:
-        return 10
+    return _get_value(["troops", troop, "carry"], default=10)
 
 
 def get_hq_buff(level):
