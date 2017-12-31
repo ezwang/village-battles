@@ -500,7 +500,7 @@ def quest_submit(request):
         world = get_object_or_404(World, id=request.session["world"])
         quest = get_object_or_404(Quest, world=world, user=request.user, type=request.POST.get("id"))
 
-        if not get_quest_finished(quest.id, request):
+        if not get_quest_finished(quest.type, request):
             messages.error(request, "You have not finished this quest yet!")
         else:
             process_quest(request, world, quest)
