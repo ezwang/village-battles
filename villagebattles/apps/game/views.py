@@ -14,7 +14,7 @@ from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attac
 from ..users.models import User
 from .constants import (get_building_cost, get_building_population, get_troop_cost, get_troop_population,
                         building_requirements_met, get_allowed_troops)
-from .quests import get_quest_name, get_quest_description, get_quest_finished, get_quest_reward, process_quest
+from .quests import get_quest_name, get_quest_description, get_quest_finished, get_reward_display, process_quest
 from .tasks import process
 
 
@@ -489,7 +489,7 @@ def quest(request, quest_id):
         "id": quest_id,
         "name": get_quest_name(quest_id),
         "body": get_quest_description(quest_id),
-        "reward": get_quest_reward(quest_id),
+        "reward": get_reward_display(quest_id),
         "done": get_quest_finished(quest_id, request)
     }
     return JsonResponse(info)

@@ -77,7 +77,7 @@ $(document).ready(function() {
             $("#quest-modal .modal-title").text(data.name + " - Quest");
             var body = $("<p />").text(data.body);
             $("#quest-modal .modal-body").html("").append(body);
-            $("#quest-modal .modal-body").append("<div>Reward: <span class='wood'>" + data.reward[0] + "</span><span class='clay'>" + data.reward[1] + "</span><span class='iron'>" + data.reward[2] + "</span></div>");
+            $("#quest-modal .modal-body").append("<div>Reward: " + data.reward +  "</div>");
             $("#claim").prop("disabled", !data.done);
             $("#quest-modal").modal("show");
         });

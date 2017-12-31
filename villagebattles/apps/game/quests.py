@@ -1,5 +1,5 @@
-from .models import Quest, Village, World
-from .helpers import get_villages
+from .models import Quest, Village, World, Troop
+from .helpers import get_villages, get_troop_type_display
 
 
 def _check_building_level(building, level):
@@ -41,14 +41,14 @@ QUESTS = {
         "body": ("Upgrade your headquarters to level 2. To do this, click on 'Headquarters' from the village screen "
                  "and then click 'Upgrade' next to the Headquarters building. After you have done so, wait for the build ",
                  "to finish and come back to this page to get your reward."),
-        "reward": [200, 200, 200],
+        "reward": {"resources": [200, 200, 200]},
         "finished": _check_building_level("HQ", 2),
         "unlocks": [2, 3]
     },
     2: {
         "name": "Build a Barracks",
         "body": "Upgrade your headquarters to level 3 and build a barracks. The barracks will unlock at headquarters level 3.",
-        "reward": [300, 300, 300],
+        "reward": {"resources": [300, 300, 300]},
         "finished": _check_building_level("BR", 1),
         "unlocks": [4, 6, 7]
     },
@@ -56,7 +56,7 @@ QUESTS = {
         "name": "A Little Bit About Yourself",
         "body": ("Change your profile text. You can do this by going to 'Settings' in the upper right. There is a form "
                  "on the left of the screen that you can use to change your profile."),
-        "reward": [100, 100, 100],
+        "reward": {"resources": [100, 100, 100]},
         "finished": _check_profile,
         "unlocks": [5]
     },
@@ -64,21 +64,21 @@ QUESTS = {
         "name": "Creating an Army",
         "body": ("Create 10 spearmen. You can do this by clicking on 'Barracks' from the village screen. "
                  "You will be able to use the form on the barracks page to create new troops."),
-        "reward": [500, 500, 500],
+        "reward": {"troops": ("SP", 10)},
         "finished": _check_troops("SP", 10),
         "unlocks": [8]
     },
     5: {
         "name": "Forming Alliances",
         "body": "Create or join a tribe. You can do this by clicking on 'Tribe' at the top of the page.",
-        "reward": [100, 100, 100],
+        "reward": {"resources": [100, 100, 100]},
         "finished": _check_tribe,
         "unlocks": []
     },
     6: {
         "name": "Building Defenses",
         "body": "You need strong defenses to protect against an attack. Build a wall.",
-        "reward": [100, 100, 100],
+        "reward": {"resources": [100, 100, 100]},
         "finished": _check_building_level("WA", 1),
         "unlocks": [8]
     },
@@ -86,7 +86,7 @@ QUESTS = {
         "name": "Increasing Storage Space",
         "body": ("If you want to store more resources, you need to upgrade your warehouse. "
                  "Upgrade your warehouse to level 2."),
-        "reward": [100, 100, 100],
+        "reward": {"resources": [100, 100, 100]},
         "finished": _check_building_level("WH", 2),
         "unlocks": []
     },
@@ -94,15 +94,15 @@ QUESTS = {
         "name": "Scouting the Enemy, Part 1",
         "body": ("You will need to make a stable in order to create more types of troops."
                  "Build a stable. This requires a level 10 headquarters."),
-        "reward": [1000, 1000, 1000],
+        "reward": {"resources": [1000, 1000, 1000]},
         "finished": _check_building_level("ST", 1),
         "unlocks": [9]
     },
     9: {
         "name": "Scouting the Enemy, Part 2",
-        "body": "Use your new stable to build 5 scouts.",
-        "reward": [500, 500, 500],
-        "finished": _check_troops("SC", 5),
+        "body": "Use your new stable to build a scout.",
+        "reward": {"resources": [300, 300, 300], "troops": ("SC", 5)},
+        "finished": _check_troops("SC", 1),
         "unlocks": []
     }
 }
@@ -128,6 +128,21 @@ def get_quest_reward(quest):
     return QUESTS[quest]["reward"]
 
 
+def get_reward_display(quest):
+    output = []
+    rewards = QUESTS[quest]["reward"]
+    for value, reward in sorted(rewards.items()):
+        out = ""
+        if value == "resources":
+            out += "<span class='wood'>" + str(reward[0]) + "</span>"
+            out += "<span class='clay'>" + str(reward[1]) + "</span>"
+            out += "<span class='iron'>" + str(reward[2]) + "</span>"
+        elif value == "troops":
+            out += "{} ({})".format(get_troop_type_display(reward[0]), reward[1])
+        output.append(out)
+    return ", ".join(output)
+
+
 def get_quest_finished(quest, request):
     return QUESTS[quest]["finished"](request)
 
@@ -142,10 +157,24 @@ def process_quest(request, world, quest):
     else:
         current_village = get_villages(request).first()
 
-    current_village.wood = current_village.wood + QUESTS[quest.type]["reward"][0]
-    current_village.clay = current_village.clay + QUESTS[quest.type]["reward"][1]
-    current_village.iron = current_village.iron + QUESTS[quest.type]["reward"][2]
-    current_village.save()
+    rewards = QUESTS[quest.type]["reward"]
+    for value, reward in rewards.items():
+        if value == "resources":
+            current_village.wood = current_village.wood + reward[0]
+            current_village.clay = current_village.clay + reward[1]
+            current_village.iron = current_village.iron + reward[2]
+            current_village.save()
+        elif value == "troops":
+            try:
+                troops = current_village.troops.get(type=reward[0])
+                troops.amount += reward[1]
+                troops.save()
+            except Troop.DoesNotExist:
+                Troop.objects.create(
+                    village=current_village,
+                    type=reward[0],
+                    amount=reward[1]
+                )
 
     new_quests = get_linked_quests(quest.type)
     for new_quest in new_quests:
