@@ -99,7 +99,11 @@ def get_building_population_difference(building, level):
 
 def get_building_upgrade_time(building, level):
     """ Returns the building upgrade time in seconds. """
-    return 300 * 1.5**(level - 1)
+    try:
+        obj = settings.GAME_CONFIG["buildings"][building]["upgrade"]
+        return obj.get("initial", 300) * (obj.get("scale", 1.5) ** (level - 1))
+    except KeyError:
+        return 300 * 1.5**(level - 1)
 
 
 def get_troop_population(troop):
