@@ -82,10 +82,7 @@ def get_building_cost(building, level):
 
 def get_troop_cost(troop):
     """ Returns a tuple of (wood, clay, iron) indicating how much a unit of this type costs. """
-    try:
-        return settings.GAME_CONFIG["troops"][troop]["cost"]
-    except KeyError:
-        return (25, 25, 25)
+    return _get_value(["troops", troop, "cost"], default=(25, 25, 25))
 
 
 def get_troop_time(troop):
@@ -144,7 +141,5 @@ def building_requirements_met(building_type, village):
 
 
 def get_allowed_troops(building_type):
-    try:
-        return settings.GAME_CONFIG["buildings"][building_type]["troops"]
-    except KeyError:
-        return []
+    """ Get the types of troops a building can make. """
+    return _get_value(["buildings", building_type, "troops"], default=[])
