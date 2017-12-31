@@ -39,7 +39,7 @@ QUESTS = {
     1: {
         "name": "First Steps",
         "body": ("Upgrade your headquarters to level 2. To do this, click on 'Headquarters' from the village screen "
-                 "and then click 'Upgrade' next to the Headquarters building. After you have done so, wait for the build ",
+                 "and then click 'Upgrade' next to the Headquarters building. After you have done so, wait for the build "
                  "to finish and come back to this page to get your reward."),
         "reward": {"resources": [200, 200, 200]},
         "finished": _check_building_level("HQ", 2),
