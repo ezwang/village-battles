@@ -1,0 +1,19 @@
+{% extends "game.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{ tribe.name }}</h3>
+                <b>Members</b>
+                <ul>
+                    {% for member in tribe.members.all %}
+                    <li><a href="{% url "user" member.id %}">{{ member.username }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

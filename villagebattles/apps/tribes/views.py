@@ -1,10 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .models import Tribe, Member
 from ..game.models import World
 
 
+@login_required
+def tribe_info(request, tribe_id):
+    world = get_object_or_404(World, id=request.session["world"])
+    tribe = get_object_or_404(Tribe, id=tribe_id, world=world)
+
+    context = {
+        "tribe": tribe
+    }
+
+    return render(request, "tribes/tribe_info.html", context)
+
+
+@login_required
 def tribe(request):
     world = get_object_or_404(World, id=request.session["world"])
     tribe = request.user.tribes.filter(world=world).first()

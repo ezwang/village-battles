@@ -7,7 +7,7 @@
             <div class="card-body">
                 <h3>{{ user.username }}</h3>
                 {% if tribe %}
-                <div>Tribe: {{ tribe.name }}</div>
+                <div>Tribe: <a href="{% url "tribe_info" tribe.id %}">{{ tribe.name }}</a></div>
                 {% endif %}
                 <hr />
                 <h5>Villages</h5>
