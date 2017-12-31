@@ -116,4 +116,5 @@ def process_quest(request, world, quest):
     current_village.save()
 
     new_quests = get_linked_quests(quest.type)
-    Quest.objects.bulk_create([Quest(world=world, user=request.user, type=new_quest) for new_quest in new_quests])
+    for new_quest in new_quests:
+        Quest.objects.get_or_create(world=world, user=request.user, type=new_quest)
