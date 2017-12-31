@@ -4,8 +4,10 @@
     "buildings": {
         "HQ": {
             "name": "Headquarters",
+            "min_level": 1,
             "max_level": 30,
             "buff": {
+                "initial": 1,
                 "scale": 0.97
             },
             "upgrade": {
@@ -15,14 +17,26 @@
         },
         "WM": {
             "name": "Wood Mine",
+            "production": {
+                "initial": 60,
+                "scale": 1.5
+            },
             "max_level": 30
         },
         "CM": {
             "name": "Clay Mine",
+            "production": {
+                "initial": 60,
+                "scale": 1.5
+            },
             "max_level": 30
         },
         "IM": {
             "name": "Iron Mine",
+            "production": {
+                "initial": 60,
+                "scale": 1.5
+            },
             "max_level": 30
         },
         "WH": {
@@ -136,13 +150,19 @@
         },
         "CM": {
             "name": "Calvaryman",
+            "attack": 120,
+            "defense": 80,
             "travel_time": 10,
+            "cost": [200, 200, 200],
             "carry": 200,
             "population": 3
         },
         "KN": {
             "name": "Knight",
+            "attack": 120,
+            "defense": 200,
             "travel_time": 20,
+            "cost": [400, 400, 400],
             "carry": 400,
             "population": 5
         },
