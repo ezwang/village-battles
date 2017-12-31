@@ -73,6 +73,7 @@ def village(request, village_id):
             "incoming": village.incoming.order_by("end_time"),
             "build_queue": village.buildqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
             "troop_queue": village.troopqueue.all().order_by(F("end_time").asc(nulls_last=True), "start_time"),
+            "new_player": request.user.quests.filter(world=village.world, type=1).exists()
         }
 
         request.session["village"] = village.id

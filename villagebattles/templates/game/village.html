@@ -7,6 +7,14 @@
 {% block content %}
 <div class="row">
     <div class="col-md-4">
+        {% if new_player %}
+        <div class="card">
+            <div class="card-body">
+                <h4>Welcome!</h4>
+                <span>Welcome to Village Battles! To get started, click on the <span class="quest snippet" data-type="1">Q</span> in the upper left corner of the page.</span>
+            </div>
+        </div>
+        {% endif %}
         {% include "game/panels/build_queue.html" %}
         {% include "game/panels/recruit_queue.html" %}
         <div class="card">
