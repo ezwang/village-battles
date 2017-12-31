@@ -5,6 +5,12 @@
     <div class="card-body">
         {% if tribe %}
         <h3 class="card-title">{{ tribe.name }}</h3>
+        <b>Members</b>
+        <ul>
+            {% for member in tribe.members.all %}
+            <li><a href="{% url "user" member.id %}">{{ member.username }}</a></li>
+            {% endfor %}
+        </ul>
         <form method="POST">
             {% csrf_token %}
             <button class="btn btn-primary" name="action" value="leave">Leave</button>
