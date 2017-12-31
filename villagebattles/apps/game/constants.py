@@ -74,9 +74,9 @@ def get_max_population(level):
 
 def get_building_cost(building, level):
     """ Returns a tuple of (wood, clay, iron) indicating how much this building costs. """
-    wood = int(_get_value(["buildings", building, "cost", "wood"], level, default=50))
-    clay = int(_get_value(["buildings", building, "cost", "clay"], level, default=50))
-    iron = int(_get_value(["buildings", building, "cost", "iron"], level, default=50))
+    wood = int(_get_value(["buildings", building, "cost", "wood"], level, initial=50, scale=1.2))
+    clay = int(_get_value(["buildings", building, "cost", "clay"], level, initial=50, scale=1.2))
+    iron = int(_get_value(["buildings", building, "cost", "iron"], level, initial=50, scale=1.2))
     return (wood, clay, iron)
 
 
