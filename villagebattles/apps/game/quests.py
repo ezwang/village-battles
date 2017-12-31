@@ -49,7 +49,7 @@ QUESTS = {
         "body": "Upgrade your headquarters to level 3 and build a barracks. The barracks will unlock at headquarters level 3.",
         "reward": [300, 300, 300],
         "finished": _check_building_level("BR", 1),
-        "unlocks": [4]
+        "unlocks": [4, 6, 7]
     },
     3: {
         "name": "A Little Bit About Yourself",
@@ -65,13 +65,43 @@ QUESTS = {
                  "You will be able to use the form on the barracks page to create new troops."),
         "reward": [500, 500, 500],
         "finished": _check_troops("SP", 10),
-        "unlocks": []
+        "unlocks": [8]
     },
     5: {
         "name": "Forming Alliances",
         "body": "Create or join a tribe. You can do this by clicking on 'Tribe' at the top of the page.",
         "reward": [100, 100, 100],
         "finished": _check_tribe,
+        "unlocks": []
+    },
+    6: {
+        "name": "Building Defenses",
+        "body": "You need strong defenses to protect against an attack. Build a wall.",
+        "reward": [100, 100, 100],
+        "finished": _check_building_level("WA", 1),
+        "unlocks": [8]
+    },
+    7: {
+        "name": "Increasing Storage Space",
+        "body": ("If you want to store more resources, you need to upgrade your warehouse. "
+                 "Upgrade your warehouse to level 2."),
+        "reward": [100, 100, 100],
+        "finished": _check_building_level("WH", 2),
+        "unlocks": []
+    },
+    8: {
+        "name": "Scouting the Enemy, Part 1",
+        "body": ("You will need to make a stable in order to create more types of troops."
+                 "Build a stable. This requires a level 10 headquarters."),
+        "reward": [1000, 1000, 1000],
+        "finished": _check_building_level("ST", 1),
+        "unlocks": [9]
+    },
+    9: {
+        "name": "Scouting the Enemy, Part 2",
+        "body": "Use your new stable to build 5 scouts.",
+        "reward": [500, 500, 500],
+        "finished": _check_troops("SC", 5),
         "unlocks": []
     }
 }
@@ -99,6 +129,7 @@ def get_quest_reward(quest):
 
 def get_quest_finished(quest, request):
     return QUESTS[quest]["finished"](request)
+
 
 def get_linked_quests(quest):
     return QUESTS[quest].get("unlocks", [])
