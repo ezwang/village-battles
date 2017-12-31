@@ -13,5 +13,14 @@ class Tribe(models.Model):
 
 
 class Member(models.Model):
+    OWNER = 'OW'
+    MEMBER = 'ME'
+
+    CHOICES = (
+        (OWNER, 'Owner'),
+        (MEMBER, 'Member')
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tribe = models.ForeignKey(Tribe, on_delete=models.CASCADE)
+    type = models.CharField(max_length=2, choices=CHOICES)

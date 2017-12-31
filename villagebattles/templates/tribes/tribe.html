@@ -7,13 +7,16 @@
         <h3 class="card-title">{{ tribe.name }}</h3>
         <b>Members</b>
         <ul>
-            {% for member in tribe.members.all %}
-            <li><a href="{% url "user" member.id %}">{{ member.username }}</a></li>
+            {% for member in tribe.member_set.all %}
+            <li><a href="{% url "user" member.id %}">{{ member.user.username }}</a> ({{ member.get_type_display }})</li>
             {% endfor %}
         </ul>
         <form method="POST">
             {% csrf_token %}
             <button class="btn btn-primary" name="action" value="leave">Leave</button>
+            {% if membership.type == "OW" %}
+            <button class="btn btn-primary" name="action" value="disband">Disband</button>
+            {% endif %}
         </form>
         {% else %}
         <h3 class="card-title">Join/Create Tribe</h3>

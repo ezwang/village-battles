@@ -41,7 +41,8 @@ def tribe(request):
                 )
                 Member.objects.create(
                     user=request.user,
-                    tribe=tribe
+                    tribe=tribe,
+                    type=Member.OWNER
                 )
                 messages.success(request, "Your tribe has been created!")
                 return redirect("tribe")
@@ -51,7 +52,8 @@ def tribe(request):
                     return redirect("tribe")
                 Member.objects.create(
                     user=request.user,
-                    tribe=Tribe.objects.get(world=world, name=name)
+                    tribe=Tribe.objects.get(world=world, name=name),
+                    type=Member.MEMBER
                 )
                 messages.success(request, "You have requested to join this tribe!")
                 return redirect("tribe")
@@ -59,12 +61,24 @@ def tribe(request):
             if not tribe:
                 messages.error(request, "You are not in a tribe!")
                 return redirect("tribe")
-            Member.objects.get(tribe=tribe, user=request.user).delete()
+            membership = Member.objects.get(tribe=tribe, user=request.user)
+            if membership.type == Member.OWNER:
+                if Member.objects.filter(tribe=tribe, type=Member.OWNER).count() == 1:
+                    messages.error(request, "You must appoint another leader before leaving the tribe!")
+                    return redirect("tribe")
+            membership.delete()
             if tribe.members.count() == 0:
                 tribe.delete()
             messages.success(request, "You have left your tribe!")
             return redirect("tribe")
-
+        elif action == "disband":
+            membership = Member.objects.get(tribe=tribe, user=request.user)
+            if not membership.type == Member.OWNER:
+                messages.error(request, "You do not have permission to disband the tribe!")
+                return redirect("tribe")
+            tribe.delete()
+            messages.success(request, "Your tribe has been disbanded!")
+            return redirect("tribe")
         else:
             messages.error(request, "Invalid action!")
             return redirect("tribe")
@@ -72,5 +86,8 @@ def tribe(request):
     context = {
         "tribe": tribe
     }
+
+    if tribe:
+        context["membership"] = Member.objects.get(tribe=tribe, user=request.user)
 
     return render(request, "tribes/tribe.html", context)
