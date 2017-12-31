@@ -41,11 +41,15 @@
                         <tr><td>{{ name }}</td><td>-</td><td>{% building_cost value 0 %}</td><td>{% building_time value 0 village %}</td>
                             <td>
                                 {% if can_build %}
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="build" value="{{ value }}" />
-                                    <button type="submit" {% if not village|can_build:value %}disabled="disabled"{% endif %} class="btn btn-primary btn-sm">Build</button>
-                                </form>
+                                    {% if village|can_build:value %}
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="build" value="{{ value }}" />
+                                            <button type="submit" class="btn btn-primary btn-sm">Build</button>
+                                        </form>
+                                    {% else %}
+                                    Already Building
+                                    {% endif %}
                                 {% else %}
                                 Requirements Not Met
                                 {% endif %}
