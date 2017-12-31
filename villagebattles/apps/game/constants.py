@@ -20,6 +20,10 @@ def _get_value(path, level=None, initial=0, scale=0, constant=0, default=None):
         return obj
 
 
+def get_time_multiplier():
+    return settings.GAME_CONFIG.get("time_multiplier", 1)
+
+
 def get_max_building_level(building):
     """ Returns the maximum building level for a particular building. """
     return int(_get_value(["buildings", building, "max_level"], default=20))
@@ -40,17 +44,17 @@ def get_building_population(building, level):
 
 def get_wood_rate(level):
     """ Accepts the wood mine level and returns wood produced per hour. """
-    return int(_get_value(["buildings", "WM", "production"], level, initial=30, scale=1.2))
+    return int(_get_value(["buildings", "WM", "production"], level, initial=30, scale=1.2) * get_time_multiplier())
 
 
 def get_clay_rate(level):
     """ Accepts the clay mine level and returns clay produced per hour. """
-    return int(_get_value(["buildings", "CM", "production"], level, initial=30, scale=1.2))
+    return int(_get_value(["buildings", "CM", "production"], level, initial=30, scale=1.2) * get_time_multiplier())
 
 
 def get_iron_rate(level):
     """ Accepts the iron mine level and returns iron produced per hour. """
-    return int(_get_value(["buildings", "IM", "production"], level, initial=30, scale=1.2))
+    return int(_get_value(["buildings", "IM", "production"], level, initial=30, scale=1.2) * get_time_multiplier())
 
 
 def get_loyalty_regen():
@@ -86,7 +90,7 @@ def get_troop_cost(troop):
 
 def get_troop_time(troop):
     """ Returns troop build time in seconds. """
-    return _get_value(["troops", troop, "build_time"], default=30)
+    return _get_value(["troops", troop, "build_time"], default=30) / get_time_multiplier()
 
 
 def get_building_population_difference(building, level):
@@ -98,7 +102,7 @@ def get_building_population_difference(building, level):
 
 def get_building_upgrade_time(building, level):
     """ Returns the building upgrade time in seconds. """
-    return _get_value(["buildings", building, "upgrade"], level, initial=60, scale=1.5)
+    return _get_value(["buildings", building, "upgrade"], level, initial=60, scale=1.5) / get_time_multiplier()
 
 
 def get_troop_population(troop):
@@ -108,7 +112,7 @@ def get_troop_population(troop):
 
 def get_troop_travel(troop):
     """ Returns troop travel time in seconds. """
-    return _get_value(["troops", troop, "travel_time"], default=10)
+    return _get_value(["troops", troop, "travel_time"], default=10) / get_time_multiplier()
 
 
 def get_troop_carry(troop):
