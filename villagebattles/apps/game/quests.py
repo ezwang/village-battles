@@ -80,7 +80,7 @@ QUESTS = {
         "body": "You need strong defenses to protect against an attack. Build a wall.",
         "reward": {"resources": [100, 100, 100]},
         "finished": _check_building_level("WA", 1),
-        "unlocks": [8]
+        "unlocks": [10]
     },
     7: {
         "name": "Increasing Storage Space",
@@ -103,6 +103,13 @@ QUESTS = {
         "body": "Use your new stable to build a scout.",
         "reward": {"resources": [300, 300, 300], "troops": ("SC", 5)},
         "finished": _check_troops("SC", 1),
+        "unlocks": []
+    },
+    10: {
+        "name": "Stronger Defenses",
+        "body": "Upgrade your wall to level 10.",
+        "reward": {"resources": [1000, 1000, 1000]},
+        "finished": _check_building_level("WA", 10),
         "unlocks": []
     }
 }
