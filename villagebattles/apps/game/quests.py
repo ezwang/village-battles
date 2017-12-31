@@ -1,4 +1,4 @@
-from .models import Quest, Village
+from .models import Quest, Village, World
 from .helpers import get_villages
 
 
@@ -27,6 +27,14 @@ def _check_profile(request):
     return bool(request.user.profile)
 
 
+def _check_tribe(request):
+    if "world" in request.session:
+        world = World.objects.get(id=request.session["world"])
+        return request.user.tribes.filter(world=world).exists()
+    else:
+        return False
+
+
 QUESTS = {
     1: {
         "name": "First Steps",
@@ -49,7 +57,7 @@ QUESTS = {
                  "on the left of the screen that you can use to change your profile."),
         "reward": [100, 100, 100],
         "finished": _check_profile,
-        "unlocks": []
+        "unlocks": [5]
     },
     4: {
         "name": "Creating an Army",
@@ -58,8 +66,19 @@ QUESTS = {
         "reward": [500, 500, 500],
         "finished": _check_troops("SP", 10),
         "unlocks": []
+    },
+    5: {
+        "name": "Forming Alliances",
+        "body": "Create or join a tribe. You can do this by clicking on 'Tribe' at the top of the page.",
+        "reward": [100, 100, 100],
+        "finished": _check_tribe,
+        "unlocks": []
     }
 }
+
+
+def get_all_quests():
+    return list(QUESTS.keys())
 
 
 def get_quests(world, user):
@@ -81,6 +100,9 @@ def get_quest_reward(quest):
 def get_quest_finished(quest, request):
     return QUESTS[quest]["finished"](request)
 
+def get_linked_quests(quest):
+    return QUESTS[quest].get("unlocks", [])
+
 
 def process_quest(request, world, quest):
     if "village" in request.session:
@@ -93,5 +115,5 @@ def process_quest(request, world, quest):
     current_village.iron = current_village.iron + QUESTS[quest.type]["reward"][2]
     current_village.save()
 
-    new_quests = QUESTS[quest.type].get("unlocks", [])
+    new_quests = get_linked_quests(quest.type)
     Quest.objects.bulk_create([Quest(world=world, user=request.user, type=new_quest) for new_quest in new_quests])
