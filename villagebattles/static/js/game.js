@@ -61,7 +61,7 @@ $(document).ready(function() {
             if (value >= type_max) {
                 $(this).css("color", "red");
             }
-            else if (value > type_max * 0.8) {
+            else if (value > type_max * 0.9) {
                 $(this).css("color", "yellow");
             }
             $(this).text(Math.min(value, type_max));
