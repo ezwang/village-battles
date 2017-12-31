@@ -9,6 +9,14 @@
     <div class="col-md-4">
         {% include "game/panels/build_queue.html" %}
         {% include "game/panels/recruit_queue.html" %}
+        <div class="card">
+            <div class="card-body">
+                <h4>Resources</h4>
+                <div>Wood Rate: {{ village.wood_rate }} per hour</div>
+                <div>Clay Rate: {{ village.clay_rate }} per hour</div>
+                <div>Iron Rate: {{ village.iron_rate }} per hour</div>
+            </div>
+        </div>
     </div>
     <div class="col-md-4">
         <div class="card">
