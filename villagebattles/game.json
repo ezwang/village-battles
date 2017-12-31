@@ -15,6 +15,24 @@
                 "initial": 120,
                 "scale": 1.5,
                 "constant": -60
+            },
+            "cost": {
+                "wood": {
+                    "initial": 80,
+                    "scale": 1.2
+                },
+                "clay": {
+                    "initial": 70,
+                    "scale": 1.2
+                },
+                "iron": {
+                    "initial": 60,
+                    "scale": 1.2
+                }
+            },
+            "population": {
+                "initial": 1,
+                "scale": 1.2
             }
         },
         "WM": {
