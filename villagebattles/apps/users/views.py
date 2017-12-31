@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -84,7 +84,10 @@ def settings(request):
         elif action == "leave":
             password = request.POST.get("password")
             if request.user.check_password(password):
-                request.user.villages.update(owner=None)
+                world = get_object_or_404(World, id=request.session["world"])
+                request.user.villages.filter(world=world).update(owner=None)
+                request.user.quests.filter(world=world).delete()
+                messages.success(request, "You have left {}!".format(world.name))
                 return redirect("index")
             else:
                 messages.error(request, "Incorrect password!")
