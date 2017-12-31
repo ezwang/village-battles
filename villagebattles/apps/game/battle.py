@@ -8,13 +8,29 @@ from .helpers import get_troop_type_display
 
 
 def do_damage(attack):
-    attacking = attack.troops.all()
+    attacking = attack.troops.exclude(type="SC")
     defending = attack.destination.all_troops.all()
+
+    attacking_scouts = attack.troops.filter(type="SC").aggregate(total_scouts=Sum("amount"))["total_scouts"] or 0
+    defending_scouts = attack.destination.all_troops.filter(type="SC").aggregate(total_scouts=Sum("amount"))["total_scouts"] or 0
+
+    if attacking_scouts > 0:
+        if defending_scouts > attacking_scouts * 2:
+            attack.troops.filter(type="SC").delete()
+        else:
+            attack.troops.filter(type="SC").update(amount=max(0, attacking_scouts - defending_scouts * 0.5))
+            for troops in attack.destination.all_troops.filter(type="SC"):
+                troops.amount = max(0, troops.amount - attacking_scouts * 0.3)
+                troops.save()
 
     total_attacker_attack = sum([x.amount * get_troop_attack(x.type) / 100 for x in attacking])
     total_defender_attack = sum([x.amount * get_troop_attack(x.type) / 100 for x in defending])
 
+    total_attacker_defense = sum([x.amount * get_troop_defense(x.type) / 100 for x in attacking])
     total_defender_defense = sum([x.amount * get_troop_defense(x.type) / 100 for x in defending])
+
+    defender_wall = attack.destination.get_level("WA")
+    total_defender_defense += defender_wall
 
     if total_attacker_attack > total_defender_defense:
         attack_power = 0.9
@@ -23,8 +39,8 @@ def do_damage(attack):
         attack_power = 0.5
         defend_power = 0.9
 
-    attacker_damage = total_attacker_attack * attack_power
-    defender_damage = total_defender_attack * defend_power
+    attacker_damage = max(0, total_attacker_attack * attack_power - total_defender_defense * 0.25)
+    defender_damage = max(0, total_defender_attack * defend_power - total_attacker_defense * 0.25)
 
     for defender in defending:
         defender.amount -= attacker_damage
@@ -118,6 +134,9 @@ def process_attack(attack):
             attack.destination.owner = attack.source.owner
         attack.save()
         content["loyalty"] = attack.destination.loyalty
+
+    if attack.troops.filter(type="SC").exists():
+        content["buildings"] = [(x.get_type_display(), x.level) for x in attack.destination.buildings.all()]
 
     loot = calculate_loot(attack)
     content["loot"] = {
