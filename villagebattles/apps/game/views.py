@@ -8,11 +8,13 @@ from django.utils import timezone
 from django.core.paginator import Paginator, InvalidPage
 from django.db.models import F
 
-from .helpers import get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display
-from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report
+from .helpers import (get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display,
+                      create_default_player_setup)
+from .models import Village, World, Building, BuildTask, Troop, TroopTask, Attack, Report, Quest
 from ..users.models import User
 from .constants import (get_building_cost, get_building_population, get_troop_cost, get_troop_population,
                         building_requirements_met, get_allowed_troops)
+from .quests import get_quest_name, get_quest_description, get_quest_finished, get_quest_reward, process_quest
 from .tasks import process
 
 
@@ -30,6 +32,7 @@ def create_village(request):
             owner=request.user,
             world=world
         )
+        create_default_player_setup(world, request.user)
         create_default_setup(vil)
         messages.success(request, "Your new village has been created!")
         return redirect("village", village_id=vil.id)
@@ -477,3 +480,30 @@ def report(request, report_id=None):
         }
 
     return render(request, "game/report.html", context)
+
+
+@login_required
+def quest(request, quest_id):
+    info = {
+        "id": quest_id,
+        "name": get_quest_name(quest_id),
+        "body": get_quest_description(quest_id),
+        "reward": get_quest_reward(quest_id),
+        "done": get_quest_finished(quest_id, request)
+    }
+    return JsonResponse(info)
+
+
+@login_required
+def quest_submit(request):
+    if request.method == "POST":
+        world = get_object_or_404(World, id=request.session["world"])
+        quest = get_object_or_404(Quest, world=world, user=request.user, type=request.POST.get("id"))
+
+        if not get_quest_finished(quest.id, request):
+            messages.error(request, "You have not finished this quest yet!")
+        else:
+            process_quest(request, world, quest)
+            quest.delete()
+            messages.success(request, "Quest redeemed!")
+    return redirect("village", village_id=request.session.get("village", request.user.villages.first().id))

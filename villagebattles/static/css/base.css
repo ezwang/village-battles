@@ -23,7 +23,7 @@ body {
 .navbar-brand {
     font-weight: bold;
 }
-.card {
+.card, .modal-content {
     background: url("../images/background2.png");
     border: 5px double gold;
     margin-bottom: 30px;

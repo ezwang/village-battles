@@ -78,3 +78,7 @@ a.snippet:hover, .snippet a:hover {
     background-size: cover;
     margin-left: 3px;
 }
+.quest {
+    cursor: pointer;
+    box-shadow: 0px 0px 10px yellow;
+}

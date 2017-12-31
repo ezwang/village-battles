@@ -25,4 +25,8 @@ urlpatterns = [
     path('workshop/<int:village_id>', views.workshop, name="workshop"),
     path('academy/<int:village_id>', views.academy, name="academy"),
     path('rally/<int:village_id>', views.rally, name="rally"),
+
+    # Quest
+    path('quest/<int:quest_id>', views.quest, name="quest"),
+    path('quest/submit', views.quest_submit, name="submit_quest"),
 ]

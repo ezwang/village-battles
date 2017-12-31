@@ -17,6 +17,9 @@
     {% if current_village %}
     <a class="snippet" href="{% url "map" %}#{{ current_village.x }}-{{ current_village.y }}">Map</a>
     <span class="snippet"><a class="village" href="{% url "village" current_village.id %}"><b>{{ current_village.name }}</b> ({{ current_village.x }}|{{ current_village.y }})</a></span>
+    {% for quest in current_quests %}
+    <span class="quest snippet" data-type="{{ quest.type }}">Q</span>
+    {% endfor %}
     <div class="float-right">
         <span id="resources" class="snippet ticker">
             <span class="wood" data-rate="{{ current_village.wood_rate }}">{{ current_village.wood }}</span> / <span class="wood-cap">{{ current_village.max_capacity }}</span>
@@ -27,6 +30,26 @@
     </div>
     {% endif %}
 </div>
+{% if current_quests %}
+<div id="quest-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <form action="{% url "submit_quest" %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" />
+                    <button id="claim" type="submit" class="btn btn-primary">Claim Reward</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra %}

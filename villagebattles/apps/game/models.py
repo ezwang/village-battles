@@ -397,3 +397,12 @@ class Report(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Quest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="quests")
+    world = models.ForeignKey(World, on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField()
+
+    class Meta:
+        unique_together = (("user", "world", "type"),)

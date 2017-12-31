@@ -69,4 +69,17 @@ $(document).ready(function() {
     }
     setInterval(doTickers, 1000);
     doTickers();
+
+    $(".quest").click(function(e) {
+        e.preventDefault();
+        $.get("/game/quest/" + encodeURIComponent($(this).attr("data-type")), function(data) {
+            $("#quest-modal input[name='id']").val(data.id);
+            $("#quest-modal .modal-title").text(data.name + " - Quest");
+            var body = $("<p />").text(data.body);
+            $("#quest-modal .modal-body").html("").append(body);
+            $("#quest-modal .modal-body").append("<div>Reward: <span class='wood'>" + data.reward[0] + "</span><span class='clay'>" + data.reward[1] + "</span><span class='iron'>" + data.reward[2] + "</span></div>");
+            $("#claim").prop("disabled", !data.done);
+            $("#quest-modal").modal("show");
+        });
+    });
 });

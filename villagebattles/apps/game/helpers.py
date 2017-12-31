@@ -70,6 +70,15 @@ def create_default_setup(vil):
     Building.objects.bulk_create(buildings)
 
 
+def create_default_player_setup(world, player):
+    from .models import Quest
+    Quest.objects.create(
+        world=world,
+        user=player,
+        type=1
+    )
+
+
 def get_troop_type_display(t):
     return settings.GAME_CONFIG["troops"][t]["name"]
 
