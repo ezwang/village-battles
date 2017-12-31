@@ -294,6 +294,8 @@ class TroopTask(models.Model):
             amt = self.amount - remaining
             self.amount -= amt
             self.step_time = self.step_time + timedelta(seconds=amt * time_per_unit)
+            if self.step_time > self.end_time:
+                self.step_time = self.end_time
             self.save()
             ret = False
         try:
