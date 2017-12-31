@@ -11,6 +11,22 @@ def _check_building_level(building, level):
     return func
 
 
+def _check_troops(troop, amount):
+    def func(request):
+        for vil in get_villages(request):
+            troops = vil.troops.filter(type=troop).first()
+            if not troops:
+                continue
+            if troops.amount >= amount:
+                return True
+        return False
+    return func
+
+
+def _check_profile(request):
+    return bool(request.user.profile)
+
+
 QUESTS = {
     1: {
         "name": "First Steps",
@@ -18,13 +34,29 @@ QUESTS = {
                  "and then click 'Upgrade' next to the Headquarters building."),
         "reward": [200, 200, 200],
         "finished": _check_building_level("HQ", 2),
-        "unlocks": [2]
+        "unlocks": [2, 3]
     },
     2: {
         "name": "Build a Barracks",
         "body": "Upgrade your headquarters to level 3 and build a barracks. The barracks will unlock at headquarters level 3.",
         "reward": [300, 300, 300],
         "finished": _check_building_level("BR", 1),
+        "unlocks": [4]
+    },
+    3: {
+        "name": "A Little Bit About Yourself",
+        "body": ("Change your profile text. You can do this by going to 'Settings' in the upper right. There is a form "
+                 "on the left of the screen that you can use to change your profile."),
+        "reward": [100, 100, 100],
+        "finished": _check_profile,
+        "unlocks": []
+    },
+    4: {
+        "name": "Creating an Army",
+        "body": ("Create 10 spearmen. You can do this by clicking on 'Barracks' from the village screen. "
+                 "You will be able to use the form on the barracks page to create new troops."),
+        "reward": [500, 500, 500],
+        "finished": _check_troops("SP", 10),
         "unlocks": []
     }
 }
