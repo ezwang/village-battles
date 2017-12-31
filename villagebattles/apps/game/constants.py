@@ -1,6 +1,21 @@
 from django.conf import settings
 
 
+def _get_value(path, level, initial=1, scale=1.2, constant=0):
+    try:
+        obj = settings.GAME_CONFIG
+        for item in path:
+            obj = obj[item]
+    except KeyError:
+        return initial
+    if isinstance(obj, list):
+        return obj.get(level, initial)
+    elif isinstance(obj, dict):
+        return obj.get("initial", 1) * (obj.get("scale", scale) ** (level - 1)) + obj.get("constant", constant)
+    else:
+        return obj
+
+
 def get_max_building_level(building):
     """ Returns the maximum building level for a particular building. """
     try:
@@ -50,20 +65,12 @@ def get_loyalty_regen():
 
 def get_max_capacity(level):
     """ Accepts the warehouse level and returns the maximum population for the village. """
-    try:
-        obj = settings.GAME_CONFIG["buildings"]["WH"]["capacity"]
-        return int(obj.get("initial", 1000) * (obj.get("scale", 1.2) ** (level - 1)))
-    except KeyError:
-        return 1000
+    return _get_value(["buildings", "WH", "capacity"], level, initial=1000, scale=1.2)
 
 
 def get_max_population(level):
     """ Accepts the farm level and returns the maximum population for the village. """
-    try:
-        obj = settings.GAME_CONFIG["buildings"]["FM"]["capacity"]
-        return int(obj.get("initial", 200) * obj.get("scale", 1.2) ** (level - 1))
-    except KeyError:
-        return 200
+    return _get_value(["buildings", "FM", "capacity"], level, initial=200, scale=1.2)
 
 
 def get_building_cost(building, level):
@@ -99,11 +106,7 @@ def get_building_population_difference(building, level):
 
 def get_building_upgrade_time(building, level):
     """ Returns the building upgrade time in seconds. """
-    try:
-        obj = settings.GAME_CONFIG["buildings"][building]["upgrade"]
-        return obj.get("initial", 300) * (obj.get("scale", 1.5) ** (level - 1))
-    except KeyError:
-        return 300 * 1.5**(level - 1)
+    return _get_value(["buildings", building, "upgrade"], level, initial=300, scale=1.5)
 
 
 def get_troop_population(troop):
@@ -132,20 +135,12 @@ def get_troop_carry(troop):
 
 def get_hq_buff(level):
     """ Returns a multiplier for the build time. """
-    try:
-        obj = settings.GAME_CONFIG["buildings"]["HQ"]["buff"]
-        return obj.get("initial", 1) * (obj.get("scale", 0.97) ** (level - 1))
-    except KeyError:
-        return 1
+    return _get_value(["buildings", "HQ", "buff"], level, initial=1, scale=0.97)
 
 
 def get_recruitment_buff(building, level):
     """ Returns a multiplier for the troop build time. """
-    try:
-        obj = settings.GAME_CONFIG["buildings"][building]["buff"]
-        return obj.get("initial", 1) * (obj.get("scale", 0.97) ** (level - 1))
-    except KeyError:
-        return 1
+    return _get_value(["buildings", building, "buff"], level, initial=1, scale=0.97)
 
 
 def building_requirements_met(building_type, village):
