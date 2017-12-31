@@ -25,10 +25,18 @@ def tribe(request):
 
     if request.method == "POST":
         action = request.POST.get("action")
-        if action in ["create", "join"]:
+        if action in ["create", "join", "search"]:
             name = request.POST.get("name")
             exists = Tribe.objects.filter(world=world, name=name).exists()
-            if action == "create":
+            if action == "search":
+                results = Tribe.objects.filter(world=world, name__icontains=name).order_by("name")
+                context = {
+                    "tribe": tribe,
+                    "results": results,
+                    "query": name
+                }
+                return render(request, "tribes/tribe.html", context)
+            elif action == "create":
                 if exists:
                     messages.error(request, "A tribe already exists with that name!")
                     return redirect("tribe")

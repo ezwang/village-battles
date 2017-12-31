@@ -1,5 +1,17 @@
 {% extends "game.html" %}
 
+{% block css %}
+    {{ block.super }}
+    <style>
+    #tribes button {
+        width: 100px;
+    }
+    #tribes tbody tr td:last-child {
+        text-align: right;
+    }
+    </style>
+{% endblock %}
+
 {% block content %}
 <div class="card center-card">
     <div class="card-body">
@@ -18,19 +30,36 @@
             <button class="btn btn-primary" name="action" value="disband">Disband</button>
             {% endif %}
         </form>
+        {% elif results %}
+        <h3>Tribe Search</h3>
+        <p>Here are all of the tribes matching "{{ query }}".</p>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="join" />
+            <table id="tribes" class="table">
+                <thead>
+                    <tr><th>Tribe</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr><td>{{ result.name }}</td><td><button type="submit" class="btn btn-primary btn-sm" name="name" value="{{ result.name }}">Join</button></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
         {% else %}
         <h3 class="card-title">Join/Create Tribe</h3>
         <p>You are not currently in a tribe. You can create a tribe or join a tribe.</p>
         <div class="row">
             <div class="col-md-6">
-                <h4>Join Tribe</h4>
+                <h4>Search Tribes</h4>
                 <form method="POST">
                     {% csrf_token %}
                     <div class="form-group">
                         <label>Tribe Name</label>
                         <input type="text" name="name" class="form-control" />
                     </div>
-                    <button class="btn btn-primary" name="action" value="join">Join</button>
+                    <button class="btn btn-primary" name="action" value="search">Search</button>
                 </form>
             </div>
             <div class="col-md-6">
