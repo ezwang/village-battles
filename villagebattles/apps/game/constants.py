@@ -65,12 +65,12 @@ def get_loyalty_regen():
 
 def get_max_capacity(level):
     """ Accepts the warehouse level and returns the maximum population for the village. """
-    return _get_value(["buildings", "WH", "capacity"], level, initial=1000, scale=1.2)
+    return int(_get_value(["buildings", "WH", "capacity"], level, initial=1000, scale=1.2))
 
 
 def get_max_population(level):
     """ Accepts the farm level and returns the maximum population for the village. """
-    return _get_value(["buildings", "FM", "capacity"], level, initial=200, scale=1.2)
+    return int(_get_value(["buildings", "FM", "capacity"], level, initial=200, scale=1.2))
 
 
 def get_building_cost(building, level):
