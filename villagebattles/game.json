@@ -77,6 +77,10 @@
             "name": "Academy",
             "max_level": 1,
             "troops": ["NB"]
+        },
+        "WA": {
+            "name": "Wall",
+            "max_level": 20
         }
     },
     "troops": {
