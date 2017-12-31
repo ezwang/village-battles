@@ -29,7 +29,7 @@ def process_village(village, now):
                 finished += [(x.step_time, x) for x in village.troopqueue.filter(step_time__lte=now).order_by("step_time")]
                 finished += [(x.end_time, x) for x in village.incoming.filter(end_time__lte=now).order_by("end_time")]
                 finished += [(x.end_time, x) for x in village.outgoing.filter(end_time__lte=now).order_by("end_time")]
-                finished.sort()
+                finished.sort(key=lambda x: x[0])
                 for time, done in finished:
                     if isinstance(done, BuildTask):
                         build_times.append(done.end_time)

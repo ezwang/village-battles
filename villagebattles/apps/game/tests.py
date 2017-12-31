@@ -47,6 +47,22 @@ class ResourceTests(TestCase):
         self.assertTrue(village.buildings.count() > 1)
         self.assertEquals(self.world.villages.count(), 3)
 
+    def test_building_upgrade(self):
+        """ Test filling up the build queue and making sure all tasks are processed. """
+        now = timezone.now()
+        past = now - timedelta(weeks=10)
+        for _ in range(10):
+            BuildTask.objects.create(
+                village=self.village,
+                type="HQ",
+                start_time=past
+            )
+        with patch.object(timezone, "now", return_value=past):
+            process_village(self.village, past)
+        process_village(self.village, now)
+        self.assertEquals(self.village.buildqueue.count(), 0)
+        self.assertEquals(self.village.get_level("HQ"), 11)
+
     def test_troop_creation(self):
         """ Make sure producing troops works. """
         now = timezone.now()
