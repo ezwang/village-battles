@@ -110,7 +110,7 @@ QUESTS = {
         "body": "Upgrade your wall to level 10.",
         "reward": {"resources": [1000, 1000, 1000]},
         "finished": _check_building_level("WA", 10),
-        "unlocks": []
+        "unlocks": [11]
     },
     11: {
         "name": "Even Stronger Defenses",
