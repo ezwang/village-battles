@@ -59,7 +59,7 @@
         },
         "ST": {
             "name": "Stable",
-            "troops": ["SC"],
+            "troops": ["SC", "CM", "KN"],
             "max_level": 20,
             "buff": {
                 "scale": 0.97
@@ -132,12 +132,24 @@
             "build_time": 60,
             "travel_time": 10,
             "carry": 0,
-            "population": 1
+            "population": 2
+        },
+        "CM": {
+            "name": "Calvaryman",
+            "travel_time": 10,
+            "carry": 200,
+            "population": 3
+        },
+        "KN": {
+            "name": "Knight",
+            "travel_time": 20,
+            "carry": 400,
+            "population": 5
         },
         "CA": {
             "name": "Catapult",
             "build_time": 240,
-            "population": 5
+            "population": 10
         },
         "NB": {
             "name": "Noble",
