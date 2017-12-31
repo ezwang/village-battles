@@ -22,6 +22,9 @@ function loadVillages() {
             if (!v.owner) {
                 vil.addClass("abandoned");
             }
+            else if (v.owner.tribe && userid != v.id && v.owner.tribe == tribeid) {
+                vil.addClass("tribe");
+            }
         });
     });
 }

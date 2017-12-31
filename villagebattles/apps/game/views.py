@@ -81,11 +81,14 @@ def village(request, village_id):
 
 @login_required
 def map(request):
+    world = get_object_or_404(World, id=request.session["world"])
     vil = get_villages(request).first()
+    tribe = request.user.tribes.filter(world=world).first()
 
     context = {
         "x": vil.x,
-        "y": vil.y
+        "y": vil.y,
+        "tribe_id": tribe.id if tribe else -1
     }
 
     return render(request, "game/map.html", context)
@@ -95,7 +98,11 @@ def map(request):
 def map_load(request):
     world = get_object_or_404(World, id=request.session["world"])
     output = []
-    for vil in Village.objects.filter(world=world):
+    for vil in Village.objects.filter(world=world).prefetch_related("owner"):
+        if vil.owner:
+            tribe = vil.owner.tribes.filter(world=world).first()
+        else:
+            tribe = None
         output.append({
             "id": vil.id,
             "x": vil.x,
@@ -103,7 +110,8 @@ def map_load(request):
             "name": vil.name,
             "owner": {
                 "id": vil.owner.id,
-                "name": vil.owner.username
+                "name": vil.owner.username,
+                "tribe": tribe.id if tribe else None
             } if vil.owner else None
         })
 

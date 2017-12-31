@@ -36,6 +36,9 @@
 #world .village.owned {
     background-color: blue;
 }
+#world .village.tribe {
+    background-color: aqua;
+}
 #info, #buttons {
     margin-left: 20px;
     float: left;

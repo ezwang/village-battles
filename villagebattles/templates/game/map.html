@@ -14,6 +14,7 @@
     var MAP_ENDPOINT = "{% url "map_load" %}";
     var RALLY_ENDPOINT = "{% url "rally" current_village.id %}";
     var userid = {{ request.user.id }};
+    var tribeid = {{ tribe_id }};
     var coords = [{{ x }}, {{ y }}];
 </script>
 {% endblock %}
