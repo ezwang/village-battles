@@ -74,15 +74,15 @@ def get_max_population(level):
 
 def get_building_cost(building, level):
     """ Returns a tuple of (wood, clay, iron) indicating how much this building costs. """
-    try:
-        return settings.GAME_CONFIG["buildings"][building]["cost"][level]
-    except KeyError:
-        return (50, 50, 50)
+    wood = int(_get_value(["buildings", building, "cost", "wood"], level, default=50))
+    clay = int(_get_value(["buildings", building, "cost", "clay"], level, default=50))
+    iron = int(_get_value(["buildings", building, "cost", "iron"], level, default=50))
+    return (wood, clay, iron)
 
 
 def get_troop_cost(troop):
     """ Returns a tuple of (wood, clay, iron) indicating how much a unit of this type costs. """
-    return _get_value(["troops", troop, "cost"], default=(25, 25, 25))
+    return tuple(int(x) for x in _get_value(["troops", troop, "cost"], default=(25, 25, 25)))
 
 
 def get_troop_time(troop):
