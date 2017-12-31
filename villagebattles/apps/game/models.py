@@ -290,7 +290,10 @@ class TroopTask(models.Model):
             time_per_unit = int(get_troop_time(self.type) * get_recruitment_buff(self.building.type, self.building.level))
             total_time = (self.end_time - self.start_time).total_seconds()
             elapsed_time = (now - self.start_time).total_seconds()
-            remaining = ceil((total_time - elapsed_time) / time_per_unit)
+            if time_per_unit > 0:
+                remaining = ceil((total_time - elapsed_time) / time_per_unit)
+            else:
+                remaining = 0
             amt = self.amount - remaining
             self.amount -= amt
             self.step_time = self.step_time + timedelta(seconds=amt * time_per_unit)

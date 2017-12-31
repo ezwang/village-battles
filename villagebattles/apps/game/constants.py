@@ -10,7 +10,7 @@ def _get_value(path, level=None, initial=0, scale=0, constant=0, default=None):
         if default is not None:
             return default
         return initial * (scale ** (level - 1)) + constant
-    if not level:
+    if level is None:
         return obj
     if isinstance(obj, list):
         return obj.get(level, initial)
