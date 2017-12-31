@@ -4,9 +4,6 @@ var village_info = {};
 
 function addVillage(x, y, id) {
     var vil = $("<div class='village' />").attr("data-id", id).css("left", (x*size) + "px").css("top", (y*size) + "px");
-    if (userid == id) {
-        vil.addClass("owned");
-    }
     $("#world").append(vil);
     return vil;
 }
@@ -22,7 +19,10 @@ function loadVillages() {
             if (!v.owner) {
                 vil.addClass("abandoned");
             }
-            else if (v.owner.tribe && userid != v.id && v.owner.tribe == tribeid) {
+            else if (v.owner && v.owner.id == userid) {
+                vil.addClass("owned");
+            }
+            else if (v.owner.tribe && v.owner.tribe == tribeid) {
                 vil.addClass("tribe");
             }
         });
