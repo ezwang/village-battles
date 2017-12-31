@@ -1,5 +1,11 @@
 {% extends "game.html" %}
 {% load game_extras %}
+{% load static %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static "js/hq.js" %}"></script>
+{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -7,7 +13,7 @@
         <div class="card">
             <div class="card-body">
                 <h4>Headquarters</h4>
-                <table class="table">
+                <table id="upgrades" class="table">
                     <thead>
                         <tr><th>Building</th><th>Level</th><th>Cost</th><th>Time</th><th>Actions</th></tr>
                     </thead>
