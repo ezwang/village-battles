@@ -128,7 +128,7 @@ def get_recruitment_buff(building, level):
 
 def building_requirements_met(building_type, village):
     """ Given a building type and a village, check if the village can build the building. """
-    if building_type == "BR":
+    if building_type in ["BR", "WA"]:
         return village.get_level("HQ") >= 3
     if building_type == "ST":
         return village.get_level("HQ") >= 10
