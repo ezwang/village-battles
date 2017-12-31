@@ -12,7 +12,8 @@
             },
             "upgrade": {
                 "initial": 120,
-                "scale": 1.5
+                "scale": 1.5,
+                "constant": -60
             }
         },
         "WM": {
