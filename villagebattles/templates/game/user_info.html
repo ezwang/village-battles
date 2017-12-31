@@ -6,6 +6,9 @@
         <div class="card">
             <div class="card-body">
                 <h3>{{ user.username }}</h3>
+                {% if tribe %}
+                <div>Tribe: {{ tribe.name }}</div>
+                {% endif %}
                 <hr />
                 <h5>Villages</h5>
                 <table class="table">

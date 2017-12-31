@@ -112,10 +112,12 @@ def map_load(request):
 
 @login_required
 def user(request, user_id):
+    world = get_object_or_404(World, id=request.session["world"])
     user = get_object_or_404(User, id=user_id)
     context = {
         "user": user,
-        "villages": get_villages(request, user=user).order_by("name")
+        "villages": get_villages(request, user=user).order_by("name"),
+        "tribe": user.tribes.filter(world=world).first()
     }
 
     return render(request, "game/user_info.html", context)
