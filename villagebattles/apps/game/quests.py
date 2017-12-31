@@ -103,13 +103,34 @@ QUESTS = {
         "body": "Use your new stable to build a scout.",
         "reward": {"resources": [300, 300, 300], "troops": ("SC", 5)},
         "finished": _check_troops("SC", 1),
-        "unlocks": []
+        "unlocks": [12]
     },
     10: {
         "name": "Stronger Defenses",
         "body": "Upgrade your wall to level 10.",
         "reward": {"resources": [1000, 1000, 1000]},
         "finished": _check_building_level("WA", 10),
+        "unlocks": []
+    },
+    11: {
+        "name": "Even Stronger Defenses",
+        "body": "Upgrade your wall to level 20.",
+        "reward": {"resources": [5000, 5000, 5000]},
+        "finished": _check_building_level("WA", 20),
+        "unlocks": []
+    },
+    12: {
+        "name": "Destroying Things, Part 1",
+        "body": "Build a workshop. You will need a level 15 headquarters.",
+        "reward": {"resources": [5000, 5000, 5000]},
+        "finished": _check_building_level("WS", 1),
+        "unlocks": [13]
+    },
+    13: {
+        "name": "Destroying Things, Part 2",
+        "body": "Create a catapult.",
+        "reward": {"troops": ("CA", 3)},
+        "finished": _check_troops("CA", 1),
         "unlocks": []
     }
 }
