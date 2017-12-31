@@ -14,3 +14,4 @@ redis-structures==0.1.6
 six==1.11.0
 typing==3.6.2
 vital-tools==0.1.8
+whitenoise==3.3.1
