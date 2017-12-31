@@ -1,14 +1,17 @@
 from datetime import timedelta
 from mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.utils import timezone
+from django.shortcuts import reverse
 
 from .models import World, Village, Attack, TroopTask, Troop, Building, BuildTask
 from ..users.models import User
 from .tasks import process_village
 from .helpers import create_default_setup, create_npc_village
 from .constants import get_troop_time, get_recruitment_buff
+
+from ..game.quests import get_all_quests, get_quest_finished, get_linked_quests
 
 
 class ResourceTests(TestCase):
@@ -383,3 +386,48 @@ class ResourceTests(TestCase):
         self.assertEqual(self.village2.all_troops.count(), 1)
         self.assertEqual(self.village2.foreign_troops.count(), 1)
         self.assertEqual(self.village.external_troops.count(), 1)
+
+
+class QuestTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        User.objects.create_user(username="test", password="test")
+        self.client.login(username="test", password="test")
+        session = self.client.session
+        session["world"] = World.objects.get().id
+        session.save()
+
+    def do_enter_game(self):
+        response = self.client.post(reverse("create_village"))
+        self.assertEqual(Village.objects.all().count(), 1)
+
+        village_id = Village.objects.get().id
+        self.assertRedirects(response, reverse("village", kwargs={"village_id": village_id}))
+
+        return Village.objects.get(id=village_id)
+
+    def test_quest_finished(self):
+        """ Make sure that all quests are currently unfinished. """
+        village = self.do_enter_game()
+
+        response = self.client.get(reverse("village", kwargs={"village_id": village.id}))
+        self.assertEqual(response.status_code, 200)
+
+        request = response.wsgi_request
+
+        for quest in get_all_quests():
+            self.assertFalse(get_quest_finished(quest, request))
+
+    def test_all_quests_reachable(self):
+        """ Make sure all quests are reachable from the initial quest. """
+        expected = set(get_all_quests())
+        actual = set([1])
+        queue = [1]
+        while queue:
+            item = queue.pop()
+            linked = get_linked_quests(item)
+            for link in linked:
+                if link not in actual:
+                    actual.add(link)
+                    queue.append(link)
+        self.assertEquals(actual, expected)
