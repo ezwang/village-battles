@@ -404,5 +404,11 @@ class Quest(models.Model):
     world = models.ForeignKey(World, on_delete=models.CASCADE)
     type = models.PositiveSmallIntegerField()
 
+    @property
+    def name(self):
+        from .quests import get_quest_name
+
+        return get_quest_name(self.type)
+
     class Meta:
         unique_together = (("user", "world", "type"),)
