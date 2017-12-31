@@ -6,7 +6,7 @@
     #tribes button {
         width: 100px;
     }
-    #tribes tbody tr td:last-child {
+    #tribes tbody tr .join-container {
         text-align: right;
     }
     </style>
@@ -30,7 +30,7 @@
             <button class="btn btn-primary" name="action" value="disband">Disband</button>
             {% endif %}
         </form>
-        {% elif results %}
+        {% elif results is not None %}
         <h3>Tribe Search</h3>
         <p>Here are all of the tribes matching "{{ query }}".</p>
         <form method="POST">
@@ -42,7 +42,9 @@
                 </thead>
                 <tbody>
                     {% for result in results %}
-                    <tr><td>{{ result.name }}</td><td><button type="submit" class="btn btn-primary btn-sm" name="name" value="{{ result.name }}">Join</button></td></tr>
+                    <tr><td>{{ result.name }}</td><td class="join-container"><button type="submit" class="btn btn-primary btn-sm" name="name" value="{{ result.name }}">Join</button></td></tr>
+                    {% empty %}
+                    <tr><td colspan="2">There are no tribes matching your search query.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
