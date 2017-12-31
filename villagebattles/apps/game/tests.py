@@ -95,7 +95,7 @@ class ResourceTests(TestCase):
             amount=100
         )
 
-        expected_amount = int(1800 / int(get_troop_time(TYPE) * get_recruitment_buff("BR", barracks.level)))
+        expected_amount = min(100, int(1800 / int(get_troop_time(TYPE) * get_recruitment_buff("BR", barracks.level))))
 
         past = now - timedelta(minutes=30)
         with patch.object(timezone, "now", return_value=past):
