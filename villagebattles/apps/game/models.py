@@ -214,6 +214,9 @@ class Building(models.Model):
 
     class Meta:
         unique_together = (("village", "type"),)
+        indexes = [
+            models.Index(fields=["village", "type"]),
+        ]
 
 
 class BuildTask(models.Model):
