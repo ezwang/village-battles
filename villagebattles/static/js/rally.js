@@ -50,4 +50,28 @@ $(document).ready(function() {
             input.val(troops[troop]);
         });
     });
+    $("#coords").hide();
+    $("input[name=coords]").selectize({
+        valueField: "value",
+        labelField: "label",
+        searchField: ["name", "x", "y"],
+        create: false,
+        maxItems: 1,
+        placeholder: "Target Village",
+        load: function(query, callback) {
+            if (!query.length) return callback();
+            $.ajax({
+                url: LOAD_ENDPOINT + "?query=" + encodeURIComponent(query),
+                type: "GET",
+                success: function(data) {
+                    var villages = data["villages"].map(function(val) {
+                        val["value"] = val.x + "," + val.y;
+                        val["label"] = val.name + " (" + val.x + "|" + val.y + ")";
+                        return val;
+                    });
+                    callback(villages);
+                }
+            });
+        }
+    });
 });

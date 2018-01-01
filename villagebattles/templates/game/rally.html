@@ -12,6 +12,15 @@
 #coords {
     margin-top: 7px;
 }
+.selectize-control {
+    float: left;
+    width: 200px;
+    width: calc(100% - 180px);
+    margin-bottom: -5px;
+}
+.selectize-input {
+    padding: 10px;
+}
 </style>
 {% endblock %}
 
@@ -20,6 +29,7 @@
     <script src="{% static "js/rally.js" %}"></script>
     <script>
     var COORD_ENDPOINT = "{% url "map_coord" %}";
+    var LOAD_ENDPOINT = "{% url "map_load" %}";
     </script>
 {% endblock %}
 
@@ -49,6 +59,7 @@
                     </table>
                     <div class="clearfix">
                         <div id="coords" class="float-left">Target Village: (<input type="number" id="x" name="x" />|<input type="number" id="y" name="y" />) <span id="info"></span></div>
+                        <input name="coords" type="hidden" />
                         <div class="float-right">
                             <button type="submit" name="action" value="attack" class="btn btn-primary">Attack</button>
                             <button type="submit" name="action" value="support" class="btn btn-primary">Support</button>

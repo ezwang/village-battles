@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, InvalidPage
-from django.db.models import F
+from django.db.models import F, Q
 
 from .helpers import (get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display,
                       create_default_player_setup)
@@ -101,8 +101,15 @@ def map(request):
 @login_required
 def map_load(request):
     world = get_object_or_404(World, id=request.session["world"])
+    if "query" in request.GET:
+        villages = Village.objects.filter(world=world).prefetch_related("owner")
+    else:
+        query = request.GET.get("query")
+        villages = Village.objects.filter(world=world) \
+                                  .filter(Q(name__icontains=query) | Q(owner__username__icontains=query)) \
+                                  .prefetch_related("owner")
     output = []
-    for vil in Village.objects.filter(world=world).prefetch_related("owner"):
+    for vil in villages:
         if vil.owner:
             tribe = vil.owner.tribes.filter(world=world).first()
         else:
@@ -341,8 +348,12 @@ def rally(request, village_id):
             return redirect("rally", village_id=village.id)
 
         if not x or not y:
-            messages.error(request, "No coordinates entered!")
-            return redirect("rally", village_id=village.id)
+            coords = request.POST.get("coords")
+            if not coords:
+                messages.error(request, "No coordinates entered!")
+                return redirect("rally", village_id=village.id)
+            else:
+                x, y = coords.strip().replace("-", ",").replace("|", ",").split(",")
 
         try:
             x = int(x)
