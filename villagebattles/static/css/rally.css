@@ -1,0 +1,17 @@
+#x, #y {
+    display: inline-block;
+    width: 60px;
+    font-size: 0.9em;
+}
+#coords {
+    margin-top: 7px;
+}
+.selectize-control {
+    float: left;
+    width: 200px;
+    width: calc(100% - 180px);
+    margin-bottom: -5px;
+}
+.selectize-input {
+    padding: 10px;
+}
