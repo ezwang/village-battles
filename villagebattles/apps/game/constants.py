@@ -29,6 +29,11 @@ def get_max_building_level(building):
     return int(_get_value(["buildings", building, "max_level"], default=20))
 
 
+def get_min_building_level(building):
+    """ Returns the minimum building level for downgrades and destruction. """
+    return int(_get_value(["buildings", building, "min_level"], default=0))
+
+
 def get_troop_attack(troop):
     return int(_get_value(["troops", troop, "attack"], default=50))
 
