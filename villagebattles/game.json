@@ -139,6 +139,10 @@
                 }
             }
         },
+        "LB": {
+            "name": "Laboratory",
+            "max_level": 20
+        },
         "BR": {
             "name": "Barracks",
             "troops": ["SP", "SW", "AX", "AR"],

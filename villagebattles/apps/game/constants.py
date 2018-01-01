@@ -136,7 +136,7 @@ def building_requirements_met(building_type, village):
     """ Given a building type and a village, check if the village can build the building. """
     if building_type in ["BR", "WA"]:
         return village.get_level("HQ") >= 3
-    if building_type == "ST":
+    if building_type == "ST" or building_type == "LB":
         return village.get_level("HQ") >= 10
     if building_type == "WS":
         return village.get_level("HQ") >= 15
