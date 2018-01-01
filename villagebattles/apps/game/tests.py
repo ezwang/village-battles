@@ -423,6 +423,21 @@ class QuestTests(TestCase):
         for quest in get_all_quests():
             self.assertFalse(get_quest_finished(quest, request))
 
+    def test_finish_quest(self):
+        """ Make sure that the quests finish correctly. """
+        village = self.do_enter_game()
+        user = User.objects.get(username="test")
+
+        hq = village.buildings.get(type="HQ")
+        hq.level = 5
+        hq.save()
+
+        response = self.client.post(reverse("submit_quest"), {"id": 1})
+        self.assertRedirects(response, reverse("village", kwargs={"village_id": village.id}))
+
+        self.assertFalse(user.quests.filter(world=village.world, type=1).exists())
+        self.assertTrue(user.quests.filter(world=village.world).exists())
+
     def test_all_quests_reachable(self):
         """ Make sure all quests are reachable from the initial quest. """
         expected = set(get_all_quests())
