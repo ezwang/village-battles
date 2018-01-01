@@ -141,7 +141,24 @@
         },
         "LB": {
             "name": "Laboratory",
-            "max_level": 20
+            "max_level": 20,
+            "cost": {
+                "wood": {
+                    "initial": 200,
+                    "scale": 1.2,
+                    "constant": 5000
+                },
+                "clay": {
+                    "initial": 200,
+                    "scale": 1.2,
+                    "constant": 5000
+                },
+                "iron": {
+                    "initial": 200,
+                    "scale": 1.2,
+                    "constant": 5000
+                }
+            }
         },
         "BR": {
             "name": "Barracks",

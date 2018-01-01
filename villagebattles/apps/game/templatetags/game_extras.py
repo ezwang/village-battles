@@ -17,7 +17,7 @@ def building_cost(building, level):
     pop = get_building_population_difference(building, level)
     out = []
     for res, val in [("wood", wood), ("clay", clay), ("iron", iron), ("population", pop)]:
-        out.append("<span class='{}'>{,}</span>".format(res, val))
+        out.append("<span class='{}'>{:,}</span>".format(res, val))
     return mark_safe(" ".join(out))
 
 
@@ -27,7 +27,7 @@ def troop_cost(troop):
     pop = get_troop_population(troop)
     out = []
     for res, val in [("wood", wood), ("clay", clay), ("iron", iron), ("population", pop)]:
-        out.append("<span class='{}'>{,}</span>".format(res, val))
+        out.append("<span class='{}'>{:,}</span>".format(res, val))
     return mark_safe(" ".join(out))
 
 
