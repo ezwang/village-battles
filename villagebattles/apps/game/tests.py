@@ -1,7 +1,7 @@
 from datetime import timedelta
 from mock import patch
 
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.utils import timezone
 from django.shortcuts import reverse
 
