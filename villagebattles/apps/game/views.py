@@ -90,8 +90,8 @@ def map(request):
     tribe = request.user.tribes.filter(world=world).first()
 
     context = {
-        "x": vil.x,
-        "y": vil.y,
+        "x": vil.x if vil else 500,
+        "y": vil.y if vil else 500,
         "tribe_id": tribe.id if tribe else -1
     }
 

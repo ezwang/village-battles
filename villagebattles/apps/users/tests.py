@@ -47,10 +47,18 @@ class BasicTests(BaseTestCase):
         self.assertRedirects(response, reverse("create_village"))
 
     def test_common_pages(self):
+        village = self.do_enter_game()
+
         response = self.client.get(reverse("report"))
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse("settings"))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("map"))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("map_load"))
         self.assertEqual(response.status_code, 200)
 
     def test_village_creation(self):
