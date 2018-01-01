@@ -41,6 +41,20 @@
                 "initial": 60,
                 "scale": 1.5
             },
+            "cost": {
+                "wood": {
+                    "initial": 60,
+                    "scale": 1.2
+                },
+                "clay": {
+                    "initial": 80,
+                    "scale": 1.3
+                },
+                "iron": {
+                    "initial": 80,
+                    "scale": 1.3
+                }
+            },
             "max_level": 30
         },
         "CM": {
@@ -49,6 +63,20 @@
                 "initial": 60,
                 "scale": 1.5
             },
+            "cost": {
+                "wood": {
+                    "initial": 80,
+                    "scale": 1.3
+                },
+                "clay": {
+                    "initial": 60,
+                    "scale": 1.2
+                },
+                "iron": {
+                    "initial": 80,
+                    "scale": 1.3
+                }
+            },
             "max_level": 30
         },
         "IM": {
@@ -56,6 +84,20 @@
             "production": {
                 "initial": 60,
                 "scale": 1.5
+            },
+            "cost": {
+                "wood": {
+                    "initial": 80,
+                    "scale": 1.3
+                },
+                "clay": {
+                    "initial": 80,
+                    "scale": 1.3
+                },
+                "iron": {
+                    "initial": 60,
+                    "scale": 1.2
+                }
             },
             "max_level": 30
         },
@@ -81,6 +123,20 @@
             "upgrade": {
                 "initial": 120,
                 "scale": 1
+            },
+            "cost": {
+                "wood": {
+                    "initial": 50,
+                    "scale": 1
+                },
+                "clay": {
+                    "initial": 50,
+                    "scale": 1
+                },
+                "iron": {
+                    "initial": 50,
+                    "scale": 1
+                }
             }
         },
         "BR": {
@@ -110,7 +166,21 @@
         "AC": {
             "name": "Academy",
             "max_level": 1,
-            "troops": ["NB"]
+            "troops": ["NB"],
+            "cost": {
+                "wood": {
+                    "initial": 20000,
+                    "scale": 1
+                },
+                "clay": {
+                    "initial": 20000,
+                    "scale": 1
+                },
+                "iron": {
+                    "initial": 20000,
+                    "scale": 1
+                }
+            }
         },
         "WA": {
             "name": "Wall",
