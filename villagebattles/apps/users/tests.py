@@ -22,15 +22,26 @@ class UnauthenticatedTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class BasicTests(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        User.objects.create_user(username="test", password="test")
+        self.user = User.objects.create_user(username="test", password="test")
         self.client.login(username="test", password="test")
         session = self.client.session
         session["world"] = World.objects.get().id
         session.save()
 
+    def do_enter_game(self):
+        response = self.client.post(reverse("create_village"))
+        self.assertEqual(Village.objects.all().count(), 1)
+
+        village_id = Village.objects.get().id
+        self.assertRedirects(response, reverse("village", kwargs={"village_id": village_id}))
+
+        return Village.objects.get(id=village_id)
+
+
+class BasicTests(BaseTestCase):
     def test_world_creation(self):
         response = self.client.get(reverse("start"))
         self.assertRedirects(response, reverse("create_village"))
@@ -41,15 +52,6 @@ class BasicTests(TestCase):
 
         response = self.client.get(reverse("settings"))
         self.assertEqual(response.status_code, 200)
-
-    def do_enter_game(self):
-        response = self.client.post(reverse("create_village"))
-        self.assertEqual(Village.objects.all().count(), 1)
-
-        village_id = Village.objects.get().id
-        self.assertRedirects(response, reverse("village", kwargs={"village_id": village_id}))
-
-        return Village.objects.get(id=village_id)
 
     def test_village_creation(self):
         """ Make sure that creating villages works. """

@@ -12,6 +12,7 @@ from .helpers import create_default_setup, create_npc_village
 from .constants import get_troop_time, get_recruitment_buff
 
 from ..game.quests import get_all_quests, get_quest_finished, get_linked_quests
+from ..users.tests import BaseTestCase
 
 
 class ResourceTests(TestCase):
@@ -393,24 +394,7 @@ class ResourceTests(TestCase):
         self.assertEqual(self.village.external_troops.count(), 1)
 
 
-class QuestTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        User.objects.create_user(username="test", password="test")
-        self.client.login(username="test", password="test")
-        session = self.client.session
-        session["world"] = World.objects.get().id
-        session.save()
-
-    def do_enter_game(self):
-        response = self.client.post(reverse("create_village"))
-        self.assertEqual(Village.objects.all().count(), 1)
-
-        village_id = Village.objects.get().id
-        self.assertRedirects(response, reverse("village", kwargs={"village_id": village_id}))
-
-        return Village.objects.get(id=village_id)
-
+class QuestTests(BaseTestCase):
     def test_quest_finished(self):
         """ Make sure that all quests are currently unfinished. """
         village = self.do_enter_game()
@@ -426,7 +410,6 @@ class QuestTests(TestCase):
     def test_finish_quest(self):
         """ Make sure that the quests finish correctly. """
         village = self.do_enter_game()
-        user = User.objects.get(username="test")
 
         hq = village.buildings.get(type="HQ")
         hq.level = 5
@@ -435,8 +418,8 @@ class QuestTests(TestCase):
         response = self.client.post(reverse("submit_quest"), {"id": 1})
         self.assertRedirects(response, reverse("village", kwargs={"village_id": village.id}))
 
-        self.assertFalse(user.quests.filter(world=village.world, type=1).exists())
-        self.assertTrue(user.quests.filter(world=village.world).exists())
+        self.assertFalse(self.user.quests.filter(world=village.world, type=1).exists())
+        self.assertTrue(self.user.quests.filter(world=village.world).exists())
 
     def test_all_quests_reachable(self):
         """ Make sure all quests are reachable from the initial quest. """
