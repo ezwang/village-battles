@@ -296,7 +296,7 @@ def troop_building(request, village_id, building_type):
         "building_name": building_name,
     }
 
-    return render(request, "game/barracks.html", context)
+    return render(request, "game/recruit.html", context)
 
 
 @login_required
