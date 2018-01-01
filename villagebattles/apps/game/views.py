@@ -101,10 +101,10 @@ def map(request):
 @login_required
 def map_load(request):
     world = get_object_or_404(World, id=request.session["world"])
-    if "query" in request.GET:
+    query = request.GET.get("query")
+    if not query:
         villages = Village.objects.filter(world=world).prefetch_related("owner")
     else:
-        query = request.GET.get("query")
         villages = Village.objects.filter(world=world) \
                                   .filter(Q(name__icontains=query) | Q(owner__username__icontains=query)) \
                                   .prefetch_related("owner")
