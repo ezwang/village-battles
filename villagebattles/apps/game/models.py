@@ -82,7 +82,7 @@ class Village(models.Model):
         self.wood -= wood
         self.clay -= clay
         self.iron -= iron
-        self.save()
+        self.save(update_fields=["_wood", "_clay", "_iron"])
         return True
 
     def _do_resource_update(self, end_time=None):
@@ -236,7 +236,7 @@ class BuildTask(models.Model):
         if build.exists():
             build = build.first()
             build.level += 1
-            build.save()
+            build.save(update_fields=["level"])
         else:
             Building.objects.create(
                 village=self.village,
@@ -307,7 +307,7 @@ class TroopTask(models.Model):
         try:
             item = self.building.village.troops.get(type=self.type)
             item.amount += amt
-            item.save()
+            item.save(update_fields=["amount"])
         except Troop.DoesNotExist:
             Troop.objects.create(
                 village=self.building.village,
