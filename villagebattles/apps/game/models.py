@@ -102,7 +102,7 @@ class Village(models.Model):
         self.iron = self._iron + (diff / Decimal(3600)) * self.iron_rate
         self.loyalty = self._loyalty + (diff / Decimal(3600)) * get_loyalty_regen()
         self._update = now
-        self.save()
+        self.save(update_fields=["_wood", "_clay", "_iron", "_loyalty", "_update"])
 
     @property
     def wood(self):
