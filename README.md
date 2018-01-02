@@ -6,7 +6,7 @@ Village Battles is a simple real time strategy game.
 
 ## Setup
 
-Start a redis server on port `6379`.
+Start a [redis](https://redis.io/download) server on port `6379`.
 
 ```bash
 virtualenv --python=python3 venv
