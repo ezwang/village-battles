@@ -4,6 +4,18 @@
 
 Village Battles is a simple real time strategy game.
 
+**Features**
+- Multiple Worlds
+- Multiple Villages
+- Building Creation
+- Troop Creation
+- Map Interface
+- Attacking / Supporting
+- Village Conquering
+- Quests
+- Reports
+- Tribes
+
 ## Setup
 
 Start a [redis](https://redis.io/download) server on port `6379`.
