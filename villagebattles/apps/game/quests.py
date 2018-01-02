@@ -131,6 +131,13 @@ QUESTS = {
         "body": "Create a catapult.",
         "reward": {"troops": ("CA", 3)},
         "finished": _check_troops("CA", 1),
+        "unlocks": [14]
+    },
+    14: {
+        "name": "Conquering other Villages",
+        "body": "Build an academy. Requires a level 20 headquarters and a level 15 laboratory.",
+        "reward": {"resources": [10000, 10000, 10000]},
+        "finished": _check_building_level("AC", 1),
         "unlocks": []
     }
 }
