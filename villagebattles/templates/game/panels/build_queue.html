@@ -1,10 +1,19 @@
 <div class="card">
     <div class="card-body">
         <h4>Build Queue</h4>
+        <form action="{% url "hq" village.id %}" method="POST">
+        {% csrf_token %}
         {% for item in build_queue %}
-        <div>{{ item.get_type_display }} to level {{ item.new_level }} <span class="float-right countdown" datetime="{{ item.end_time|date:"c" }}">{{ item.end_time|default_if_none:"" }}</span></div>
+        <div>
+            {{ item.get_type_display }} to level {{ item.new_level }}
+            <span class="float-right">
+                <span class="countdown" datetime="{{ item.end_time|date:"c" }}">{{ item.end_time|default_if_none:"" }}</span>
+                <button class="cancel" type="submit" name="cancel" value="{{ item.id }}">X</button>
+            </span>
+        </div>
         {% empty %}
         <span>The build queue is currently empty.</span>
         {% endfor %}
+        </form>
     </div>
 </div>

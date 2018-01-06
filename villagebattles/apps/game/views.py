@@ -202,7 +202,17 @@ def hq(request, village_id):
                     messages.error(request, "You do not have enough people to make this building!")
             else:
                 messages.error(request, "Invalid building type passed to server!")
-            pass
+        elif "cancel" in request.POST:
+            task = get_object_or_404(BuildTask, id=request.POST.get("cancel"), village=village)
+            try:
+                building = village.buildings.get(type=task.type)
+                level = building.level_after_upgrade
+            except Building.DoesNotExist:
+                level = 1
+            cost = get_building_cost(task.type, level - 1)
+            village.refund(*cost)
+            task.delete()
+            messages.success(request, "The building task has been canceled!")
         process([village])
         return redirect("hq", village_id=village.id)
 

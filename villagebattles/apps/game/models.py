@@ -85,6 +85,13 @@ class Village(models.Model):
         self.save(update_fields=["_wood", "_clay", "_iron"])
         return True
 
+    def refund(self, wood, clay, iron):
+        self.wood += wood
+        self.clay += clay
+        self.iron += iron
+        self.save(update_fields=["_wood", "_clay", "_iron"])
+        return True
+
     def _do_resource_update(self, end_time=None):
         now = timezone.now()
         if end_time is None:
