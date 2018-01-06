@@ -4,7 +4,7 @@
         <form action="{% url "hq" village.id %}" method="POST">
         {% csrf_token %}
         {% for item in build_queue %}
-        <div>
+        <div class="clearfix">
             {{ item.get_type_display }} to level {{ item.new_level }}
             <span class="float-right">
                 <span class="countdown" datetime="{{ item.end_time|date:"c" }}">{{ item.end_time|default_if_none:"" }}</span>

@@ -4,7 +4,7 @@
         <form action="{% url "cancel_troops" village.id %}" method="POST">
             {% csrf_token %}
             {% for troop in troop_queue %}
-            <div>
+            <div class="clearfix">
                 {{ troop.get_type_display }} ({{ troop.amount }})
                 <span class="float-right">
                     <span class="countdown" datetime="{{ troop.end_time|date:"c" }}">{{ troop.end_time|default_if_none:"" }}</span>
