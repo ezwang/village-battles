@@ -1,10 +1,19 @@
 <div class="card">
     <div class="card-body">
         <h4>Recruitment Queue</h4>
-        {% for troop in troop_queue %}
-        <div>{{ troop.get_type_display }} ({{ troop.amount }}) <span class="float-right countdown" datetime="{{ troop.end_time|date:"c" }}">{{ troop.end_time|default_if_none:"" }}</span></div>
-        {% empty %}
-        <span>There are no soldiers in the queue.</span>
-        {% endfor %}
+        <form action="{% url "cancel_troops" village.id %}" method="POST">
+            {% csrf_token %}
+            {% for troop in troop_queue %}
+            <div>
+                {{ troop.get_type_display }} ({{ troop.amount }})
+                <span class="float-right">
+                    <span class="countdown" datetime="{{ troop.end_time|date:"c" }}">{{ troop.end_time|default_if_none:"" }}</span>
+                    <button class="cancel" type="submit" name="cancel" value="{{ troop.id }}">X</button>
+                </span>
+            </div>
+            {% empty %}
+            <span>There are no soldiers in the queue.</span>
+            {% endfor %}
+        </form>
     </div>
 </div>

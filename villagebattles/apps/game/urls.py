@@ -20,6 +20,7 @@ urlpatterns = [
     path('create_village', views.create_village, name="create_village"),
     path('village/<int:village_id>', views.village, name="village"),
     path('hq/<int:village_id>', views.hq, name="hq"),
+    path('troops/cancel/<int:village_id>', views.troop_cancel, name="cancel_troops"),
     path('barracks/<int:village_id>', views.barracks, name="barracks"),
     path('stable/<int:village_id>', views.stable, name="stable"),
     path('workshop/<int:village_id>', views.workshop, name="workshop"),

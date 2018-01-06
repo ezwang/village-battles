@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, InvalidPage
 from django.db.models import F, Q
+from django.views.decorators.http import require_POST
 
 from .helpers import (get_new_village_coords, get_villages, calculate_travel_time, create_default_setup, get_troop_type_display,
                       create_default_player_setup)
@@ -257,6 +258,23 @@ def workshop(request, village_id):
     return troop_building(request, village_id, "WS")
 
 
+@login_required
+@require_POST
+def troop_cancel(request, village_id):
+    village = get_object_or_404(Village, id=village_id, owner=request.user)
+    if "cancel" in request.POST:
+        process([village])
+        task = get_object_or_404(TroopTask, id=request.POST.get("cancel"), building__village=village)
+        redirect_url = task.building.url
+        wood, clay, iron = get_troop_cost(task.type)
+        village.refund(wood * task.amount, clay * task.amount, iron * task.amount)
+        task.delete()
+        process([village])
+        messages.success(request, "Troop order canceled!")
+        return redirect(redirect_url)
+    return redirect("village", village_id=village.id)
+
+
 def troop_building(request, village_id, building_type):
     village = get_object_or_404(Village, id=village_id, owner=request.user)
 
@@ -299,11 +317,11 @@ def troop_building(request, village_id, building_type):
                             amount=amt
                         )
                     messages.success(request, "Your troops have been queued!")
+                    process([village])
                 else:
                     messages.error(request, "You do not have enough resources to create this number of troops!")
             else:
                 messages.error(request, "You do not have enough farm space to create this number of troops!")
-            process([village])
         return redirect(building.url)
 
     context = {
