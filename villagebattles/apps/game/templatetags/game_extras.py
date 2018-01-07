@@ -69,3 +69,21 @@ def to_hhmmss(time):
 @register.filter(name="troop_name")
 def troop_name(troop):
     return get_troop_type_display(troop)
+
+
+@register.filter(name="to_resource")
+def to_resource(raw):
+    if isinstance(raw, dict):
+        wood = raw["wood"]
+        clay = raw["clay"]
+        iron = raw["iron"]
+    elif isinstance(raw, list):
+        wood = raw[0]
+        clay = raw[1]
+        iron = raw[2]
+    else:
+        return str(raw)
+    out = []
+    for res, val in [("wood", wood), ("clay", clay), ("iron", iron)]:
+        out.append("<span class='{}'>{:,}</span>".format(res, val))
+    return mark_safe(" ".join(out))

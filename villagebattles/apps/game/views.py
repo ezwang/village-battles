@@ -1,3 +1,5 @@
+import json
+
 from datetime import timedelta
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -502,7 +504,8 @@ def report(request, report_id=None):
         report.read = True
         report.save()
         context = {
-            "report": report
+            "report": report,
+            "body": json.loads(report.body)
         }
     else:
         try:

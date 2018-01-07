@@ -1,4 +1,5 @@
 {% extends "game.html" %}
+{% load game_extras %}
 
 {% block js %}
     {{ block.super }}
@@ -27,7 +28,22 @@
         <hr />
         {% if report %}
         <h5>{{ report.title }}</h5>
-        <pre>{{ report.body }}</pre>
+        <p>
+            <b>Attacker:</b> <a href="{% url "village" body.attacker.village.id %}">{{ body.attacker.village.name }}</a><br />
+            <b>Troops:</b> {{ body.attacker.troops }}<br />
+            <b>Remaining:</b> {{ body.attacker.remaining_troops }}
+        </p>
+        <p>
+            <b>Defender:</b> <a href="{% url "village" body.defender.village.id %}">{{ body.defender.village.name }}</a><br />
+            {% if "troops" in body.defender %}
+            <b>Troops:</b> {{ body.defender.troops }}<br />
+            <b>Remaining:</b> {{ body.defender.remaining_troops }}
+            {% else %}
+            No defender troop information.
+            {% endif %}
+        </p>
+        <div><b>Loot:</b> {{ body.loot|to_resource }}</div>
+        <div><b>Remaining:</b> {{ body.remaining|to_resource }}</div>
         {% else %}
         <table class="table">
             <thead>
