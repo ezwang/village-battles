@@ -1,8 +1,10 @@
 $(document).ready(function() {
+    var default_coords = "";
     if (window.location.hash) {
         var coords = window.location.hash.substring(1).split("-");
         $("#x").val(coords[0]);
         $("#y").val(coords[1]);
+        default_coords = coords[0] + "," + coords[1];
     }
     $("#x, #y").blur(function() {
         var x = $("#x").val();
@@ -74,4 +76,14 @@ $(document).ready(function() {
             });
         }
     });
+    if (default_coords) {
+        var selectize = $("input[name=coords]")[0].selectize;
+        var dca = default_coords.split(",");
+        var x = dca[0];
+        var y = dca[1];
+        $.get(COORD_ENDPOINT + "?x=" + encodeURIComponent(x) + "&y=" + encodeURIComponent(y), function(data) {
+            selectize.addOption({"label": data.name + " (" + x + "|" + y + ")", "value": default_coords});
+            selectize.setValue(default_coords);
+        });
+    }
 });
