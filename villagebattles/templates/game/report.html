@@ -44,6 +44,9 @@
         </p>
         <div><b>Loot:</b> {{ body.loot|to_resource }}</div>
         <div><b>Remaining:</b> {{ body.remaining|to_resource }}</div>
+        {% if body.catapult_target %}
+        <div><b>Catapult Target:</b> {{ body.catapult_target }} ({{ body.catapult_target_initial }} -&gt; {{ body.catapult_target_level }})</div>
+        {% endif %}
         {% else %}
         <table class="table">
             <thead>

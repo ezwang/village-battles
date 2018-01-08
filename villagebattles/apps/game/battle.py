@@ -139,8 +139,10 @@ def process_attack(attack):
         from .models import Building
         try:
             target_building = attack.destination.buildings.get(type=attack.loot)
+            initial_level = target_building.level
             target_building.level = max(target_building.level - 1, get_min_building_level(attack.loot))
-            content["catapult_target"] = target_building.type
+            content["catapult_target"] = target_building.get_type_display()
+            content["catapult_target_initial"] = initial_level
             content["catapult_target_level"] = target_building.level
             if target_building.level > 0:
                 target_building.save()
