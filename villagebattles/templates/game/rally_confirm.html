@@ -26,6 +26,16 @@
                     {{ troop|troop_name }} ({{ amt }})<br />
                     {% endfor %}
                     </p>
+                    {% if has_catapults %}
+                    <div class="form-group">
+                        <label>Catapult Target</label>
+                        <select name="catapult_target" class="form-control">
+                        {% for choice in building_list %}
+                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
                     <button type="submit" class="btn btn-primary" name="action" value="{{ action }}">Confirm</button>
                 </form>
             </div>

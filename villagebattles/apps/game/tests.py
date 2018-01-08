@@ -331,6 +331,25 @@ class ResourceTests(TestCase):
         self.assertTrue(self.village2.owner.reports.count(), 1)
         self.assertTrue(self.village.troops.get(type="SP").amount, 3)
 
+    def test_attack_catapult(self):
+        """ Test attacking with catapults. """
+        now = timezone.now()
+        attack = Attack.objects.create(
+            source=self.village,
+            destination=self.village2,
+            end_time=now - timedelta(hours=1),
+            type=Attack.ATTACK,
+            loot="RP"
+        )
+        Troop.objects.create(
+            attack=attack,
+            type="CA",
+            amount=100
+        )
+        self.assertEquals(self.village2.buildings.get(type="RP").level, 1)
+        process_village(self.village, now)
+        self.assertFalse(self.village2.buildings.filter(type="RP").exists())
+
     def test_attack_npc_village(self):
         """ Test attacking a NPC village. """
         village = create_npc_village(self.world)

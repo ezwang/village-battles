@@ -3,7 +3,7 @@ import copy
 
 from django.db.models import Sum
 
-from .constants import get_troop_carry, get_troop_attack, get_troop_defense
+from .constants import get_troop_carry, get_troop_attack, get_troop_defense, get_min_building_level
 from .helpers import get_troop_type_display
 
 
@@ -134,6 +134,20 @@ def process_attack(attack):
             attack.destination.owner = attack.source.owner
         attack.save()
         content["loyalty"] = attack.destination.loyalty
+
+    if attack.troops.filter(type="CA").exists():
+        from .models import Building
+        try:
+            target_building = attack.destination.buildings.get(type=attack.loot)
+            target_building.level = max(target_building.level - 1, get_min_building_level(attack.loot))
+            content["catapult_target"] = target_building.type
+            content["catapult_target_level"] = target_building.level
+            if target_building.level > 0:
+                target_building.save()
+            else:
+                target_building.delete()
+        except Building.DoesNotExist:
+            pass
 
     if attack.troops.filter(type="SC").exists():
         content["buildings"] = [(x.get_type_display(), x.level) for x in attack.destination.buildings.all()]

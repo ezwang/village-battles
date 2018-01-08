@@ -404,6 +404,7 @@ def rally(request, village_id):
 
         attackers = []
         flag = False
+        has_catapults = False
         for troop, name in Troop.CHOICES:
             try:
                 amt = int(request.POST.get(troop, 0))
@@ -421,6 +422,8 @@ def rally(request, village_id):
                     messages.error(request, "You do not have any {}!".format(name))
                     flag = True
                     break
+                if troop == "CA":
+                    has_catapults = True
                 attackers.append((troop, amt))
 
         if not attackers:
@@ -433,11 +436,13 @@ def rally(request, village_id):
         travel_time = calculate_travel_time(village, target, [x[0] for x in attackers])
 
         if request.POST.get("confirm", "false") == "true":
+            cat_target = request.POST.get("catapult_target")
             attack = Attack.objects.create(
                 source=village,
                 destination=target,
                 end_time=timezone.now() + timedelta(seconds=travel_time),
                 type=Attack.ATTACK if action == "attack" else Attack.SUPPORT,
+                loot=cat_target
             )
 
             for troop, amt in attackers:
@@ -461,7 +466,9 @@ def rally(request, village_id):
                 "target": target,
                 "travel_time": travel_time,
                 "action": action,
-                "troops": attackers
+                "troops": attackers,
+                "has_catapults": has_catapults,
+                "building_list": Building.CHOICES,
             }
 
             return render(request, "game/rally_confirm.html", context)
