@@ -51,6 +51,13 @@ class ResourceTests(TestCase):
         self.assertTrue(village.buildings.count() > 1)
         self.assertEquals(self.world.villages.count(), 3)
 
+    def test_multiple_npc_villages(self):
+        """ Make sure multiple npc villages can be generated without problems. """
+        for _ in range(15):
+            create_npc_village(self.world)
+
+        self.assertEquals(self.world.villages.count(), 17)
+
     def test_building_upgrade(self):
         """ Test filling up the build queue and making sure all tasks are processed. """
         now = timezone.now()
