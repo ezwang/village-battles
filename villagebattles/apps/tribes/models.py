@@ -24,3 +24,8 @@ class Member(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tribe = models.ForeignKey(Tribe, on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=CHOICES)
+
+
+class Thread(models.Model):
+    name = models.TextField()
+    tribe = models.ForeignKey(Tribe, on_delete=models.CASCADE, related_name="threads")
