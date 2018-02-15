@@ -433,7 +433,7 @@ def rally(request, village_id):
         if flag:
             return redirect("rally", village_id=village.id)
 
-        travel_time = calculate_travel_time(village, target, [x[0] for x in attackers])
+        travel_time = calculate_travel_time(village, target, [a[0] for a in attackers])
 
         if request.POST.get("confirm", "false") == "true":
             cat_target = request.POST.get("catapult_target")

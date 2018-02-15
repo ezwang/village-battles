@@ -9,7 +9,7 @@
                 <b>Members</b>
                 <ul>
                     {% for member in tribe.members.all %}
-                    <li><a href="{% url "user" member.id %}">{{ member.username }}</a></li>
+                    <li><a href="{% url "user" member.user.id %}">{{ member.username }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
