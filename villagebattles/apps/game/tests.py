@@ -4,6 +4,7 @@ from mock import patch
 from django.test import TestCase
 from django.utils import timezone
 from django.shortcuts import reverse
+from django.core.cache import cache
 
 from .models import World, Village, Attack, TroopTask, Troop, Building, BuildTask
 from ..users.models import User
@@ -421,6 +422,10 @@ class ResourceTests(TestCase):
 
 
 class QuestTests(BaseTestCase):
+    def setUp(self):
+        cache.clear()
+        super(QuestTests, self).setUp()
+
     def test_quest_finished(self):
         """ Make sure that all quests are currently unfinished. """
         village = self.do_enter_game()

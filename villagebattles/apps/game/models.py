@@ -6,6 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
+from django.core.cache import cache
 
 from ..users.models import User
 from .battle import process_attack
@@ -48,10 +49,20 @@ class Village(models.Model):
         return TroopTask.objects.filter(building__village=self)
 
     def get_level(self, building):
+        # Cache building levels to avoid ~16 SQL calls per page.
+
+        key = "village:building:{}:{}".format(self.id, building)
+        value = cache.get(key)
+        if value:
+            return value
+
         try:
-            return self.buildings.get(type=building).level
+            value = self.buildings.get(type=building).level
         except Building.DoesNotExist:
-            return 0
+            value = 0
+
+        cache.set(key, value)
+        return value
 
     @property
     def troop_population(self):
@@ -227,6 +238,8 @@ class Building(models.Model):
 
 
 class BuildTask(models.Model):
+    """ Represents a building that is in the process of being built. """
+
     village = models.ForeignKey(Village, on_delete=models.CASCADE, related_name="buildqueue")
     type = models.CharField(max_length=2, choices=Building.CHOICES)
     start_time = models.DateTimeField(default=timezone.now)
@@ -245,11 +258,13 @@ class BuildTask(models.Model):
             build.level += 1
             build.save(update_fields=["level"])
         else:
-            Building.objects.create(
+            build = Building.objects.create(
                 village=self.village,
                 type=self.type,
                 level=1
             )
+        key = "village:building:{}:{}".format(self.village.id, self.type)
+        cache.delete(key)
         if self.type in ["WM", "CM", "IM", "WH"]:
             self.village._do_resource_update(self.end_time)
         return True
@@ -277,6 +292,8 @@ class Troop(models.Model):
 
 
 class TroopTask(models.Model):
+    """ Represents troops that are in the process of being created. """
+
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="troopqueue")
     type = models.CharField(max_length=2, choices=Troop.CHOICES)
     amount = models.IntegerField()
